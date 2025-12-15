@@ -10,6 +10,7 @@ import {
 import { ScannedItem as ScannedItemType } from "../../globalTypes";
 import ListingDetails from "./listingDetails";
 import { useItemsStore } from "../../stores/itemsStore";
+import { useUserStore } from "../../stores/userStore";
 
 interface ScannedItemProps {
   item: ScannedItemType;
@@ -17,6 +18,7 @@ interface ScannedItemProps {
 }
 
 const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
+  const { currency } = useUserStore();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { setSelectedScannedItem } = useItemsStore();
 
@@ -24,6 +26,8 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
     setSelectedScannedItem(item);
     setIsModalVisible(true);
   };
+
+  console.log(item);
 
   return (
     <>
@@ -47,7 +51,9 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
         </View>
         <View style={styles.bottomRow}>
           <Text style={styles.price}>
-            ${item.resale_price_min_usd.toFixed(2)}
+            {currency === "euro"
+              ? `€${item.resale_price_min.toFixed(2)}`
+              : `$${item.resale_price_min.toFixed(2)}`}
           </Text>
           <TouchableOpacity style={styles.editButton} onPress={handleOpenModal}>
             <Text style={styles.editButtonText}>Edit</Text>

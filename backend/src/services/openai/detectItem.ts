@@ -12,7 +12,7 @@ export class ScanItem {
     });
   }
 
-  async detectItem(image: File) {
+  async detectItem(image: File, userCurrency: string) {
     const upload = await this.openai.files.create({
       file: image as any,
       purpose: "vision",
@@ -34,7 +34,7 @@ export class ScanItem {
               RULES:
               1. Look at the image.
               2. Identify the main item (brand, model, year/version if possible).
-              3. Estimate a realistic resale price range in USD.
+              3. Estimate a realistic resale price range in ${userCurrency}.
               4. Output **one** JSON object only.
               5. No commentary, no markdown, no backticks, no extra text.
               
@@ -43,8 +43,8 @@ export class ScanItem {
               {
                 "detected_item": "string",
                 "details": "string",
-                "resale_price_min_usd": number,
-                "resale_price_max_usd": number,
+                "resale_price_min": number,
+                "resale_price_max": number,
                 "confidence": number
               }
               

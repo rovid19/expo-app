@@ -9,6 +9,7 @@ import {
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
 import Svg, { Rect, Mask, Defs, Path } from "react-native-svg";
+import * as MediaLibrary from "expo-media-library";
 import apiClient from "../../../lib/axios";
 import ScannedItemContainer from "../../../components/scan/scannedItemContainer";
 import { useItemsStore } from "../../../stores/itemsStore";
@@ -28,18 +29,38 @@ const BUTTON_SIZE = 70;
 const BUTTON_X = SCREEN_WIDTH / 2;
 const BUTTON_Y = CUTOUT_Y + CUTOUT_HEIGHT - 90;
 
+// Zoom presets: 0 = wide, mid = normal, high = closer
+const ZOOM_LEVELS = [0, 0.3, 0.7];
+
 export default function Scan() {
   const { scannedItems, containerIndex, addScannedItem, setContainerIndex } =
     useItemsStore();
 
   const [flashlightOn, setFlashlightOn] = useState<boolean>(false);
+  const [zoomIndex, setZoomIndex] = useState<number>(1); // 0: wide, 1: normal, 2: closer
   const [permission, requestPermission] = useCameraPermissions();
+  const [mediaLibraryPermission, setMediaLibraryPermission] =
+    useState<MediaLibrary.PermissionResponse | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     if (!permission?.granted) requestPermission();
+
+    // Request media library permission
+    (async () => {
+      const { status } = await MediaLibrary.requestPermissionsAsync();
+      setMediaLibraryPermission({ status } as MediaLibrary.PermissionResponse);
+    })();
   }, []);
+
+  const handleZoomIn = () => {
+    setZoomIndex((prev) => Math.min(ZOOM_LEVELS.length - 1, prev + 1));
+  };
+
+  const handleZoomOut = () => {
+    setZoomIndex((prev) => Math.max(0, prev - 1));
+  };
 
   useEffect(() => {
     if (scrollViewRef.current && scannedItems.length > 0) {
@@ -68,6 +89,36 @@ export default function Scan() {
 
       addScannedItem(res.data.scannedItem);
       console.log(res.data.scannedItem);
+
+      // Create album and save photo
+      if (
+        mediaLibraryPermission?.status === "granted" &&
+        res.data.scannedItem.detected_item
+      ) {
+        try {
+          const albumName = res.data.scannedItem.detected_item;
+
+          // Check if album exists, if not create it
+          const albums = await MediaLibrary.getAlbumsAsync();
+          let album = albums.find((a) => a.title === albumName);
+
+          if (!album) {
+            album = await MediaLibrary.createAlbumAsync(albumName);
+          }
+
+          // Save photo to the album
+          if (album) {
+            const asset = await MediaLibrary.createAssetAsync(photo.uri);
+            await MediaLibrary.addAssetsToAlbumAsync(
+              [asset.id],
+              album.id,
+              false
+            );
+          }
+        } catch (albumError) {
+          console.error("Error creating album or saving photo:", albumError);
+        }
+      }
     } catch (err) {
       console.error(err);
     }
@@ -96,17 +147,28 @@ export default function Scan() {
         style={styles.camera}
         facing="back"
         enableTorch={flashlightOn}
+        zoom={ZOOM_LEVELS[zoomIndex]}
       />
 
       <View style={styles.overlay}>
-        <TouchableOpacity
-          style={styles.flashlightButton}
-          onPress={() => setFlashlightOn(!flashlightOn)}
-        >
-          <Text style={styles.flashlightIcon}>
-            {flashlightOn ? "🔦" : "💡"}
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.topControls}>
+          <TouchableOpacity style={styles.zoomButton} onPress={handleZoomOut}>
+            <Text style={styles.zoomButtonText}>-</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.flashlightButton}
+            onPress={() => setFlashlightOn(!flashlightOn)}
+          >
+            <Text style={styles.flashlightIcon}>
+              {flashlightOn ? "🔦" : "💡"}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.zoomButton} onPress={handleZoomIn}>
+            <Text style={styles.zoomButtonText}>+</Text>
+          </TouchableOpacity>
+        </View>
 
         <Svg style={StyleSheet.absoluteFill}>
           {/* MASK */}
@@ -290,10 +352,29 @@ const styles = StyleSheet.create({
     borderRadius: (BUTTON_SIZE - 16) / 2,
     backgroundColor: "white",
   },
-  flashlightButton: {
+  topControls: {
     position: "absolute",
     top: 50,
     left: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    zIndex: 10,
+  },
+  zoomButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginHorizontal: 4,
+  },
+  zoomButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  flashlightButton: {
     width: 44,
     height: 44,
     borderRadius: 22,

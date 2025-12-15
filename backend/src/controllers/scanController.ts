@@ -24,7 +24,9 @@ export const scanImage = async (req: Request, res: Response) => {
       type: req.file.mimetype,
     });
 
-    let scannedItem = await new ScanItem().detectItem(fileObj);
+    let scannedItem = await new ScanItem().detectItem(fileObj, "euro");
+
+    console.log(scannedItem);
 
     // inject image into scannedItem
     scannedItem.image = base64Image;

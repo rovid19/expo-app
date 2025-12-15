@@ -18,6 +18,23 @@ module.exports = {
       supportsTablet: true,
       infoPlist: {
         NSCameraUsageDescription: "This app uses the camera to scan items.",
+        NSPhotoLibraryUsageDescription: "Upload photos to Facebook Marketplace",
+        NSPhotoLibraryAddUsageDescription: "Save images to your photo library",
+        NSAppTransportSecurity: {
+          NSAllowsArbitraryLoads: false,
+          NSExceptionDomains: {
+            "facebook.com": {
+              NSIncludesSubdomains: true,
+              NSExceptionAllowsInsecureHTTPLoads: true,
+              NSExceptionRequiresForwardSecrecy: false,
+            },
+            "fbcdn.net": {
+              NSIncludesSubdomains: true,
+              NSExceptionAllowsInsecureHTTPLoads: true,
+              NSExceptionRequiresForwardSecrecy: false,
+            },
+          },
+        },
       },
     },
     android: {
@@ -28,7 +45,7 @@ module.exports = {
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
-      permissions: ["CAMERA"],
+      permissions: ["CAMERA", "READ_MEDIA_IMAGES", "WRITE_EXTERNAL_STORAGE"],
     },
     web: {
       favicon: "./assets/favicon.png",

@@ -15,6 +15,8 @@ import {
 } from "react-native";
 import { useItemsStore } from "../../stores/itemsStore";
 import AddAdditionalImages from "./addAdditionalImages";
+import FacebookMarketplacePost from "./FacebookMarketplacePost";
+import { useUserStore } from "../../stores/userStore";
 
 interface ListingDetailsProps {
   onClose: () => void;
@@ -27,16 +29,18 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
     containerIndex,
     updateScannedItem,
   } = useItemsStore();
+  const { currency } = useUserStore();
 
   const [isAddImageModalVisible, setIsAddImageModalVisible] = useState(false);
+  const [isFacebookModalVisible, setIsFacebookModalVisible] = useState(false);
 
   if (!selectedScannedItem) return null;
 
   const {
     detected_item,
     details,
-    resale_price_min_usd,
-    resale_price_max_usd,
+    resale_price_min,
+    resale_price_max,
     confidence,
     image,
   } = selectedScannedItem;
@@ -139,8 +143,13 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
               <View style={styles.priceEstimate}>
                 <Text style={styles.priceLabel}>Estimated resale value</Text>
                 <Text style={styles.priceRangeText}>
-                  ${resale_price_min_usd.toFixed(0)} – $
-                  {resale_price_max_usd.toFixed(0)}
+                  {currency === "euro"
+                    ? `€${resale_price_min.toFixed(
+                        0
+                      )} – €${resale_price_max.toFixed(0)}`
+                    : `$${resale_price_min.toFixed(
+                        0
+                      )} – $${resale_price_max.toFixed(0)}`}
                 </Text>
               </View>
               <View style={styles.confidencePill}>
@@ -156,10 +165,10 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
                 <Text style={styles.dollarSign}>$</Text>
                 <TextInput
                   style={styles.priceInput}
-                  value={resale_price_min_usd.toString()}
+                  value={resale_price_min.toString()}
                   onChangeText={(value) => {
                     const numValue = parseFloat(value) || 0;
-                    handleFieldUpdate("resale_price_min_usd", numValue);
+                    handleFieldUpdate("resale_price_min", numValue);
                   }}
                   keyboardType="numeric"
                   placeholder="0"
@@ -191,7 +200,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
           style={styles.primaryButton}
           onPress={() => {
             Keyboard.dismiss();
-            // Handle sell action here
+            setIsFacebookModalVisible(true);
           }}
         >
           <Text style={styles.primaryButtonText}>Sell this item</Text>
@@ -205,6 +214,18 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
         onRequestClose={() => setIsAddImageModalVisible(false)}
       >
         <AddAdditionalImages onClose={() => setIsAddImageModalVisible(false)} />
+      </Modal>
+
+      <Modal
+        visible={isFacebookModalVisible}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setIsFacebookModalVisible(false)}
+      >
+        <FacebookMarketplacePost
+          listing={selectedScannedItem}
+          onClose={() => setIsFacebookModalVisible(false)}
+        />
       </Modal>
     </KeyboardAvoidingView>
   );
