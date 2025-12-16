@@ -1,4 +1,3 @@
-import React from "react";
 import {
   StyleSheet,
   SafeAreaView,
@@ -15,10 +14,10 @@ interface FacebookMarketplacePostProps {
   onClose: () => void;
 }
 
-const FacebookMarketplacePost: React.FC<FacebookMarketplacePostProps> = ({
+const FacebookMarketplacePost = ({
   listing,
   onClose,
-}) => {
+}: FacebookMarketplacePostProps) => {
   const copyTitle = async () => {
     await setStringAsync(listing.detected_item);
   };

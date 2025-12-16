@@ -1,5 +1,21 @@
-import { Redirect } from "expo-router";
+import { useEffect } from "react";
+import { useUserStore } from "../stores/userStore";
+import Auth from "../components/auth/auth";
+import { useRouter } from "expo-router";
 
 export default function Index() {
-  return <Redirect href="/(tabs)/dashboard" />;
+  const user = useUserStore((state) => state.user);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/(tabs)/dashboard");
+    }
+  }, [user]);
+
+  if (!user) {
+    return <Auth />;
+  }
+
+  return null;
 }

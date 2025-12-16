@@ -31,22 +31,24 @@ export class ScanItem {
               
               Read carefully and follow **all** rules:
               
-              RULES:
-              1. Look at the image.
-              2. Identify the main item (brand, model, year/version if possible).
-              3. Estimate a realistic resale price range in ${userCurrency}.
-              4. Output **one** JSON object only.
-              5. No commentary, no markdown, no backticks, no extra text.
-              
-              The JSON MUST follow this exact structure and key order:
-              
-              {
-                "detected_item": "string",
-                "details": "string",
-                "resale_price_min": number,
-                "resale_price_max": number,
-                "confidence": number
-              }
+            RULES:
+1. Look at the image.
+2. Identify the main item (brand, model, year/version if possible).
+3. Classify the item into ONE category from: "clothes", "shoes", "car", "other".
+4. Estimate a realistic resale price range in ${userCurrency}.
+5. Output one JSON object only.
+6. No commentary, no markdown, no backticks, no extra text.
+
+The JSON MUST follow this exact structure and key order:
+
+{
+  "detected_item": "string",
+  "category": "clothes" | "shoes" | "car" | "other",
+  "details": "string",
+  "resale_price_min": number,
+  "resale_price_max": number,
+  "confidence": number
+}
               
               Where "confidence" is a float between 0 and 1.
               

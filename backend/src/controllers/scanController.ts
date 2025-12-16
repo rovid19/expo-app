@@ -14,10 +14,10 @@ export const scanImage = async (req: Request, res: Response) => {
     const filePath = req.file.path;
     const fileBuffer = fs.readFileSync(path.resolve(filePath));
 
-    // convert to base64
+    /* // convert to base64
     const base64Image = `data:${req.file.mimetype};base64,${fileBuffer.toString(
       "base64"
-    )}`;
+    )}`;*/
 
     // create File for OpenAI
     const fileObj = new File([fileBuffer], req.file.originalname, {
@@ -26,10 +26,10 @@ export const scanImage = async (req: Request, res: Response) => {
 
     let scannedItem = await new ScanItem().detectItem(fileObj, "euro");
 
-    console.log(scannedItem);
-
     // inject image into scannedItem
-    scannedItem.image = base64Image;
+    //scannedItem.image = base64Image;
+    scannedItem.size = "";
+    scannedItem.shoe_size = 0;
 
     res.status(200).json({ scannedItem });
   });

@@ -6,12 +6,18 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { CameraView, useCameraPermissions } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
 import Svg, { Rect, Mask, Defs, Path } from "react-native-svg";
 import * as MediaLibrary from "expo-media-library";
+import {
+  Camera,
+  useCameraPermission,
+  useCameraDevices,
+  type CameraDevice,
+} from "react-native-vision-camera";
 import apiClient from "../../../lib/axios";
 import ScannedItemContainer from "../../../components/scan/scannedItemContainer";
+import CameraToolbar from "../../../components/cameraToolbar";
 import { useItemsStore } from "../../../stores/itemsStore";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -29,23 +35,45 @@ const BUTTON_SIZE = 70;
 const BUTTON_X = SCREEN_WIDTH / 2;
 const BUTTON_Y = CUTOUT_Y + CUTOUT_HEIGHT - 90;
 
-// Zoom presets: 0 = wide, mid = normal, high = closer
-const ZOOM_LEVELS = [0, 0.3, 0.7];
-
 export default function Scan() {
-  const { scannedItems, containerIndex, addScannedItem, setContainerIndex } =
-    useItemsStore();
+  const {
+    scannedItems,
+    containerIndex,
+    addScannedItem,
+    setContainerIndex,
+    addAdditionalPhoto,
+    setSelectedScannedItem,
+  } = useItemsStore();
 
   const [flashlightOn, setFlashlightOn] = useState<boolean>(false);
-  const [zoomIndex, setZoomIndex] = useState<number>(1); // 0: wide, 1: normal, 2: closer
-  const [permission, requestPermission] = useCameraPermissions();
+  const { hasPermission, requestPermission } = useCameraPermission();
+  const devices = useCameraDevices();
   const [mediaLibraryPermission, setMediaLibraryPermission] =
     useState<MediaLibrary.PermissionResponse | null>(null);
-  const cameraRef = useRef<CameraView>(null);
+  const cameraRef = useRef<Camera | null>(null);
   const scrollViewRef = useRef<ScrollView>(null);
 
+  // Get back devices and find normal (wide-angle) lens as default
+  const backDevices = Array.isArray(devices)
+    ? devices.filter((d) => d.position === "back")
+    : (devices as any)?.back
+    ? [(devices as any).back]
+    : [];
+
+  const normalDeviceIndex = backDevices.findIndex((d) =>
+    (d.physicalDevices ?? []).includes("wide-angle-camera" as any)
+  );
+  const defaultDevice =
+    normalDeviceIndex >= 0 ? backDevices[normalDeviceIndex] : backDevices[0];
+
+  const [currentDevice, setCurrentDevice] = useState<CameraDevice | undefined>(
+    defaultDevice
+  );
+
   useEffect(() => {
-    if (!permission?.granted) requestPermission();
+    if (!hasPermission) {
+      requestPermission();
+    }
 
     // Request media library permission
     (async () => {
@@ -53,14 +81,6 @@ export default function Scan() {
       setMediaLibraryPermission({ status } as MediaLibrary.PermissionResponse);
     })();
   }, []);
-
-  const handleZoomIn = () => {
-    setZoomIndex((prev) => Math.min(ZOOM_LEVELS.length - 1, prev + 1));
-  };
-
-  const handleZoomOut = () => {
-    setZoomIndex((prev) => Math.max(0, prev - 1));
-  };
 
   useEffect(() => {
     if (scrollViewRef.current && scannedItems.length > 0) {
@@ -72,15 +92,17 @@ export default function Scan() {
   }, [containerIndex]);
 
   const handleCapture = async () => {
-    if (!cameraRef.current) return;
+    if (!cameraRef.current || !currentDevice) return;
 
     try {
-      const photo = await cameraRef.current.takePictureAsync();
+      const photo = await cameraRef.current.takePhoto({
+        flash: flashlightOn ? "on" : "off",
+      });
       console.log(photo);
 
       const form = new FormData();
       form.append("file", {
-        uri: photo.uri,
+        uri: `file://${photo.path}`,
         type: "image/jpeg",
         name: "photo.jpg",
       } as any);
@@ -88,7 +110,8 @@ export default function Scan() {
       const res = await apiClient.post("/scan/image-scan", form);
 
       addScannedItem(res.data.scannedItem);
-      console.log(res.data.scannedItem);
+      setSelectedScannedItem(res.data.scannedItem);
+      addAdditionalPhoto(`file://${photo.path}`);
 
       // Create album and save photo
       if (
@@ -107,8 +130,10 @@ export default function Scan() {
           }
 
           // Save photo to the album
-          if (album) {
-            const asset = await MediaLibrary.createAssetAsync(photo.uri);
+          if (album && photo.path) {
+            const asset = await MediaLibrary.createAssetAsync(
+              `file://${photo.path}`
+            );
             await MediaLibrary.addAssetsToAlbumAsync(
               [asset.id],
               album.id,
@@ -124,7 +149,7 @@ export default function Scan() {
     }
   };
 
-  if (!permission) {
+  if (!currentDevice) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <Text>Loading camera...</Text>
@@ -132,7 +157,7 @@ export default function Scan() {
     );
   }
 
-  if (!permission.granted) {
+  if (!hasPermission) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <Text>Camera permission required</Text>
@@ -142,33 +167,20 @@ export default function Scan() {
 
   return (
     <View style={styles.container}>
-      <CameraView
+      <Camera
         ref={cameraRef}
         style={styles.camera}
-        facing="back"
-        enableTorch={flashlightOn}
-        zoom={ZOOM_LEVELS[zoomIndex]}
+        device={currentDevice}
+        isActive
+        photo
+        torch={flashlightOn ? "on" : "off"}
       />
 
       <View style={styles.overlay}>
-        <View style={styles.topControls}>
-          <TouchableOpacity style={styles.zoomButton} onPress={handleZoomOut}>
-            <Text style={styles.zoomButtonText}>-</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.flashlightButton}
-            onPress={() => setFlashlightOn(!flashlightOn)}
-          >
-            <Text style={styles.flashlightIcon}>
-              {flashlightOn ? "🔦" : "💡"}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.zoomButton} onPress={handleZoomIn}>
-            <Text style={styles.zoomButtonText}>+</Text>
-          </TouchableOpacity>
-        </View>
+        <CameraToolbar
+          onDeviceChange={setCurrentDevice}
+          onFlashlightChange={setFlashlightOn}
+        />
 
         <Svg style={StyleSheet.absoluteFill}>
           {/* MASK */}
@@ -351,39 +363,5 @@ const styles = StyleSheet.create({
     height: BUTTON_SIZE - 16,
     borderRadius: (BUTTON_SIZE - 16) / 2,
     backgroundColor: "white",
-  },
-  topControls: {
-    position: "absolute",
-    top: 50,
-    left: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    zIndex: 10,
-  },
-  zoomButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 4,
-  },
-  zoomButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  flashlightButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 10,
-  },
-  flashlightIcon: {
-    fontSize: 24,
   },
 });

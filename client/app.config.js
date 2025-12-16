@@ -14,6 +14,7 @@ module.exports = {
       backgroundColor: "#ffffff",
     },
     ios: {
+      usesAppleSignIn: true,
       bundleIdentifier: "com.rovid19.client",
       supportsTablet: true,
       infoPlist: {

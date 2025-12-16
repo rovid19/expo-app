@@ -7,9 +7,15 @@ import {
   Dimensions,
   ScrollView,
 } from "react-native";
-import { CameraView, useCameraPermissions } from "expo-camera";
 import { useItemsStore } from "../../stores/itemsStore";
 import AdditionalImageContainer from "./additionalImageContainer";
+import CameraToolbar from "../cameraToolbar";
+import {
+  Camera,
+  CameraDevice,
+  useCameraDevices,
+  useCameraPermission,
+} from "react-native-vision-camera";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const BUTTON_SIZE = 70;
@@ -24,19 +30,35 @@ const AddAdditionalImages: React.FC<AddAdditionalImagesProps> = ({
   onClose,
 }) => {
   const [flashlightOn, setFlashlightOn] = useState<boolean>(false);
-  const [permission, requestPermission] = useCameraPermissions();
-  const cameraRef = useRef<CameraView>(null);
+  const { hasPermission, requestPermission } = useCameraPermission();
+  const cameraRef = useRef<Camera>(null);
   const { selectedScannedItem, addAdditionalPhoto } = useItemsStore();
+  const devices = useCameraDevices();
 
-  useEffect(() => {
-    if (!permission?.granted) requestPermission();
-  }, []);
+  // Get back devices and find normal (wide-angle) lens as default
+  const backDevices = Array.isArray(devices)
+    ? devices.filter((d) => d.position === "back")
+    : (devices as any)?.back
+    ? [(devices as any).back]
+    : [];
+
+  const normalDeviceIndex = backDevices.findIndex((d) =>
+    (d.physicalDevices ?? []).includes("wide-angle-camera" as any)
+  );
+  const defaultDevice =
+    normalDeviceIndex >= 0 ? backDevices[normalDeviceIndex] : backDevices[0];
+
+  const [currentDevice, setCurrentDevice] = useState<CameraDevice | undefined>(
+    defaultDevice
+  );
 
   const handleCapture = async () => {
-    if (!cameraRef.current) return;
+    if (!cameraRef.current || !currentDevice) return;
     try {
-      const photo = await cameraRef.current.takePictureAsync();
-      addAdditionalPhoto(photo.uri);
+      const photo = await cameraRef.current.takePhoto({
+        flash: flashlightOn ? "on" : "off",
+      });
+      addAdditionalPhoto(`file://${photo.path}`);
       console.log("Additional photo captured:", photo);
     } catch (err) {
       console.error(err);
@@ -48,15 +70,13 @@ const AddAdditionalImages: React.FC<AddAdditionalImagesProps> = ({
       ? selectedScannedItem.image.slice(1)
       : [];
 
-  if (!permission) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.message}>Loading camera...</Text>
-      </View>
-    );
-  }
+  useEffect(() => {
+    if (!hasPermission) {
+      requestPermission();
+    }
+  }, []);
 
-  if (!permission.granted) {
+  if (!hasPermission) {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>Camera permission required</Text>
@@ -70,13 +90,22 @@ const AddAdditionalImages: React.FC<AddAdditionalImagesProps> = ({
     );
   }
 
+  if (!currentDevice) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>Loading camera...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <CameraView
+      <Camera
         ref={cameraRef}
         style={styles.camera}
-        facing="back"
-        enableTorch={flashlightOn}
+        device={currentDevice}
+        isActive={true}
+        photo={true}
       />
       <View style={styles.overlay}>
         {/* Close button */}
@@ -85,14 +114,10 @@ const AddAdditionalImages: React.FC<AddAdditionalImagesProps> = ({
         </TouchableOpacity>
 
         {/* Flashlight toggle */}
-        <TouchableOpacity
-          style={styles.flashlightButton}
-          onPress={() => setFlashlightOn(!flashlightOn)}
-        >
-          <Text style={styles.flashlightIcon}>
-            {flashlightOn ? "🔦" : "💡"}
-          </Text>
-        </TouchableOpacity>
+        <CameraToolbar
+          onDeviceChange={setCurrentDevice}
+          onFlashlightChange={setFlashlightOn}
+        />
 
         {/* Additional photos list */}
         {additionalPhotos.length > 0 && (

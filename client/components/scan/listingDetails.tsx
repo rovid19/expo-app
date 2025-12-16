@@ -33,6 +33,11 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
 
   const [isAddImageModalVisible, setIsAddImageModalVisible] = useState(false);
   const [isFacebookModalVisible, setIsFacebookModalVisible] = useState(false);
+  const [isSizeDropdownVisible, setIsSizeDropdownVisible] = useState(false);
+  const [isShoeSizeUnitDropdownVisible, setIsShoeSizeUnitDropdownVisible] =
+    useState(false);
+  const [isSellOptionsModalVisible, setIsSellOptionsModalVisible] =
+    useState(false);
 
   if (!selectedScannedItem) return null;
 
@@ -43,6 +48,9 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
     resale_price_max,
     confidence,
     image,
+    category,
+    shoe_size,
+    size,
   } = selectedScannedItem;
 
   const handleFieldUpdate = (
@@ -193,18 +201,181 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
               onFocus={handleDescriptionFocus}
             />
           </View>
+
+          {category === "clothes" && (
+            <View style={styles.card}>
+              <Text style={styles.label}>SIZE</Text>
+              <TouchableOpacity
+                style={styles.dropdownButton}
+                onPress={() => setIsSizeDropdownVisible(true)}
+              >
+                <Text
+                  style={[
+                    styles.dropdownButtonText,
+                    !size && styles.dropdownButtonPlaceholder,
+                  ]}
+                >
+                  {size ? size.toUpperCase() : "Select size"}
+                </Text>
+                <Text style={styles.dropdownArrow}>▼</Text>
+              </TouchableOpacity>
+              <Modal
+                visible={isSizeDropdownVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setIsSizeDropdownVisible(false)}
+              >
+                <TouchableOpacity
+                  style={styles.dropdownBackdrop}
+                  activeOpacity={1}
+                  onPress={() => setIsSizeDropdownVisible(false)}
+                >
+                  <View style={styles.dropdownContainer}>
+                    {["XS", "S", "M", "L", "XL", "XXL"].map((sizeOption) => {
+                      const sizeOptionLower = sizeOption.toLowerCase() as
+                        | "s"
+                        | "m"
+                        | "l"
+                        | "xl"
+                        | "xxl";
+                      return (
+                        <TouchableOpacity
+                          key={sizeOption}
+                          style={[
+                            styles.dropdownOption,
+                            size === sizeOptionLower &&
+                              styles.dropdownOptionSelected,
+                          ]}
+                          onPress={() => {
+                            handleFieldUpdate("size", sizeOptionLower);
+                            setIsSizeDropdownVisible(false);
+                          }}
+                        >
+                          <Text
+                            style={[
+                              styles.dropdownOptionText,
+                              size === sizeOptionLower &&
+                                styles.dropdownOptionTextSelected,
+                            ]}
+                          >
+                            {sizeOption}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </TouchableOpacity>
+              </Modal>
+            </View>
+          )}
+          {category === "shoes" &&
+            (() => {
+              const shoeSizeStr = shoe_size
+                ? typeof shoe_size === "string"
+                  ? shoe_size
+                  : shoe_size.toString()
+                : "";
+              const shoeSizeParts = shoeSizeStr.split(" ");
+              const shoeSizeValue = shoeSizeParts[0] || "";
+              const shoeSizeUnit = shoeSizeParts[1] || "US";
+
+              return (
+                <View style={styles.card}>
+                  <Text style={styles.label}>SHOE SIZE</Text>
+                  <View style={styles.shoeSizeRow}>
+                    <TextInput
+                      style={styles.shoeSizeInput}
+                      value={shoeSizeValue}
+                      onChangeText={(value) => {
+                        handleFieldUpdate(
+                          "shoe_size",
+                          `${value} ${shoeSizeUnit}`.trim()
+                        );
+                      }}
+                      placeholder="Size"
+                      placeholderTextColor="#6B7280"
+                      keyboardType="numeric"
+                    />
+                    <TouchableOpacity
+                      style={styles.shoeSizeUnitButton}
+                      onPress={() => setIsShoeSizeUnitDropdownVisible(true)}
+                    >
+                      <Text style={styles.shoeSizeUnitText}>
+                        {shoeSizeUnit}
+                      </Text>
+                      <Text style={styles.dropdownArrow}>▼</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Modal
+                    visible={isShoeSizeUnitDropdownVisible}
+                    transparent={true}
+                    animationType="fade"
+                    onRequestClose={() =>
+                      setIsShoeSizeUnitDropdownVisible(false)
+                    }
+                  >
+                    <TouchableOpacity
+                      style={styles.dropdownBackdrop}
+                      activeOpacity={1}
+                      onPress={() => setIsShoeSizeUnitDropdownVisible(false)}
+                    >
+                      <View style={styles.dropdownContainer}>
+                        {["US", "UK", "EU", "CM"].map((unit) => (
+                          <TouchableOpacity
+                            key={unit}
+                            style={[
+                              styles.dropdownOption,
+                              shoeSizeUnit === unit &&
+                                styles.dropdownOptionSelected,
+                            ]}
+                            onPress={() => {
+                              handleFieldUpdate(
+                                "shoe_size",
+                                `${shoeSizeValue} ${unit}`.trim()
+                              );
+                              setIsShoeSizeUnitDropdownVisible(false);
+                            }}
+                          >
+                            <Text
+                              style={[
+                                styles.dropdownOptionText,
+                                shoeSizeUnit === unit &&
+                                  styles.dropdownOptionTextSelected,
+                              ]}
+                            >
+                              {unit}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    </TouchableOpacity>
+                  </Modal>
+                </View>
+              );
+            })()}
         </ScrollView>
 
-        {/* Primary action */}
-        <TouchableOpacity
-          style={styles.primaryButton}
-          onPress={() => {
-            Keyboard.dismiss();
-            setIsFacebookModalVisible(true);
-          }}
-        >
-          <Text style={styles.primaryButtonText}>Sell this item</Text>
-        </TouchableOpacity>
+        {/* Primary actions */}
+        <View style={styles.actionsContainer}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={() => {
+              Keyboard.dismiss();
+              setIsSellOptionsModalVisible(true);
+            }}
+          >
+            <Text style={styles.primaryButtonText}>Sell this item</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={() => {
+              Keyboard.dismiss();
+              // TODO: Implement save to items functionality
+            }}
+          >
+            <Text style={styles.secondaryButtonText}>Save to your items</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Modal
@@ -226,6 +397,41 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
           listing={selectedScannedItem}
           onClose={() => setIsFacebookModalVisible(false)}
         />
+      </Modal>
+
+      <Modal
+        visible={isSellOptionsModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsSellOptionsModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalBackdrop}
+          activeOpacity={1}
+          onPress={() => setIsSellOptionsModalVisible(false)}
+        >
+          <View style={styles.sellOptionsContainer}>
+            <Text style={styles.sellOptionsTitle}>Choose platform</Text>
+            <TouchableOpacity
+              style={styles.sellOptionButton}
+              onPress={() => {
+                setIsSellOptionsModalVisible(false);
+                setIsFacebookModalVisible(true);
+              }}
+            >
+              <Text style={styles.sellOptionText}>Sell on Facebook</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.sellOptionButton}
+              onPress={() => {
+                setIsSellOptionsModalVisible(false);
+                // TODO: Implement eBay functionality
+              }}
+            >
+              <Text style={styles.sellOptionText}>Sell on eBay</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
       </Modal>
     </KeyboardAvoidingView>
   );
@@ -412,6 +618,147 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 12,
     backgroundColor: "#111827",
+  },
+  dropdownButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: "#111827",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#374151",
+  },
+  dropdownButtonText: {
+    fontSize: 13,
+    color: "#D1D5DB",
+  },
+  dropdownButtonPlaceholder: {
+    color: "#6B7280",
+  },
+  dropdownArrow: {
+    fontSize: 10,
+    color: "#9CA3AF",
+  },
+  dropdownBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dropdownContainer: {
+    backgroundColor: "#111827",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#374151",
+    minWidth: 200,
+    maxHeight: 300,
+    overflow: "hidden",
+  },
+  dropdownOption: {
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#374151",
+  },
+  dropdownOptionSelected: {
+    backgroundColor: "#1F2937",
+  },
+  dropdownOptionText: {
+    fontSize: 14,
+    color: "#D1D5DB",
+  },
+  dropdownOptionTextSelected: {
+    color: "#A3E635",
+    fontWeight: "600",
+  },
+  shoeSizeRow: {
+    flexDirection: "row",
+    gap: 8,
+    alignItems: "center",
+  },
+  shoeSizeInput: {
+    flex: 1,
+    fontSize: 13,
+    color: "#D1D5DB",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: "#111827",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#374151",
+  },
+  shoeSizeUnitButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: "#111827",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#374151",
+    minWidth: 70,
+  },
+  shoeSizeUnitText: {
+    fontSize: 13,
+    color: "#D1D5DB",
+    marginRight: 6,
+  },
+  actionsContainer: {
+    gap: 12,
+    marginTop: 12,
+  },
+  secondaryButton: {
+    backgroundColor: "#111827",
+    borderRadius: 999,
+    paddingVertical: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#374151",
+  },
+  secondaryButtonText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#E5E7EB",
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  sellOptionsContainer: {
+    backgroundColor: "#111827",
+    borderRadius: 18,
+    padding: 20,
+    minWidth: 280,
+    borderWidth: 1,
+    borderColor: "#374151",
+  },
+  sellOptionsTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#E5E7EB",
+    marginBottom: 16,
+    textAlign: "center",
+  },
+  sellOptionButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: "#1F2937",
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#374151",
+  },
+  sellOptionText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#E5E7EB",
+    textAlign: "center",
   },
 });
 

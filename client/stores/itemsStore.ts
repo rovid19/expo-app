@@ -47,12 +47,15 @@ export const useItemsStore = create<ItemsStore>((set) => ({
 
   addAdditionalPhoto: async (uri) => {
     const state = useItemsStore.getState();
+
     if (!state.selectedScannedItem) return;
 
     const currentImage = state.selectedScannedItem.image;
-    const newImages = Array.isArray(currentImage)
-      ? [...currentImage, uri]
-      : [currentImage, uri];
+    const newImages = currentImage
+      ? Array.isArray(currentImage)
+        ? [...currentImage, uri]
+        : [currentImage, uri]
+      : [uri];
 
     const updatedItem = { ...state.selectedScannedItem, image: newImages };
     const updatedItems = [...state.scannedItems];
