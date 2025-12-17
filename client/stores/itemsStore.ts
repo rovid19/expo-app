@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import * as MediaLibrary from "expo-media-library";
 import { ScannedItem } from "../globalTypes";
+import { supabase } from "../services/supabase/supabaseClient";
+import { useUserStore } from "./userStore";
 
 interface ItemsStore {
   scannedItems: ScannedItem[];
@@ -98,6 +100,7 @@ export const useItemsStore = create<ItemsStore>((set) => ({
   },
 
   removeAdditionalPhoto: async (uri) => {
+    console.log("removeAdditionalPhoto", uri);
     const state = useItemsStore.getState();
     if (!state.selectedScannedItem) return;
 
@@ -107,6 +110,24 @@ export const useItemsStore = create<ItemsStore>((set) => ({
     const filteredImages = currentImage.filter((img) => img !== uri);
     const newImage =
       filteredImages.length === 1 ? filteredImages[0] : filteredImages;
+
+    // remove from storage if its already inside storage
+    if (uri.startsWith("http")) {
+      const filename = decodeURIComponent(
+        uri.split("/").pop()?.split("?")[0] ?? ""
+      );
+      const userId = useUserStore.getState().user?.id;
+
+      console.log("filename", filename);
+
+      if (userId && filename) {
+        const { error } = await supabase.storage
+          .from("images")
+          .remove([`${userId}/${filename}`]);
+
+        if (error) console.error("Error removing image:", error);
+      }
+    }
 
     const updatedItem = { ...state.selectedScannedItem, image: newImage };
     const updatedItems = [...state.scannedItems];

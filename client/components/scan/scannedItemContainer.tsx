@@ -67,7 +67,10 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
         transparent={true}
         onRequestClose={() => setIsModalVisible(false)}
       >
-        <ListingDetails onClose={() => setIsModalVisible(false)} />
+        <ListingDetails
+          onClose={() => setIsModalVisible(false)}
+          whichTab="scan"
+        />
       </Modal>
     </>
   );

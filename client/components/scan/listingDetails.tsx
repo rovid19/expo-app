@@ -17,19 +17,29 @@ import { useItemsStore } from "../../stores/itemsStore";
 import AddAdditionalImages from "./addAdditionalImages";
 import FacebookMarketplacePost from "./FacebookMarketplacePost";
 import { useUserStore } from "../../stores/userStore";
+import { supabase } from "../../services/supabase/supabaseClient";
 
 interface ListingDetailsProps {
   onClose: () => void;
+  onSaved?: () => void;
+  whichTab: "dashboard" | "scan";
 }
 
-const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
+const ListingDetails: React.FC<ListingDetailsProps> = ({
+  onClose,
+  onSaved,
+  whichTab,
+}) => {
   const {
     selectedScannedItem,
     scannedItems,
     containerIndex,
     updateScannedItem,
+    setSelectedScannedItem,
   } = useItemsStore();
-  const { currency } = useUserStore();
+  const { currency, user } = useUserStore();
+
+  console.log(selectedScannedItem);
 
   const [isAddImageModalVisible, setIsAddImageModalVisible] = useState(false);
   const [isFacebookModalVisible, setIsFacebookModalVisible] = useState(false);
@@ -51,6 +61,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
     category,
     shoe_size,
     size,
+    price,
   } = selectedScannedItem;
 
   const handleFieldUpdate = (
@@ -74,6 +85,92 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
         () => {}
       );
     }, 300);
+  };
+
+  const uploadImages = async (images: string[], type: "update" | "insert") => {
+    const isLocalUri = (uri: string) => /^(file|content):\/\//.test(uri);
+    const toUpload = type === "insert" ? images : images.filter(isLocalUri);
+    if (!toUpload.length) return images;
+
+    const uploadedByUri = new Map<string, string>();
+    await Promise.all(
+      toUpload.map(async (uri) => {
+        const res = await fetch(uri);
+        const blob = await res.blob();
+        const ext = (uri.split(".").pop() || "jpg").split("?")[0];
+        const path = `${user?.id ?? "anon"}/${Date.now()}-${Math.random()
+          .toString(16)
+          .slice(2)}.${ext}`;
+
+        const { error } = await supabase.storage
+          .from("images")
+          .upload(path, blob, { contentType: blob.type || undefined });
+        if (error) throw error;
+
+        const { data } = supabase.storage.from("images").getPublicUrl(path);
+        uploadedByUri.set(uri, data.publicUrl);
+      })
+    );
+
+    return images.map((uri) => uploadedByUri.get(uri) ?? uri);
+  };
+
+  const handleSaveItem = async () => {
+    const { id, created_at, ...payload } = selectedScannedItem;
+
+    const currentImages = Array.isArray(selectedScannedItem.image)
+      ? selectedScannedItem.image
+      : [selectedScannedItem.image];
+    const uploadedImages = await uploadImages(
+      currentImages,
+      id ? "update" : "insert"
+    );
+    payload.image = Array.isArray(selectedScannedItem.image)
+      ? uploadedImages
+      : uploadedImages[0];
+
+    console.log("payload", payload);
+
+    const query = id
+      ? supabase.from("items").update(payload).eq("id", id).select("*")
+      : supabase
+          .from("items")
+          .insert({ ...payload, owner_id: user?.id })
+          .select("*");
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("Error saving item:", error);
+    } else {
+      console.log("Item saved successfully:", data);
+      onSaved?.();
+    }
+
+    onClose();
+  };
+
+  const handleToggleSold = async () => {
+    const itemId = selectedScannedItem.id;
+    if (!itemId) return;
+
+    const nextIsSold = !(selectedScannedItem.isSold === true);
+
+    const { data, error } = await supabase
+      .from("items")
+      .update({ isSold: nextIsSold })
+      .eq("id", itemId)
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error("Error updating sold status:", error);
+      return;
+    }
+
+    setSelectedScannedItem({ ...selectedScannedItem, ...data });
+    onSaved?.();
+    onClose();
   };
 
   return (
@@ -173,10 +270,10 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
                 <Text style={styles.dollarSign}>$</Text>
                 <TextInput
                   style={styles.priceInput}
-                  value={resale_price_min.toString()}
+                  value={price?.toString() || "0"}
                   onChangeText={(value) => {
                     const numValue = parseFloat(value) || 0;
-                    handleFieldUpdate("resale_price_min", numValue);
+                    handleFieldUpdate("price", numValue);
                   }}
                   keyboardType="numeric"
                   placeholder="0"
@@ -366,11 +463,28 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({ onClose }) => {
           >
             <Text style={styles.primaryButtonText}>Sell this item</Text>
           </TouchableOpacity>
+
+          {whichTab === "dashboard" && (
+            <TouchableOpacity
+              style={styles.secondaryButton}
+              onPress={() => {
+                Keyboard.dismiss();
+                handleToggleSold();
+              }}
+            >
+              <Text style={styles.secondaryButtonText}>
+                {selectedScannedItem.isSold === true
+                  ? "Mark as available"
+                  : "Mark as sold"}
+              </Text>
+            </TouchableOpacity>
+          )}
+
           <TouchableOpacity
             style={styles.secondaryButton}
             onPress={() => {
               Keyboard.dismiss();
-              // TODO: Implement save to items functionality
+              handleSaveItem();
             }}
           >
             <Text style={styles.secondaryButtonText}>Save to your items</Text>

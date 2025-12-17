@@ -30,7 +30,10 @@ export const scanImage = async (req: Request, res: Response) => {
     //scannedItem.image = base64Image;
     scannedItem.size = "";
     scannedItem.shoe_size = 0;
+    scannedItem.price = 0;
 
     res.status(200).json({ scannedItem });
   });
 };
+
+export const saveItem = async (req: Request, res: Response) => {};
