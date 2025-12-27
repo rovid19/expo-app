@@ -10,7 +10,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Initial session:", session);
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
@@ -18,7 +17,6 @@ export default function RootLayout() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state changed:", session);
       setUser(session?.user ?? null);
     });
 

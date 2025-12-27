@@ -2,14 +2,19 @@ import { create } from "zustand";
 
 interface UserStore {
   user: any | null;
-  currency: string | null;
+  currency: "USD" | "EUR" | null;
+  triggerDashboardRefresh: boolean;
   setUser: (user: any) => void;
-  setCurrency: (currency: string) => void;
+  setCurrency: (currency: "USD" | "EUR") => void;
+  setTriggerDashboardRefresh: (triggerDashboardRefresh: boolean) => void;
 }
 
 export const useUserStore = create<UserStore>((set) => ({
   user: null,
-  currency: "euro",
+  currency: "EUR",
   setUser: (user: any) => set({ user }),
-  setCurrency: (currency: string) => set({ currency }),
+  setCurrency: (currency: "USD" | "EUR") => set({ currency }),
+  triggerDashboardRefresh: false,
+  setTriggerDashboardRefresh: (triggerDashboardRefresh: boolean) =>
+    set({ triggerDashboardRefresh }),
 }));

@@ -1,66 +1,93 @@
 import React, { useMemo } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text } from "react-native";
 import { ScannedItem } from "../../globalTypes";
+import { useUserStore } from "../../stores/userStore";
 
 interface UserIncomeProps {
   items: ScannedItem[];
   setTriggerRefresh: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 0,
-  }).format(value);
+const returnCurrencySymbol = (currency: string) => {
+  switch (currency) {
+    case "USD":
+      return "$";
+    case "EUR":
+      return "€";
+    default:
+      return "";
+  }
+};
 
 const UserIncome: React.FC<UserIncomeProps> = ({
   items,
-  setTriggerRefresh,
+  setTriggerRefresh: _setTriggerRefresh,
 }) => {
-  const { totalInventoryValue, soldIncome, soldCount } = useMemo(() => {
-    const total = items.reduce((sum, item) => sum + item.price, 0);
+  const { currency } = useUserStore();
+  const { totalWorth, totalItems, profit } = useMemo(() => {
+    const total = items.reduce((sum, item) => sum + (item.price ?? 0), 0);
     const soldItems = items.filter((item) => item.isSold === true);
-    const soldTotal = soldItems.reduce((sum, item) => sum + item.price, 0);
+    const soldTotal = soldItems.reduce(
+      (sum, item) => sum + (item.price ?? 0),
+      0
+    );
     return {
-      totalInventoryValue: total,
-      soldIncome: soldTotal,
-      soldCount: soldItems.length,
+      totalWorth: total,
+      totalItems: items.length,
+      profit: soldTotal,
     };
   }, [items]);
 
-  const handleRefresh = () => setTriggerRefresh((prev) => !prev);
-
   return (
-    <View className="w-full px-4 pt-5">
-      <View className="rounded-2xl bg-black p-4">
-        <View className="flex-row items-center justify-between">
-          <Text className="text-base font-semibold text-white">Overview</Text>
-          <Pressable
-            onPress={handleRefresh}
-            className="rounded-full bg-white/15 px-3 py-1"
-            accessibilityRole="button"
-            accessibilityLabel="Refresh dashboard"
-          >
-            <Text className="text-xs font-semibold text-white">Refresh</Text>
-          </Pressable>
+    <View className="w-full flex-col px-4 pb-4 mt-4">
+      {/* Header */}
+      <View className="flex-row items-center justify-between pb-4">
+        <View className="flex-col gap-0.5">
+          <Text className="text-4xl font-bold tracking-tight text-neutral-950">
+            Overview
+          </Text>
+          <Text className="text-sm text-neutral-500">
+            Quick overview of your inventory and sales.
+          </Text>
         </View>
+      </View>
 
-        <View className="mt-4 flex-row gap-3">
-          <View className="flex-1 rounded-2xl bg-white/10 p-3">
-            <Text className="text-xs text-white/80">Total stored value</Text>
-            <Text className="mt-1 text-xl font-bold text-white">
-              {formatCurrency(totalInventoryValue)}
+      {/* Overview Card */}
+      <View className="rounded-2xl bg-neutral-900 p-4 ">
+        <View className="flex-row">
+          {/* Net Profit */}
+          <View className="flex-1 justify-center p-3">
+            <Text className="text-2xl font-medium text-neutral-50">
+              Net Profit
+            </Text>
+            <View className="mt-1 flex-row items-baseline gap-1">
+              <Text className="text-4xl font-bold tracking-tight text-emerald-400">
+                {profit}
+              </Text>
+              <Text className="text-4xl font-medium text-emerald-500">
+                {returnCurrencySymbol(currency as string)}
+              </Text>
+            </View>
+            <Text className="mt-2 text-xs text-neutral-500">
+              {items.filter((item) => item.isSold === true).length} sold items.
             </Text>
           </View>
 
-          <View className="flex-1 rounded-2xl bg-white/10 p-3">
-            <Text className="text-xs text-white/80">Income (sold)</Text>
-            <Text className="mt-1 text-xl font-bold text-white">
-              {formatCurrency(soldIncome)}
+          {/* Total Worth */}
+          <View className="flex-1 justify-center p-3 border-l border-neutral-700/40">
+            <Text className="text-2xl font-medium text-neutral-50">
+              Total Worth
             </Text>
-            <Text className="mt-1 text-[11px] text-white/70">
-              {soldCount} sold {soldCount === 1 ? "item" : "items"}
+            <View className="mt-1 flex-row items-baseline gap-1">
+              <Text className="text-4xl font-bold tracking-tight text-neutral-50">
+                {totalWorth}
+              </Text>
+              <Text className="text-4xl font-medium text-neutral-50">
+                {returnCurrencySymbol(currency as string)}
+              </Text>
+            </View>
+            <Text className="mt-2 text-xs text-neutral-500">
+              {items.length} total items.
             </Text>
           </View>
         </View>

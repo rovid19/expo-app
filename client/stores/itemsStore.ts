@@ -3,6 +3,7 @@ import * as MediaLibrary from "expo-media-library";
 import { ScannedItem } from "../globalTypes";
 import { supabase } from "../services/supabase/supabaseClient";
 import { useUserStore } from "./userStore";
+import api from "../lib/axios";
 
 interface ItemsStore {
   scannedItems: ScannedItem[];
@@ -12,8 +13,15 @@ interface ItemsStore {
   updateScannedItem: (index: number, item: ScannedItem) => void;
   setSelectedScannedItem: (item: ScannedItem | null) => void;
   setContainerIndex: (index: number) => void;
-  addAdditionalPhoto: (uri: string) => Promise<void>;
-  removeAdditionalPhoto: (uri: string) => Promise<void>;
+  removeScannedItem: (item: ScannedItem) => void;
+  addPhoto: (uri: string) => Promise<void>;
+  addOrRemovePhotoFromAlbum: (
+    selectedScannedItem: ScannedItem,
+    uri: string,
+    type: "add" | "remove"
+  ) => Promise<void>;
+  removePhoto: (uri: string) => Promise<void>;
+  removePhotoFromSupabase: (uri: string) => Promise<void>;
 }
 
 export const useItemsStore = create<ItemsStore>((set) => ({
@@ -47,50 +55,130 @@ export const useItemsStore = create<ItemsStore>((set) => ({
       selectedScannedItem: state.scannedItems[index] || null,
     })),
 
-  addAdditionalPhoto: async (uri) => {
-    const state = useItemsStore.getState();
+  removeScannedItem: (item) =>
+    set((state) => ({
+      scannedItems: state.scannedItems.filter(
+        (i) => i.detected_item !== item.detected_item
+      ),
+      selectedScannedItem: null,
+      containerIndex: 0,
+    })),
 
-    if (!state.selectedScannedItem) return;
+  addPhoto: async (uri) => {
+    const {
+      selectedScannedItem,
+      scannedItems,
+      containerIndex,
+      addOrRemovePhotoFromAlbum,
+    } = useItemsStore.getState();
 
-    const currentImage = state.selectedScannedItem.image;
-    const newImages = currentImage
-      ? Array.isArray(currentImage)
-        ? [...currentImage, uri]
-        : [currentImage, uri]
-      : [uri];
+    if (!selectedScannedItem) return;
 
-    const updatedItem = { ...state.selectedScannedItem, image: newImages };
-    const updatedItems = [...state.scannedItems];
-    updatedItems[state.containerIndex] = updatedItem;
+    const images = [
+      ...(Array.isArray(selectedScannedItem.image)
+        ? selectedScannedItem.image
+        : selectedScannedItem.image
+        ? [selectedScannedItem.image]
+        : []),
+      uri,
+    ];
+
+    const updatedItem = { ...selectedScannedItem, image: images };
 
     useItemsStore.setState({
-      scannedItems: updatedItems,
       selectedScannedItem: updatedItem,
+      scannedItems: scannedItems.map((item, i) =>
+        i === containerIndex ? updatedItem : item
+      ),
     });
 
-    // Save photo to album
-    if (state.selectedScannedItem.detected_item) {
+    await addOrRemovePhotoFromAlbum(updatedItem, uri, "add");
+  },
+
+  removePhoto: async (uri) => {
+    const {
+      selectedScannedItem,
+      scannedItems,
+      containerIndex,
+      removePhotoFromSupabase,
+      addOrRemovePhotoFromAlbum,
+    } = useItemsStore.getState();
+
+    if (!selectedScannedItem) return;
+
+    const currentImages = Array.isArray(selectedScannedItem.image)
+      ? selectedScannedItem.image
+      : selectedScannedItem.image
+      ? [selectedScannedItem.image]
+      : [];
+
+    const images = currentImages.filter((img) => img !== uri);
+
+    await removePhotoFromSupabase(uri);
+
+    const updatedItem = {
+      ...selectedScannedItem,
+      image: images,
+    };
+
+    useItemsStore.setState({
+      selectedScannedItem: updatedItem as ScannedItem,
+      scannedItems: scannedItems.map((item, i) =>
+        i === containerIndex
+          ? (updatedItem as ScannedItem)
+          : (item as ScannedItem)
+      ),
+    });
+
+    await addOrRemovePhotoFromAlbum(updatedItem as ScannedItem, uri, "remove");
+  },
+
+  addOrRemovePhotoFromAlbum: async (
+    selectedScannedItem: ScannedItem,
+    uri: string,
+    type: "add" | "remove"
+  ) => {
+    if (selectedScannedItem.detected_item) {
       try {
         const { status } = await MediaLibrary.getPermissionsAsync();
         if (status === "granted") {
-          const albumName = state.selectedScannedItem.detected_item;
+          const albumName = selectedScannedItem.detected_item;
 
           // Check if album exists, if not create it
           const albums = await MediaLibrary.getAlbumsAsync();
           let album = albums.find((a) => a.title === albumName);
+          if (type === "add") {
+            if (!album) {
+              album = await MediaLibrary.createAlbumAsync(albumName);
+            }
 
-          if (!album) {
-            album = await MediaLibrary.createAlbumAsync(albumName);
-          }
+            // Save photo to the album
+            if (album) {
+              const asset = await MediaLibrary.createAssetAsync(uri);
+              await MediaLibrary.addAssetsToAlbumAsync(
+                [asset.id],
+                album.id,
+                false
+              );
+            }
+          } else {
+            if (album) {
+              // Get all assets in the album
+              const albumAssets = await MediaLibrary.getAssetsAsync({
+                album: album.id,
+                mediaType: MediaLibrary.MediaType.photo,
+              });
 
-          // Save photo to the album
-          if (album) {
-            const asset = await MediaLibrary.createAssetAsync(uri);
-            await MediaLibrary.addAssetsToAlbumAsync(
-              [asset.id],
-              album.id,
-              false
-            );
+              // Find the asset matching the URI
+              const assetToRemove = albumAssets.assets.find(
+                (asset) => asset.uri === uri
+              );
+
+              // Delete the asset (which removes it from all albums)
+              if (assetToRemove) {
+                await MediaLibrary.deleteAssetsAsync([assetToRemove.id]);
+              }
+            }
           }
         }
       } catch (error) {
@@ -98,77 +186,17 @@ export const useItemsStore = create<ItemsStore>((set) => ({
       }
     }
   },
-
-  removeAdditionalPhoto: async (uri) => {
-    console.log("removeAdditionalPhoto", uri);
-    const state = useItemsStore.getState();
-    if (!state.selectedScannedItem) return;
-
-    const currentImage = state.selectedScannedItem.image;
-    if (!Array.isArray(currentImage)) return;
-
-    const filteredImages = currentImage.filter((img) => img !== uri);
-    const newImage =
-      filteredImages.length === 1 ? filteredImages[0] : filteredImages;
-
-    // remove from storage if its already inside storage
-    if (uri.startsWith("http")) {
-      const filename = decodeURIComponent(
-        uri.split("/").pop()?.split("?")[0] ?? ""
-      );
-      const userId = useUserStore.getState().user?.id;
-
-      console.log("filename", filename);
-
-      if (userId && filename) {
-        const { error } = await supabase.storage
-          .from("images")
-          .remove([`${userId}/${filename}`]);
-
-        if (error) console.error("Error removing image:", error);
-      }
-    }
-
-    const updatedItem = { ...state.selectedScannedItem, image: newImage };
-    const updatedItems = [...state.scannedItems];
-    updatedItems[state.containerIndex] = updatedItem;
-
-    useItemsStore.setState({
-      scannedItems: updatedItems,
-      selectedScannedItem: updatedItem,
-    });
-
-    // Remove photo from album
-    if (state.selectedScannedItem.detected_item) {
-      try {
-        const { status } = await MediaLibrary.getPermissionsAsync();
-        if (status === "granted") {
-          const albumName = state.selectedScannedItem.detected_item;
-
-          // Find the album
-          const albums = await MediaLibrary.getAlbumsAsync();
-          const album = albums.find((a) => a.title === albumName);
-
-          if (album) {
-            // Get all assets in the album
-            const albumAssets = await MediaLibrary.getAssetsAsync({
-              album: album.id,
-              mediaType: MediaLibrary.MediaType.photo,
-            });
-
-            // Find the asset matching the URI
-            const assetToRemove = albumAssets.assets.find(
-              (asset) => asset.uri === uri
-            );
-
-            // Delete the asset (which removes it from all albums)
-            if (assetToRemove) {
-              await MediaLibrary.deleteAssetsAsync([assetToRemove.id]);
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Error removing additional photo from album:", error);
+  removePhotoFromSupabase: async (uri) => {
+    if (!uri.startsWith("http")) return;
+    try {
+      const response = await api.post("/scan/remove-photo-from-supabase", {
+        uri,
+      });
+      console.log("Response:", response.status, response.data);
+    } catch (error: any) {
+      // Ignore 404 errors - image might already be deleted or not exist
+      if (error?.response?.status !== 404) {
+        console.error("Error removing image:", error);
       }
     }
   },

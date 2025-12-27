@@ -9,14 +9,14 @@ interface AdditionalImageContainerProps {
 const AdditionalImageContainer: React.FC<AdditionalImageContainerProps> = ({
   uri,
 }) => {
-  const { removeAdditionalPhoto } = useItemsStore();
+  const { removePhoto } = useItemsStore();
 
   return (
     <View style={styles.container}>
       <Image source={{ uri }} style={styles.image} resizeMode="cover" />
       <TouchableOpacity
         style={styles.removeButton}
-        onPress={() => removeAdditionalPhoto(uri)}
+        onPress={() => removePhoto(uri)}
       >
         <Text style={styles.removeText}>✕</Text>
       </TouchableOpacity>

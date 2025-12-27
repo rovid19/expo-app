@@ -21,13 +21,13 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
   const { currency } = useUserStore();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { setSelectedScannedItem } = useItemsStore();
+  const { setTriggerDashboardRefresh, triggerDashboardRefresh } =
+    useUserStore();
 
   const handleOpenModal = () => {
     setSelectedScannedItem(item);
     setIsModalVisible(true);
   };
-
-  console.log(item);
 
   return (
     <>
@@ -35,7 +35,7 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
         <View style={styles.topRow}>
           <Image
             source={{
-              uri: Array.isArray(item.image) ? item.image[0] : item.image,
+              uri: item.image?.[0] ?? "",
             }}
             style={styles.thumbnail}
             resizeMode="cover"
@@ -51,7 +51,7 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
         </View>
         <View style={styles.bottomRow}>
           <Text style={styles.price}>
-            {currency === "euro"
+            {currency === "EUR"
               ? `€${item.resale_price_min.toFixed(2)}`
               : `$${item.resale_price_min.toFixed(2)}`}
           </Text>
@@ -69,6 +69,10 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
       >
         <ListingDetails
           onClose={() => setIsModalVisible(false)}
+          onSaved={() => {
+            setTriggerDashboardRefresh(!triggerDashboardRefresh);
+            setIsModalVisible(false);
+          }}
           whichTab="scan"
         />
       </Modal>

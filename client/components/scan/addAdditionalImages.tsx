@@ -32,7 +32,7 @@ const AddAdditionalImages: React.FC<AddAdditionalImagesProps> = ({
   const [flashlightOn, setFlashlightOn] = useState<boolean>(false);
   const { hasPermission, requestPermission } = useCameraPermission();
   const cameraRef = useRef<Camera>(null);
-  const { selectedScannedItem, addAdditionalPhoto } = useItemsStore();
+  const { selectedScannedItem, addPhoto, removePhoto } = useItemsStore();
   const devices = useCameraDevices();
 
   // Get back devices and find normal (wide-angle) lens as default
@@ -58,17 +58,12 @@ const AddAdditionalImages: React.FC<AddAdditionalImagesProps> = ({
       const photo = await cameraRef.current.takePhoto({
         flash: flashlightOn ? "on" : "off",
       });
-      addAdditionalPhoto(`file://${photo.path}`);
+      addPhoto(`file://${photo.path}`);
       console.log("Additional photo captured:", photo);
     } catch (err) {
       console.error(err);
     }
   };
-
-  const additionalPhotos =
-    selectedScannedItem && Array.isArray(selectedScannedItem.image)
-      ? selectedScannedItem.image.slice(1)
-      : [];
 
   useEffect(() => {
     if (!hasPermission) {
@@ -120,25 +115,27 @@ const AddAdditionalImages: React.FC<AddAdditionalImagesProps> = ({
         />
 
         {/* Additional photos list */}
-        {additionalPhotos.length > 0 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.photosScrollContent}
-            style={[
-              styles.photosContainer,
-              {
-                top: BUTTON_Y - BUTTON_SIZE / 2 - 120,
-              },
-            ]}
-          >
-            {additionalPhotos.map((uri, index) => (
-              <View key={`${uri}-${index}`} style={styles.photoWrapper}>
-                <AdditionalImageContainer uri={uri} />
-              </View>
-            ))}
-          </ScrollView>
-        )}
+        {selectedScannedItem &&
+          selectedScannedItem.image &&
+          selectedScannedItem.image.length > 0 && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.photosScrollContent}
+              style={[
+                styles.photosContainer,
+                {
+                  top: BUTTON_Y - BUTTON_SIZE / 2 - 120,
+                },
+              ]}
+            >
+              {selectedScannedItem.image?.map((uri, index) => (
+                <View key={`${uri}-${index}`} style={styles.photoWrapper}>
+                  <AdditionalImageContainer uri={uri} />
+                </View>
+              ))}
+            </ScrollView>
+          )}
 
         {/* Capture button */}
         <TouchableOpacity

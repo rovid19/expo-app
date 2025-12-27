@@ -1,9 +1,12 @@
 import express from "express";
-import { scanImage, saveItem } from "../controllers/scanController";
+import {
+  scanImage,
+  removePhotoFromSupabase,
+} from "../controllers/scanController";
 
 const router = express.Router();
 
 router.post("/image-scan", scanImage);
-router.post("/save-item", saveItem);
+router.post("/remove-photo-from-supabase", removePhotoFromSupabase);
 
 export default router;

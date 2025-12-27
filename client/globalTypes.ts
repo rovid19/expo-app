@@ -5,7 +5,7 @@ export interface ScannedItem {
   resale_price_max: number;
   price: number;
   confidence: number;
-  image: Image | Image[];
+  image: string[] | null;
   category: "clothes" | "shoes" | "car" | "other";
   shoe_size?: number | string;
   size?: "xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
@@ -14,8 +14,3 @@ export interface ScannedItem {
   created_at?: string;
   id?: string;
 }
-
-export type Image = {
-  id: number;
-  url: string;
-};

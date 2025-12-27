@@ -18,6 +18,7 @@ import AddAdditionalImages from "./addAdditionalImages";
 import FacebookMarketplacePost from "./FacebookMarketplacePost";
 import { useUserStore } from "../../stores/userStore";
 import { supabase } from "../../services/supabase/supabaseClient";
+import { uploadImages } from "../../services/supabase/uploadImages";
 
 interface ListingDetailsProps {
   onClose: () => void;
@@ -36,10 +37,9 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
     containerIndex,
     updateScannedItem,
     setSelectedScannedItem,
+    removeScannedItem,
   } = useItemsStore();
   const { currency, user } = useUserStore();
-
-  console.log(selectedScannedItem);
 
   const [isAddImageModalVisible, setIsAddImageModalVisible] = useState(false);
   const [isFacebookModalVisible, setIsFacebookModalVisible] = useState(false);
@@ -47,6 +47,8 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
   const [isShoeSizeUnitDropdownVisible, setIsShoeSizeUnitDropdownVisible] =
     useState(false);
   const [isSellOptionsModalVisible, setIsSellOptionsModalVisible] =
+    useState(false);
+  const [isSecondaryActionsModalVisible, setIsSecondaryActionsModalVisible] =
     useState(false);
 
   if (!selectedScannedItem) return null;
@@ -87,49 +89,19 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
     }, 300);
   };
 
-  const uploadImages = async (images: string[], type: "update" | "insert") => {
-    const isLocalUri = (uri: string) => /^(file|content):\/\//.test(uri);
-    const toUpload = type === "insert" ? images : images.filter(isLocalUri);
-    if (!toUpload.length) return images;
-
-    const uploadedByUri = new Map<string, string>();
-    await Promise.all(
-      toUpload.map(async (uri) => {
-        const res = await fetch(uri);
-        const blob = await res.blob();
-        const ext = (uri.split(".").pop() || "jpg").split("?")[0];
-        const path = `${user?.id ?? "anon"}/${Date.now()}-${Math.random()
-          .toString(16)
-          .slice(2)}.${ext}`;
-
-        const { error } = await supabase.storage
-          .from("images")
-          .upload(path, blob, { contentType: blob.type || undefined });
-        if (error) throw error;
-
-        const { data } = supabase.storage.from("images").getPublicUrl(path);
-        uploadedByUri.set(uri, data.publicUrl);
-      })
-    );
-
-    return images.map((uri) => uploadedByUri.get(uri) ?? uri);
-  };
-
   const handleSaveItem = async () => {
     const { id, created_at, ...payload } = selectedScannedItem;
 
     const currentImages = Array.isArray(selectedScannedItem.image)
       ? selectedScannedItem.image
-      : [selectedScannedItem.image];
+      : selectedScannedItem.image
+      ? [selectedScannedItem.image]
+      : [];
     const uploadedImages = await uploadImages(
       currentImages,
       id ? "update" : "insert"
     );
-    payload.image = Array.isArray(selectedScannedItem.image)
-      ? uploadedImages
-      : uploadedImages[0];
-
-    console.log("payload", payload);
+    payload.image = uploadedImages;
 
     const query = id
       ? supabase.from("items").update(payload).eq("id", id).select("*")
@@ -148,6 +120,19 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
     }
 
     onClose();
+  };
+
+  const removeItemFromDatabase = async () => {
+    const { id } = selectedScannedItem;
+    if (!id) return;
+    const { data, error } = await supabase
+      .from("items")
+      .delete()
+      .eq("id", id)
+      .select("*");
+    if (error) {
+      console.error("Error removing item:", error);
+    }
   };
 
   const handleToggleSold = async () => {
@@ -178,7 +163,11 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
       style={styles.screen}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <TouchableWithoutFeedback onPress={onClose}>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          onClose();
+        }}
+      >
         <View style={styles.backdrop} />
       </TouchableWithoutFeedback>
 
@@ -187,7 +176,17 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
         <View style={styles.headerRow}>
           <View style={styles.headerSpacer} />
           <Text style={styles.headerTitle}>Listing Details</Text>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => {
+              console.log("whichTab", whichTab);
+              if (whichTab === "dashboard") {
+                console.log("saving item");
+                handleSaveItem();
+              }
+              onClose();
+            }}
+          >
             <Text style={styles.closeText}>✕</Text>
           </TouchableOpacity>
         </View>
@@ -220,7 +219,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
                 ))
               ) : (
                 <Image
-                  source={{ uri: image }}
+                  source={{ uri: image ?? "" }}
                   style={styles.photoThumbnail}
                   resizeMode="cover"
                 />
@@ -248,7 +247,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
               <View style={styles.priceEstimate}>
                 <Text style={styles.priceLabel}>Estimated resale value</Text>
                 <Text style={styles.priceRangeText}>
-                  {currency === "euro"
+                  {currency === "EUR"
                     ? `€${resale_price_min.toFixed(
                         0
                       )} – €${resale_price_max.toFixed(0)}`
@@ -464,30 +463,14 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
             <Text style={styles.primaryButtonText}>Sell this item</Text>
           </TouchableOpacity>
 
-          {whichTab === "dashboard" && (
-            <TouchableOpacity
-              style={styles.secondaryButton}
-              onPress={() => {
-                Keyboard.dismiss();
-                handleToggleSold();
-              }}
-            >
-              <Text style={styles.secondaryButtonText}>
-                {selectedScannedItem.isSold === true
-                  ? "Mark as available"
-                  : "Mark as sold"}
-              </Text>
-            </TouchableOpacity>
-          )}
-
           <TouchableOpacity
             style={styles.secondaryButton}
             onPress={() => {
               Keyboard.dismiss();
-              handleSaveItem();
+              setIsSecondaryActionsModalVisible(true);
             }}
           >
-            <Text style={styles.secondaryButtonText}>Save to your items</Text>
+            <Text style={styles.secondaryButtonText}>More actions</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -511,6 +494,65 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
           listing={selectedScannedItem}
           onClose={() => setIsFacebookModalVisible(false)}
         />
+      </Modal>
+
+      <Modal
+        visible={isSecondaryActionsModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsSecondaryActionsModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalBackdrop}
+          activeOpacity={1}
+          onPress={() => setIsSecondaryActionsModalVisible(false)}
+        >
+          <View style={styles.sellOptionsContainer}>
+            <Text style={styles.sellOptionsTitle}>Actions</Text>
+
+            {whichTab === "dashboard" && (
+              <TouchableOpacity
+                style={styles.sellOptionButton}
+                onPress={() => {
+                  setIsSecondaryActionsModalVisible(false);
+                  handleToggleSold();
+                }}
+              >
+                <Text style={styles.sellOptionText}>
+                  {selectedScannedItem.isSold === true
+                    ? "Mark as available"
+                    : "Mark as sold"}
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            <TouchableOpacity
+              style={styles.sellOptionButton}
+              onPress={() => {
+                setIsSecondaryActionsModalVisible(false);
+                handleSaveItem();
+              }}
+            >
+              <Text style={styles.sellOptionText}>Save to your items</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.sellOptionButton}
+              onPress={() => {
+                setIsSecondaryActionsModalVisible(false);
+                if (whichTab === "dashboard") {
+                  removeItemFromDatabase();
+                  onClose();
+                  onSaved?.();
+                } else {
+                  removeScannedItem(selectedScannedItem);
+                }
+              }}
+            >
+              <Text style={styles.sellOptionText}>Remove item</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
       </Modal>
 
       <Modal

@@ -1,4 +1,4 @@
-import { View, Modal } from "react-native";
+import { View, Modal, Text } from "react-native";
 import { useState, useEffect } from "react";
 import { ScannedItem } from "../../../globalTypes";
 import { supabase } from "../../../services/supabase/supabaseClient";
@@ -12,14 +12,11 @@ export default function Dashboard() {
   const [userItems, setUserItems] = useState<ScannedItem[]>([]);
   const [triggerRefresh, setTriggerRefresh] = useState(false);
   const [isListingDetailsVisible, setIsListingDetailsVisible] = useState(false);
-  const { user } = useUserStore();
+  const { user, triggerDashboardRefresh } = useUserStore();
   const { setSelectedScannedItem, setContainerIndex } = useItemsStore();
   useEffect(() => {
     const fetchUserItems = async () => {
-      if (!user?.id) {
-        setUserItems([]);
-        return;
-      }
+      console.log("fetching user items");
       const { data, error } = await supabase
         .from("items")
         .select("*")
@@ -31,18 +28,22 @@ export default function Dashboard() {
       }
     };
     fetchUserItems();
-  }, [triggerRefresh, user?.id]);
+  }, [triggerRefresh, user?.id, triggerDashboardRefresh]);
 
   const handleOpenItem = (item: ScannedItem) => {
     setContainerIndex(0);
     setSelectedScannedItem(item);
     setIsListingDetailsVisible(true);
   };
+  console.log("isListingDetailsVisible", isListingDetailsVisible);
 
   const handleCloseListingDetails = () => setIsListingDetailsVisible(false);
 
   return (
-    <View className="flex-1 bg-neutral-50 pt-20">
+    <View className="flex-1 pt-20 flex flex-col gap-4 bg-neutral-50">
+      <View className="flex-row items-center justify-center">
+        <Text className="text-xl text-neutral-900">Sellify</Text>
+      </View>
       <UserIncome items={userItems} setTriggerRefresh={setTriggerRefresh} />
       <UserItems
         items={userItems}

@@ -41,7 +41,7 @@ export default function Scan() {
     containerIndex,
     addScannedItem,
     setContainerIndex,
-    addAdditionalPhoto,
+    addPhoto,
     setSelectedScannedItem,
   } = useItemsStore();
 
@@ -98,7 +98,6 @@ export default function Scan() {
       const photo = await cameraRef.current.takePhoto({
         flash: flashlightOn ? "on" : "off",
       });
-      console.log(photo);
 
       const form = new FormData();
       form.append("file", {
@@ -111,7 +110,7 @@ export default function Scan() {
 
       addScannedItem(res.data.scannedItem);
       setSelectedScannedItem(res.data.scannedItem);
-      addAdditionalPhoto(`file://${photo.path}`);
+      addPhoto(`file://${photo.path}`);
 
       // Create album and save photo
       if (

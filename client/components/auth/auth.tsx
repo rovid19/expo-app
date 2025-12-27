@@ -90,8 +90,6 @@ const Auth = () => {
         throw new Error("No identity token from Apple");
       }
 
-      console.log(credential.identityToken);
-
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: "apple",
         token: credential.identityToken,
