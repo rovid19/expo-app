@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import { View, Text } from "react-native";
 import { ScannedItem } from "../../globalTypes";
 import { useUserStore } from "../../stores/userStore";
+import { SvgXml } from "react-native-svg";
+import { layersIcon } from "../../assets/icons/icons";
 
 interface UserIncomeProps {
   items: ScannedItem[];
@@ -56,10 +58,8 @@ const UserIncome: React.FC<UserIncomeProps> = ({
       <View className="rounded-2xl bg-neutral-900 p-4 ">
         <View className="flex-row">
           {/* Net Profit */}
-          <View className="flex-1 justify-center p-3">
-            <Text className="text-2xl font-medium text-neutral-50">
-              Net Profit
-            </Text>
+          <View className="flex-1  p-3">
+            <Text className="text-2xl font-medium text-neutral-50">Profit</Text>
             <View className="mt-1 flex-row items-baseline gap-1">
               <Text className="text-4xl font-bold tracking-tight text-emerald-400">
                 {profit}
@@ -74,10 +74,24 @@ const UserIncome: React.FC<UserIncomeProps> = ({
           </View>
 
           {/* Total Worth */}
-          <View className="flex-1 justify-center p-3 border-l border-neutral-700/40">
-            <Text className="text-2xl font-medium text-neutral-50">
-              Total Worth
-            </Text>
+          <View className="flex-1 justify-center p-3 border-l border-neutral-700/40 ">
+            <View className="flex-row items-center justify-between">
+              <Text className="text-2xl font-medium text-neutral-50">
+                Total
+              </Text>
+              <View className="flex-row items-center gap-1 bg-neutral-800 rounded-full px-2 py-1">
+                <SvgXml
+                  xml={layersIcon}
+                  width={20}
+                  height={20}
+                  color="#737373"
+                />
+                <Text className="text-xs font-medium text-neutral-500">
+                  {totalItems} items
+                </Text>
+              </View>
+            </View>
+
             <View className="mt-1 flex-row items-baseline gap-1">
               <Text className="text-4xl font-bold tracking-tight text-neutral-50">
                 {totalWorth}
@@ -87,7 +101,7 @@ const UserIncome: React.FC<UserIncomeProps> = ({
               </Text>
             </View>
             <Text className="mt-2 text-xs text-neutral-500">
-              {items.length} total items.
+              Inventory value across all items.
             </Text>
           </View>
         </View>

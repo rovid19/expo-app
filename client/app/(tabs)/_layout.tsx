@@ -8,10 +8,12 @@ import {
   userFilled,
   userOutline,
 } from "../../assets/icons/icons";
+import TabBar from "../../components/tabBar";
 
 export default function TabLayout() {
   return (
     <Tabs
+      tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
         tabBarActiveTintColor: "#111827",
         tabBarInactiveTintColor: "#9ca3af",
@@ -21,9 +23,9 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="dashboard/index"
+        name="home/index"
         options={{
-          title: "Dashboard",
+          title: "Home",
           tabBarIcon: ({ color, focused }) => (
             <SvgXml
               xml={focused ? homeFilled : homeOutline}

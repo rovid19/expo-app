@@ -9,7 +9,7 @@ export default function Index() {
 
   useEffect(() => {
     if (user) {
-      router.replace("/(tabs)/dashboard");
+      router.replace("/(tabs)/home");
     }
   }, [user]);
 

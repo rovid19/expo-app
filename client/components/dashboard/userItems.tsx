@@ -10,7 +10,7 @@ import {
   Button,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { emptyBox } from "../../assets/icons/icons";
+import { emptyBox, plusOutline } from "../../assets/icons/icons";
 import { router } from "expo-router";
 import { scanOutline } from "../../assets/icons/icons";
 
@@ -113,6 +113,18 @@ const UserItems: React.FC<UserItemsProps> = ({ items, onItemPress }) => {
           <Text className="text-2xl font-bold text-neutral-900">
             Your Items
           </Text>
+
+          <View>
+            <Pressable
+              onPress={() => router.push("/scan")}
+              className="flex-row items-center gap-1 bg-white rounded-full px-3 py-2 border border-neutral-200 "
+            >
+              <SvgXml xml={plusOutline} width={12} height={12} />
+              <Text className="text-sm font-semibold text-neutral-900">
+                New item
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </View>
 
