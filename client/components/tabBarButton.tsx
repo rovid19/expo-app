@@ -44,9 +44,13 @@ const TabBarButton = ({
   });
 
   const animatedTextStyle = useAnimatedStyle(() => {
-    const opacity = interpolate(scale.value, [0, 1], [1, 0]);
+    const baseOpacity = interpolate(scale.value, [0, 1], [1, 0]);
+    // If hideText is true, force opacity to 0, otherwise use the animated opacity
+    const opacity = hideText ? 0 : baseOpacity;
     return { opacity };
   });
+
+  console.log("hideText", hideText);
   return (
     <Pressable
       key={route.name}
@@ -70,10 +74,7 @@ const TabBarButton = ({
         )}
       </AnimatedView>
 
-      <AnimatedText
-        style={animatedTextStyle}
-        className={`text-sm ${hideText ? "opacity-0" : "opacity-100"}`}
-      >
+      <AnimatedText style={animatedTextStyle} className="text-sm">
         {label}
       </AnimatedText>
     </Pressable>
