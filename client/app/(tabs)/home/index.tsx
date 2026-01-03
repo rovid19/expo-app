@@ -13,10 +13,12 @@ export default function Dashboard() {
   const [triggerRefresh, setTriggerRefresh] = useState(false);
   const [isListingDetailsVisible, setIsListingDetailsVisible] = useState(false);
   const { user, triggerDashboardRefresh } = useUserStore();
-  const { setSelectedScannedItem, setContainerIndex } = useItemsStore();
+  const { setSelectedScannedItem, setContainerIndex, setIsLoading } =
+    useItemsStore();
   useEffect(() => {
     const fetchUserItems = async () => {
       console.log("fetching user items");
+      setIsLoading(true);
       const { data, error } = await supabase
         .from("items")
         .select("*")
@@ -26,6 +28,7 @@ export default function Dashboard() {
       } else {
         setUserItems((data ?? []) as ScannedItem[]);
       }
+      setIsLoading(false);
     };
     fetchUserItems();
   }, [triggerRefresh, user?.id, triggerDashboardRefresh]);

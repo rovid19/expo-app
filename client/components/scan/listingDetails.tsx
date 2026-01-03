@@ -21,6 +21,17 @@ import { useUserStore } from "../../stores/userStore";
 import { supabase } from "../../services/supabase/supabaseClient";
 import { uploadImages } from "../../services/supabase/uploadImages";
 import colors from "tailwindcss/colors";
+import Loader from "../loader";
+import {
+  bookmark,
+  check,
+  ebay,
+  facebook,
+  moreIcon,
+  shoppingCart,
+  thrash,
+} from "../../assets/icons/icons";
+import { SvgXml } from "react-native-svg";
 
 interface ListingDetailsProps {
   onClose: () => void;
@@ -46,6 +57,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
   const [isAddImageModalVisible, setIsAddImageModalVisible] = useState(false);
   const [isFacebookModalVisible, setIsFacebookModalVisible] = useState(false);
   const [isSizeDropdownVisible, setIsSizeDropdownVisible] = useState(false);
+  const [removingItem, setRemovingItem] = useState(false);
   const [isShoeSizeUnitDropdownVisible, setIsShoeSizeUnitDropdownVisible] =
     useState(false);
   const [isSellOptionsModalVisible, setIsSellOptionsModalVisible] =
@@ -183,14 +195,13 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
           <Text style={styles.headerTitle}>Listing Details</Text>
           <TouchableOpacity
             style={styles.closeButton}
-            onPress={() => {
+            onPress={async () => {
               console.log("whichTab", whichTab);
               if (whichTab === "dashboard") {
                 console.log("saving item");
-                handleSaveItem();
-              } else {
-                onClose();
+                await handleSaveItem();
               }
+              onClose();
             }}
           >
             <Text style={styles.closeText}>✕</Text>
@@ -470,6 +481,12 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
               setIsSellOptionsModalVisible(true);
             }}
           >
+            <SvgXml
+              xml={shoppingCart}
+              width={24}
+              height={24}
+              color={colors.white}
+            />
             <Text style={styles.primaryButtonText}>Sell this item</Text>
           </TouchableOpacity>
 
@@ -480,6 +497,12 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
               setIsSecondaryActionsModalVisible(true);
             }}
           >
+            <SvgXml
+              xml={moreIcon}
+              width={24}
+              height={24}
+              color={colors.neutral[900]}
+            />
             <Text style={styles.secondaryButtonText}>More actions</Text>
           </TouchableOpacity>
         </View>
@@ -528,6 +551,12 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
                   handleToggleSold();
                 }}
               >
+                <SvgXml
+                  xml={check}
+                  width={24}
+                  height={24}
+                  color={colors.white}
+                />
                 <Text style={styles.sellOptionText}>
                   {selectedScannedItem.isSold === true
                     ? "Mark as available"
@@ -543,15 +572,23 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
                 handleSaveItem();
               }}
             >
+              <SvgXml
+                xml={bookmark}
+                width={24}
+                height={24}
+                color={colors.white}
+              />
               <Text style={styles.sellOptionText}>Save to your items</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.sellOptionButton}
-              onPress={() => {
+              onPress={async () => {
                 setIsSecondaryActionsModalVisible(false);
                 if (whichTab === "dashboard") {
-                  removeItemFromDatabase();
+                  setRemovingItem(true);
+                  await removeItemFromDatabase();
+                  setRemovingItem(false);
                   onClose();
                   onSaved?.();
                 } else {
@@ -559,6 +596,12 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
                 }
               }}
             >
+              <SvgXml
+                xml={thrash}
+                width={24}
+                height={24}
+                color={colors.white}
+              />
               <Text style={styles.sellOptionText}>Remove item</Text>
             </TouchableOpacity>
           </View>
@@ -585,6 +628,12 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
                 setIsFacebookModalVisible(true);
               }}
             >
+              <SvgXml
+                xml={facebook}
+                width={24}
+                height={24}
+                color={colors.white}
+              />
               <Text style={styles.sellOptionText}>Sell on Facebook</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -594,27 +643,24 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
                 // TODO: Implement eBay functionality
               }}
             >
+              <View className="bg-white rounded-lg p-2">
+                <SvgXml
+                  xml={ebay}
+                  width={24}
+                  height={24}
+                  color={colors.white}
+                />
+              </View>
               <Text style={styles.sellOptionText}>Sell on eBay</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
 
-      <Modal
-        visible={isSavingModalVisible}
-        transparent={true}
-        animationType="fade"
-        onDismiss={onClose}
-      >
-        <View style={styles.savingModalBackdrop}>
-          <View style={styles.savingModalContainer}>
-            <ActivityIndicator size="large" color={colors.neutral[900]} />
-            <Text style={styles.savingModalText}>
-              Hang on a second, we are saving your item
-            </Text>
-          </View>
-        </View>
-      </Modal>
+      {isSavingModalVisible && (
+        <Loader text="Saving..." textOptional="Hang on a second" />
+      )}
+      {removingItem && <Loader text="Removing item..." />}
     </KeyboardAvoidingView>
   );
 };
@@ -769,6 +815,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: "center",
     justifyContent: "center",
+    flexDirection: "row",
+    gap: 8,
   },
   primaryButtonText: {
     fontSize: 15,
@@ -898,6 +946,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderWidth: 1,
     borderColor: colors.neutral[200],
+    flexDirection: "row",
+    gap: 8,
   },
   secondaryButtonText: {
     fontSize: 15,
@@ -915,8 +965,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 20,
     minWidth: 280,
-    borderWidth: 1,
-    borderColor: colors.neutral[200],
+    borderWidth: 2,
+    borderColor: colors.neutral[400],
   },
   sellOptionsTitle: {
     fontSize: 18,
@@ -931,36 +981,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: colors.neutral[900],
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: colors.neutral[200],
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
   sellOptionText: {
     fontSize: 15,
     fontWeight: "600",
     color: colors.white,
     textAlign: "center",
-  },
-  savingModalBackdrop: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  savingModalContainer: {
-    backgroundColor: colors.neutral[50],
-    borderRadius: 18,
-    padding: 32,
-    alignItems: "center",
-    minWidth: 280,
-    borderWidth: 1,
-    borderColor: colors.neutral[200],
-  },
-  savingModalText: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: colors.neutral[900],
-    textAlign: "center",
-    marginTop: 16,
   },
 });
 

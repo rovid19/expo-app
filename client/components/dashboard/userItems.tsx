@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { ScannedItem } from "../../globalTypes";
 import {
   View,
@@ -8,11 +8,13 @@ import {
   Pressable,
   Image,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { emptyBox, plusOutline } from "../../assets/icons/icons";
 import { router } from "expo-router";
 import { scanOutline } from "../../assets/icons/icons";
+import { useItemsStore } from "../../stores/itemsStore";
 
 interface UserItemsProps {
   items: ScannedItem[];
@@ -28,6 +30,8 @@ const formatCurrency = (value: number) =>
   }).format(value);
 
 const UserItems: React.FC<UserItemsProps> = ({ items, onItemPress }) => {
+  const { isLoading } = useItemsStore();
+
   const sortedItems = useMemo(() => {
     return [...items].sort((a, b) => {
       const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
@@ -35,6 +39,10 @@ const UserItems: React.FC<UserItemsProps> = ({ items, onItemPress }) => {
       return bTime - aTime;
     });
   }, [items]);
+
+  useEffect(() => {
+    console.log("items length", sortedItems.length);
+  }, [sortedItems]);
 
   const renderItem = useCallback(
     ({ item }: ListRenderItemInfo<ScannedItem>) => {
@@ -128,41 +136,47 @@ const UserItems: React.FC<UserItemsProps> = ({ items, onItemPress }) => {
         </View>
       </View>
 
-      <View className="px-2">
-        <FlatList
-          data={sortedItems}
-          keyExtractor={(item, index) =>
-            item.id ?? `${item.detected_item}-${index}`
-          }
-          renderItem={renderItem}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 24, paddingTop: 4 }}
-          ListEmptyComponent={
-            <View className="rounded-3xl bg-white p-5 bg-red-500 flex-row items-center justify-center border border-neutral-200/50">
-              <View className="h-full w-[10%]">
-                <SvgXml xml={emptyBox} width={24} height={24} />
-              </View>
+      <View className="px-2 flex-1">
+        {isLoading ? (
+          <View className="pt-10">
+            <ActivityIndicator size="small" color="#000" />
+          </View>
+        ) : (
+          <FlatList
+            data={sortedItems}
+            keyExtractor={(item, index) =>
+              item.id ?? `${item.detected_item}-${index}`
+            }
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 24, paddingTop: 4 }}
+            ListEmptyComponent={
+              <View className="rounded-3xl bg-white p-5 bg-red-500 flex-row items-center justify-center border border-neutral-200/50">
+                <View className="h-full w-[10%]">
+                  <SvgXml xml={emptyBox} width={24} height={24} />
+                </View>
 
-              <View className="flex-1">
-                <Text className="text-base font-semibold text-neutral-900">
-                  No items yet
-                </Text>
-                <Text className="mt-2 text-sm text-neutral-600">
-                  Scan something to add it to your inventory.
-                </Text>
-                <Pressable
-                  className="mt-4 flex-row items-center justify-center gap-1 rounded-xl bg-neutral-100 px-4 py-2 border border-neutral-200"
-                  onPress={() => router.push("/scan")}
-                >
-                  <SvgXml xml={scanOutline} width={20} height={20} />
-                  <Text className="ml-2 text-base font-semibold text-neutral-900">
-                    Scan something
+                <View className="flex-1">
+                  <Text className="text-base font-semibold text-neutral-900">
+                    No items yet
                   </Text>
-                </Pressable>
+                  <Text className="mt-2 text-sm text-neutral-600">
+                    Scan something to add it to your inventory.
+                  </Text>
+                  <Pressable
+                    className="mt-4 flex-row items-center justify-center gap-1 rounded-xl bg-neutral-100 px-4 py-2 border border-neutral-200"
+                    onPress={() => router.push("/scan")}
+                  >
+                    <SvgXml xml={scanOutline} width={20} height={20} />
+                    <Text className="ml-2 text-base font-semibold text-neutral-900">
+                      Scan something
+                    </Text>
+                  </Pressable>
+                </View>
               </View>
-            </View>
-          }
-        />
+            }
+          />
+        )}
       </View>
     </View>
   );

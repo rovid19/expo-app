@@ -4,6 +4,8 @@ import { ScannedItem } from "../globalTypes";
 import api from "../lib/axios";
 
 interface ItemsStore {
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
   scannedItems: ScannedItem[];
   selectedScannedItem: ScannedItem | null;
   containerIndex: number;
@@ -23,6 +25,8 @@ interface ItemsStore {
 }
 
 export const useItemsStore = create<ItemsStore>((set) => ({
+  isLoading: false,
+  setIsLoading: (isLoading) => set({ isLoading }),
   scannedItems: [],
   selectedScannedItem: null,
   containerIndex: 0,
