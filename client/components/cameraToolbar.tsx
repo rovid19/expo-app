@@ -1,9 +1,19 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useEffect, useState } from "react";
+import { View, TouchableOpacity } from "react-native";
+import { useEffect, useState, useMemo } from "react";
 import {
   useCameraDevices,
   type CameraDevice,
 } from "react-native-vision-camera";
+import { SvgXml } from "react-native-svg";
+import {
+  leftArrow,
+  flashlightOff,
+  flashlightOn as flashlightOnIcon,
+  zoomIn,
+  zoomOut,
+  settings,
+} from "../assets/icons/icons";
+import { BlurView } from "expo-blur";
 
 interface CameraToolbarProps {
   onDeviceChange: (device: CameraDevice | undefined) => void;
@@ -15,32 +25,47 @@ const CameraToolbar = ({
   onFlashlightChange,
 }: CameraToolbarProps) => {
   // Camera index: 0 = wide, 1 = normal (default), 2 = telephoto
+  const [expandToolbar, setExpandToolbar] = useState<boolean>(false);
   const [cameraIndex, setCameraIndex] = useState<number>(1);
   const [flashlightOn, setFlashlightOn] = useState<boolean>(false);
   const devices = useCameraDevices();
 
   // Get all back devices
-  const backDevices: CameraDevice[] = Array.isArray(devices)
-    ? devices.filter((d) => d.position === "back")
-    : (devices as any)?.back
-    ? [(devices as any).back as CameraDevice]
-    : [];
+  const backDevices: CameraDevice[] = useMemo(() => {
+    return Array.isArray(devices)
+      ? devices.filter((d) => d.position === "back")
+      : (devices as any)?.back
+      ? [(devices as any).back as CameraDevice]
+      : [];
+  }, [devices]);
 
   // Find specific lens devices (prioritize single-lens devices)
-  const wideDevice = backDevices.find(
-    (d) =>
-      d.physicalDevices?.length === 1 &&
-      d.physicalDevices[0] === "ultra-wide-angle-camera"
+  const wideDevice = useMemo(
+    () =>
+      backDevices.find(
+        (d) =>
+          d.physicalDevices?.length === 1 &&
+          d.physicalDevices[0] === "ultra-wide-angle-camera"
+      ),
+    [backDevices]
   );
-  const normalDevice = backDevices.find(
-    (d) =>
-      d.physicalDevices?.length === 1 &&
-      d.physicalDevices[0] === "wide-angle-camera"
+  const normalDevice = useMemo(
+    () =>
+      backDevices.find(
+        (d) =>
+          d.physicalDevices?.length === 1 &&
+          d.physicalDevices[0] === "wide-angle-camera"
+      ),
+    [backDevices]
   );
-  const telephotoDevice = backDevices.find(
-    (d) =>
-      d.physicalDevices?.length === 1 &&
-      d.physicalDevices[0] === "telephoto-camera"
+  const telephotoDevice = useMemo(
+    () =>
+      backDevices.find(
+        (d) =>
+          d.physicalDevices?.length === 1 &&
+          d.physicalDevices[0] === "telephoto-camera"
+      ),
+    [backDevices]
   );
 
   // When cameraIndex changes, update the device
@@ -66,7 +91,7 @@ const CameraToolbar = ({
     wideDevice,
     normalDevice,
     telephotoDevice,
-    backDevices.length,
+    backDevices,
     onDeviceChange,
   ]);
 
@@ -98,75 +123,37 @@ const CameraToolbar = ({
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.zoomButton} onPress={handlePreviousLens}>
-        <Text style={styles.zoomButtonText}>-</Text>
-      </TouchableOpacity>
+    <TouchableOpacity
+      className="self-start bg-neutral-900/90 w-fit p-3 rounded-full flex flex-row items-center gap-8 border border-white/10"
+      onPress={() => setExpandToolbar(!expandToolbar)}
+    >
+      <SvgXml
+        xml={expandToolbar ? leftArrow : settings}
+        width={24}
+        height={24}
+        color="white"
+      />
+      {expandToolbar && (
+        <View className="flex flex-row gap-4">
+          <TouchableOpacity onPress={() => setFlashlightOn(!flashlightOn)}>
+            <SvgXml
+              xml={flashlightOn ? flashlightOnIcon : flashlightOff}
+              width={28}
+              height={28}
+              color="white"
+            />
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.flashlightButton}
-        onPress={() => setFlashlightOn(!flashlightOn)}
-      >
-        <Text style={styles.flashlightIcon}>{flashlightOn ? "🔦" : "💡"}</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.zoomButton} onPress={handleNextLens}>
-        <Text style={styles.zoomButtonText}>+</Text>
-      </TouchableOpacity>
-
-      <View style={styles.badge}>
-        <Text style={styles.badgeText}>{getLensName()}</Text>
-      </View>
-    </View>
+          <TouchableOpacity onPress={() => handlePreviousLens()}>
+            <SvgXml xml={zoomOut} width={28} height={28} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNextLens()}>
+            <SvgXml xml={zoomIn} width={28} height={28} color="white" />
+          </TouchableOpacity>
+        </View>
+      )}
+    </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    top: 50,
-    left: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    zIndex: 10,
-  },
-  zoomButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    alignItems: "center",
-    justifyContent: "center",
-    marginHorizontal: 4,
-  },
-  zoomButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  flashlightButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  flashlightIcon: {
-    fontSize: 24,
-  },
-  badge: {
-    marginLeft: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-  },
-  badgeText: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "600",
-  },
-});
 
 export default CameraToolbar;

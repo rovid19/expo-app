@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useEffect, useRef, useState } from "react";
-import Svg, { Rect, Mask, Defs, Path } from "react-native-svg";
+
 import * as MediaLibrary from "expo-media-library";
 import {
   Camera,
@@ -19,10 +19,11 @@ import apiClient from "../../../lib/axios";
 import ScannedItemContainer from "../../../components/scan/scannedItemContainer";
 import CameraToolbar from "../../../components/cameraToolbar";
 import { useItemsStore } from "../../../stores/itemsStore";
+import SvgScanOverlay from "../../../components/scan/svgScanOverlay";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const CUTOUT_WIDTH = 350;
-const CUTOUT_HEIGHT = 600;
+const CUTOUT_HEIGHT = 550;
 
 const R = 20;
 const CORNER_LENGTH = 40;
@@ -45,6 +46,7 @@ export default function Scan() {
     setSelectedScannedItem,
   } = useItemsStore();
 
+  const [startAni, setStartAni] = useState<boolean>(false);
   const [flashlightOn, setFlashlightOn] = useState<boolean>(false);
   const { hasPermission, requestPermission } = useCameraPermission();
   const devices = useCameraDevices();
@@ -93,6 +95,8 @@ export default function Scan() {
 
   const handleCapture = async () => {
     if (!cameraRef.current || !currentDevice) return;
+
+    setStartAni(true);
 
     try {
       const photo = await cameraRef.current.takePhoto({
@@ -145,6 +149,8 @@ export default function Scan() {
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setStartAni(false);
     }
   };
 
@@ -176,104 +182,24 @@ export default function Scan() {
       />
 
       <View style={styles.overlay}>
-        <CameraToolbar
-          onDeviceChange={setCurrentDevice}
-          onFlashlightChange={setFlashlightOn}
+        <View className="h-30 pt-16 w-full absolute top-0 z-20 px-4">
+          <CameraToolbar
+            onDeviceChange={setCurrentDevice}
+            onFlashlightChange={setFlashlightOn}
+          />
+        </View>
+        <SvgScanOverlay
+          CUTOUT_WIDTH={CUTOUT_WIDTH}
+          CUTOUT_HEIGHT={CUTOUT_HEIGHT}
+          R={R}
+          CORNER_LENGTH={CORNER_LENGTH}
+          STROKE={STROKE}
+          CUTOUT_X={CUTOUT_X}
+          CUTOUT_Y={CUTOUT_Y}
+          startAni={startAni}
         />
 
-        <Svg style={StyleSheet.absoluteFill}>
-          {/* MASK */}
-          <Defs>
-            <Mask id="mask">
-              <Rect width="100%" height="100%" fill="white" />
-              <Rect
-                x={CUTOUT_X}
-                y={CUTOUT_Y}
-                width={CUTOUT_WIDTH}
-                height={CUTOUT_HEIGHT}
-                rx={R}
-                ry={R}
-                fill="black"
-              />
-            </Mask>
-          </Defs>
-
-          {/* DARK AREA */}
-          <Rect
-            width="100%"
-            height="100%"
-            fill="rgba(0,0,0,0.6)"
-            mask="url(#mask)"
-          />
-
-          {/* TOP-LEFT */}
-          <Path
-            d={`
-              M ${CUTOUT_X} ${CUTOUT_Y + CORNER_LENGTH}
-              L ${CUTOUT_X} ${CUTOUT_Y + R}
-              Q ${CUTOUT_X} ${CUTOUT_Y} ${CUTOUT_X + R} ${CUTOUT_Y}
-              L ${CUTOUT_X + CORNER_LENGTH} ${CUTOUT_Y}
-            `}
-            stroke="white"
-            strokeWidth={STROKE}
-            fill="none"
-            strokeLinecap="round"
-          />
-
-          {/* TOP-RIGHT */}
-          <Path
-            d={`
-              M ${CUTOUT_X + CUTOUT_WIDTH - CORNER_LENGTH} ${CUTOUT_Y}
-              L ${CUTOUT_X + CUTOUT_WIDTH - R} ${CUTOUT_Y}
-              Q ${CUTOUT_X + CUTOUT_WIDTH} ${CUTOUT_Y} ${
-              CUTOUT_X + CUTOUT_WIDTH
-            } ${CUTOUT_Y + R}
-              L ${CUTOUT_X + CUTOUT_WIDTH} ${CUTOUT_Y + CORNER_LENGTH}
-            `}
-            stroke="white"
-            strokeWidth={STROKE}
-            fill="none"
-            strokeLinecap="round"
-          />
-
-          {/* BOTTOM-LEFT */}
-          <Path
-            d={`
-              M ${CUTOUT_X + CORNER_LENGTH} ${CUTOUT_Y + CUTOUT_HEIGHT}
-              L ${CUTOUT_X + R} ${CUTOUT_Y + CUTOUT_HEIGHT}
-              Q ${CUTOUT_X} ${CUTOUT_Y + CUTOUT_HEIGHT} ${CUTOUT_X} ${
-              CUTOUT_Y + CUTOUT_HEIGHT - R
-            }
-              L ${CUTOUT_X} ${CUTOUT_Y + CUTOUT_HEIGHT - CORNER_LENGTH}
-            `}
-            stroke="white"
-            strokeWidth={STROKE}
-            fill="none"
-            strokeLinecap="round"
-          />
-
-          {/* BOTTOM-RIGHT */}
-          <Path
-            d={`
-              M ${CUTOUT_X + CUTOUT_WIDTH} ${
-              CUTOUT_Y + CUTOUT_HEIGHT - CORNER_LENGTH
-            }
-              L ${CUTOUT_X + CUTOUT_WIDTH} ${CUTOUT_Y + CUTOUT_HEIGHT - R}
-              Q ${CUTOUT_X + CUTOUT_WIDTH} ${CUTOUT_Y + CUTOUT_HEIGHT} ${
-              CUTOUT_X + CUTOUT_WIDTH - R
-            } ${CUTOUT_Y + CUTOUT_HEIGHT}
-              L ${CUTOUT_X + CUTOUT_WIDTH - CORNER_LENGTH} ${
-              CUTOUT_Y + CUTOUT_HEIGHT
-            }
-            `}
-            stroke="white"
-            strokeWidth={STROKE}
-            fill="none"
-            strokeLinecap="round"
-          />
-        </Svg>
-
-        {scannedItems.length > 0 && (
+        {!startAni && scannedItems.length > 0 && (
           <ScrollView
             ref={scrollViewRef}
             horizontal
@@ -289,7 +215,7 @@ export default function Scan() {
             style={[
               styles.scannedItemsContainer,
               {
-                top: BUTTON_Y - BUTTON_SIZE / 2 - 120,
+                top: BUTTON_Y - BUTTON_SIZE / 2 - 140,
               },
             ]}
           >
@@ -310,6 +236,7 @@ export default function Scan() {
             {
               left: BUTTON_X - BUTTON_SIZE / 2,
               top: BUTTON_Y - BUTTON_SIZE / 2,
+              opacity: startAni ? 0 : 1,
             },
           ]}
           onPress={handleCapture}

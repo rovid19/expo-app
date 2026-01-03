@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import * as MediaLibrary from "expo-media-library";
 import { ScannedItem } from "../globalTypes";
-import { supabase } from "../services/supabase/supabaseClient";
-import { useUserStore } from "./userStore";
 import api from "../lib/axios";
 
 interface ItemsStore {

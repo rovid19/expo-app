@@ -16,6 +16,9 @@ import {
   useCameraDevices,
   useCameraPermission,
 } from "react-native-vision-camera";
+import { SvgXml } from "react-native-svg";
+import { close } from "../../assets/icons/icons";
+import colors from "tailwindcss/colors";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const BUTTON_SIZE = 70;
@@ -103,16 +106,19 @@ const AddAdditionalImages: React.FC<AddAdditionalImagesProps> = ({
         photo={true}
       />
       <View style={styles.overlay}>
-        {/* Close button */}
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.closeText}>✕</Text>
-        </TouchableOpacity>
-
-        {/* Flashlight toggle */}
-        <CameraToolbar
-          onDeviceChange={setCurrentDevice}
-          onFlashlightChange={setFlashlightOn}
-        />
+        <View className="h-30 pt-16 w-full absolute top-0 z-20 px-4 flex flex-row items-center justify-between">
+          {/* Flashlight toggle */}
+          <CameraToolbar
+            onDeviceChange={setCurrentDevice}
+            onFlashlightChange={setFlashlightOn}
+          />
+          <TouchableOpacity
+            className="p-3 rounded-full bg-neutral-900/90 border border-white/10"
+            onPress={onClose}
+          >
+            <SvgXml xml={close} width={24} height={24} color="white" />
+          </TouchableOpacity>
+        </View>
 
         {/* Additional photos list */}
         {selectedScannedItem &&
@@ -169,18 +175,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     pointerEvents: "box-none",
   },
-  closeButton: {
-    position: "absolute",
-    top: 60,
-    right: 20,
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 10,
-  },
+
   closeText: {
     color: "#FFF",
     fontSize: 24,
@@ -244,7 +239,10 @@ const styles = StyleSheet.create({
   },
   photosScrollContent: {
     paddingHorizontal: 20,
-    gap: 12,
+    gap: 4,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
   photoWrapper: {
     marginRight: 12,

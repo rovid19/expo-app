@@ -59,7 +59,7 @@ export default function TabBar({
       style={[styles.tabBar, isScanTab && { backgroundColor: "transparent" }]}
     >
       <AnimatedView
-        className="bg-neutral-900"
+        className="bg-neutral-900 border border-white/10"
         style={[
           animatedStyle,
           {

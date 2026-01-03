@@ -8,6 +8,7 @@ import { supabase } from "../services/supabase/supabaseClient";
 const upload = multer({ dest: "uploads/" });
 
 export const scanImage = async (req: Request, res: Response) => {
+  console.log("scanning image");
   upload.single("file")(req, res, async (err) => {
     if (err) return res.status(500).json({ message: "Error uploading file" });
     if (!req.file) return res.status(400).json({ message: "No file provided" });

@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { useItemsStore } from "../../stores/itemsStore";
 import AddAdditionalImages from "./addAdditionalImages";
@@ -19,6 +20,7 @@ import FacebookMarketplacePost from "./FacebookMarketplacePost";
 import { useUserStore } from "../../stores/userStore";
 import { supabase } from "../../services/supabase/supabaseClient";
 import { uploadImages } from "../../services/supabase/uploadImages";
+import colors from "tailwindcss/colors";
 
 interface ListingDetailsProps {
   onClose: () => void;
@@ -50,6 +52,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
     useState(false);
   const [isSecondaryActionsModalVisible, setIsSecondaryActionsModalVisible] =
     useState(false);
+  const [isSavingModalVisible, setIsSavingModalVisible] = useState(false);
 
   if (!selectedScannedItem) return null;
 
@@ -90,6 +93,8 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
   };
 
   const handleSaveItem = async () => {
+    setIsSavingModalVisible(true);
+
     const { id, created_at, ...payload } = selectedScannedItem;
 
     const currentImages = Array.isArray(selectedScannedItem.image)
@@ -119,7 +124,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
       onSaved?.();
     }
 
-    onClose();
+    setIsSavingModalVisible(false);
   };
 
   const removeItemFromDatabase = async () => {
@@ -183,8 +188,9 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
               if (whichTab === "dashboard") {
                 console.log("saving item");
                 handleSaveItem();
+              } else {
+                onClose();
               }
-              onClose();
             }}
           >
             <Text style={styles.closeText}>✕</Text>
@@ -202,7 +208,11 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
           {/* Photos section */}
           <View style={styles.card}>
             <Text style={styles.label}>PHOTOS & VIDEOS</Text>
-            <View style={styles.photosRow}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.photosRow}
+            >
               <TouchableOpacity
                 style={styles.addPhotoButton}
                 onPress={() => setIsAddImageModalVisible(true)}
@@ -224,7 +234,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
                   resizeMode="cover"
                 />
               )}
-            </View>
+            </ScrollView>
           </View>
 
           {/* Product title */}
@@ -508,7 +518,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
           onPress={() => setIsSecondaryActionsModalVisible(false)}
         >
           <View style={styles.sellOptionsContainer}>
-            <Text style={styles.sellOptionsTitle}>Actions</Text>
+            <Text style={styles.sellOptionsTitle}>Choose an action</Text>
 
             {whichTab === "dashboard" && (
               <TouchableOpacity
@@ -589,6 +599,22 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
           </View>
         </TouchableOpacity>
       </Modal>
+
+      <Modal
+        visible={isSavingModalVisible}
+        transparent={true}
+        animationType="fade"
+        onDismiss={onClose}
+      >
+        <View style={styles.savingModalBackdrop}>
+          <View style={styles.savingModalContainer}>
+            <ActivityIndicator size="large" color={colors.neutral[900]} />
+            <Text style={styles.savingModalText}>
+              Hang on a second, we are saving your item
+            </Text>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
@@ -603,7 +629,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.7)",
   },
   sheet: {
-    backgroundColor: "#020617",
+    backgroundColor: colors.neutral[50],
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 16,
@@ -622,7 +648,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#E5E7EB",
+    color: colors.neutral[900],
   },
   closeButton: {
     width: 32,
@@ -632,7 +658,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   closeText: {
-    color: "#9CA3AF",
+    color: colors.neutral[900],
     fontSize: 16,
   },
   content: {
@@ -644,17 +670,17 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
   },
   card: {
-    backgroundColor: "#020617",
+    backgroundColor: "rgb(255, 255, 255)",
     borderRadius: 18,
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderWidth: 1,
-    borderColor: "#111827",
+    borderColor: colors.neutral[200],
   },
   label: {
     fontSize: 11,
     fontWeight: "500",
-    color: "#6B7280",
+    color: colors.neutral[500],
     marginBottom: 4,
   },
   title: {
@@ -665,7 +691,7 @@ const styles = StyleSheet.create({
   titleInput: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#F9FAFB",
+    color: colors.neutral[900],
     padding: 0,
     margin: 0,
   },
@@ -680,17 +706,17 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 12,
-    color: "#9CA3AF",
+    color: colors.neutral[500],
     marginBottom: 4,
   },
   priceRangeText: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#F9FAFB",
+    color: colors.neutral[900],
   },
   divider: {
     height: 1,
-    backgroundColor: "#374151",
+    backgroundColor: colors.neutral[200],
     marginVertical: 12,
   },
   listingPriceContainer: {
@@ -704,12 +730,12 @@ const styles = StyleSheet.create({
   dollarSign: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#F9FAFB",
+    color: colors.neutral[900],
   },
   priceInput: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#F9FAFB",
+    color: colors.neutral[900],
     flex: 1,
     padding: 0,
   },
@@ -717,12 +743,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: "#111827",
+    backgroundColor: colors.neutral[900],
   },
   confidenceText: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#A5B4FC",
+    color: colors.green[500],
   },
   body: {
     fontSize: 13,
@@ -732,13 +758,13 @@ const styles = StyleSheet.create({
   descriptionInput: {
     fontSize: 13,
     lineHeight: 18,
-    color: "#D1D5DB",
+    color: colors.neutral[500],
     minHeight: 60,
     padding: 0,
   },
   primaryButton: {
     marginTop: 12,
-    backgroundColor: "#A3E635",
+    backgroundColor: colors.neutral[900],
     borderRadius: 999,
     paddingVertical: 14,
     alignItems: "center",
@@ -747,7 +773,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#111827",
+    color: colors.white,
   },
   photosRow: {
     flexDirection: "row",
@@ -758,15 +784,13 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 12,
-    backgroundColor: "#111827",
+    backgroundColor: colors.neutral[100],
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#374151",
   },
   addPhotoText: {
     fontSize: 32,
-    color: "#9CA3AF",
+    color: colors.neutral[900],
     fontWeight: "300",
   },
   photoThumbnail: {
@@ -867,18 +891,18 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   secondaryButton: {
-    backgroundColor: "#111827",
+    backgroundColor: colors.white,
     borderRadius: 999,
     paddingVertical: 14,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#374151",
+    borderColor: colors.neutral[200],
   },
   secondaryButtonText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#E5E7EB",
+    color: colors.neutral[900],
   },
   modalBackdrop: {
     flex: 1,
@@ -887,17 +911,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   sellOptionsContainer: {
-    backgroundColor: "#111827",
+    backgroundColor: colors.neutral[50],
     borderRadius: 18,
     padding: 20,
     minWidth: 280,
     borderWidth: 1,
-    borderColor: "#374151",
+    borderColor: colors.neutral[200],
   },
   sellOptionsTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#E5E7EB",
+    color: colors.neutral[900],
     marginBottom: 16,
     textAlign: "center",
   },
@@ -905,16 +929,38 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderRadius: 8,
-    backgroundColor: "#1F2937",
+    backgroundColor: colors.neutral[900],
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: "#374151",
+    borderColor: colors.neutral[200],
   },
   sellOptionText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#E5E7EB",
+    color: colors.white,
     textAlign: "center",
+  },
+  savingModalBackdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  savingModalContainer: {
+    backgroundColor: colors.neutral[50],
+    borderRadius: 18,
+    padding: 32,
+    alignItems: "center",
+    minWidth: 280,
+    borderWidth: 1,
+    borderColor: colors.neutral[200],
+  },
+  savingModalText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: colors.neutral[900],
+    textAlign: "center",
+    marginTop: 16,
   },
 });
 

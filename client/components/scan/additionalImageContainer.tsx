@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Image, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { useItemsStore } from "../../stores/itemsStore";
-
+import { BlurView } from "expo-blur";
 interface AdditionalImageContainerProps {
   uri: string;
 }
@@ -12,15 +12,23 @@ const AdditionalImageContainer: React.FC<AdditionalImageContainerProps> = ({
   const { removePhoto } = useItemsStore();
 
   return (
-    <View style={styles.container}>
-      <Image source={{ uri }} style={styles.image} resizeMode="cover" />
+    <BlurView
+      intensity={60}
+      tint="dark"
+      className="h-[100px] w-[100px] rounded-lg p-3 border border-white/10 overflow-hidden"
+    >
+      <Image
+        source={{ uri }}
+        className="h-full w-full rounded-lg"
+        resizeMode="cover"
+      />
       <TouchableOpacity
         style={styles.removeButton}
         onPress={() => removePhoto(uri)}
       >
         <Text style={styles.removeText}>✕</Text>
       </TouchableOpacity>
-    </View>
+    </BlurView>
   );
 };
 
