@@ -39,18 +39,10 @@ const TabBarButton = ({
 
   const animatedIconStyle = useAnimatedStyle(() => {
     const scaleValue = interpolate(scale.value, [0, 1], [1, 1.2]);
-    const top = interpolate(scale.value, [0, 1], [0, 9]);
-    return { transform: [{ scale: scaleValue }], top };
+
+    return { transform: [{ scale: scaleValue }] };
   });
 
-  const animatedTextStyle = useAnimatedStyle(() => {
-    const baseOpacity = interpolate(scale.value, [0, 1], [1, 0]);
-    // If hideText is true, force opacity to 0, otherwise use the animated opacity
-    const opacity = hideText ? 0 : baseOpacity;
-    return { opacity };
-  });
-
-  console.log("hideText", hideText);
   return (
     <Pressable
       key={route.name}
@@ -73,10 +65,6 @@ const TabBarButton = ({
           />
         )}
       </AnimatedView>
-
-      <AnimatedText style={animatedTextStyle} className="text-sm">
-        {label}
-      </AnimatedText>
     </Pressable>
   );
 };
@@ -89,5 +77,6 @@ const styles = StyleSheet.create({
     gap: 4,
     justifyContent: "center",
     alignItems: "center",
+    paddingVertical: 8,
   },
 });

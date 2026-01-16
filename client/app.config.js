@@ -4,6 +4,13 @@ module.exports = {
     slug: "client",
     scheme: "client",
     version: "1.0.0",
+
+    extra: {
+      eas: {
+        projectId: "1451b288-3ed4-46f8-b4b9-082485d6da60",
+      },
+    },
+
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",

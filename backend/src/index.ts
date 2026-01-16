@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import stripeRoute from "./routes/stripeRoute";
 import scanRoute from "./routes/scanRoute";
+import profileRoute from "./routes/profileRoute";
 // Load environment variables
 dotenv.config();
 
@@ -18,7 +19,7 @@ app.use(
 app.use("/api/stripe", stripeRoute);
 app.use(express.json());
 app.use("/api/scan", scanRoute);
-
+app.use("/api/profile", profileRoute);
 // Basic health check route
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });

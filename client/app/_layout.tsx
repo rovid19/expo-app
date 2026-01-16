@@ -3,10 +3,23 @@ import { useEffect, useState } from "react";
 import { supabase } from "../services/supabase/supabaseClient";
 import { useUserStore } from "../stores/userStore";
 import "../global.css";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useFonts } from "expo-font";
+import {
+  Roboto_400Regular,
+  Roboto_500Medium,
+  Roboto_700Bold,
+} from "@expo-google-fonts/roboto";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const setUser = useUserStore((state) => state.setUser);
+
+  const [loaded] = useFonts({
+    Roboto_400Regular,
+    Roboto_500Medium,
+    Roboto_700Bold,
+  });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -23,9 +36,17 @@ export default function RootLayout() {
     return () => subscription.unsubscribe();
   }, []);
 
+  if (!loaded) {
+    return null;
+  }
+
   if (isLoading) {
     return null;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }} />
+    </GestureHandlerRootView>
+  );
 }

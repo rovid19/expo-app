@@ -9,6 +9,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { BlurView } from "expo-blur";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -54,12 +55,9 @@ export default function TabBar({
   const isScanTab = currentRoute === "scan/index";
 
   return (
-    <View
-      onLayout={onTabbarLayout}
-      style={[styles.tabBar, isScanTab && { backgroundColor: "transparent" }]}
-    >
+    <BlurView intensity={30} onLayout={onTabbarLayout} style={styles.tabBar}>
       <AnimatedView
-        className="bg-neutral-900 border border-white/10"
+        className="bg-dark3"
         style={[
           animatedStyle,
           {
@@ -113,13 +111,13 @@ export default function TabBar({
             onPress={onPress}
             onLongPress={onLongPress}
             label={label}
-            color={isFocused ? "#FFF" : "#222"}
+            color={isFocused ? "#FFF" : "#CCCCCC"}
             isFocused={isFocused}
             hideText={isScanTab}
           />
         );
       })}
-    </View>
+    </BlurView>
   );
 }
 
@@ -130,13 +128,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#fff",
     marginHorizontal: 20,
-    paddingVertical: 15,
+    paddingVertical: 16,
     borderRadius: 35,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 10,
     shadowOpacity: 0.1,
+    borderWidth: 1,
+    borderColor: "#262626",
+    overflow: "hidden",
   },
 });
