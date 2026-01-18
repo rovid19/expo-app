@@ -18,8 +18,8 @@ const EditListing = () => {
         <View className="flex flex-row items-center justify-between">
           <Text className="text-light2 font-sans text-2xl">Photos</Text>
           <TouchableOpacity className="flex flex-row items-center justify-center gap-2 bg-dark1 rounded-3xl py-2 px-4">
-            <SvgXml xml={plusOutline} width={16} height={16} color="#83BD0F" />
-            <Text className="text-light2 font-sans text-lg">Add Photo</Text>
+            <SvgXml xml={plusOutline} width={16} height={16} color="#E6E6E6" />
+            <Text className="text-light2 font-sans text-md">Add Photo</Text>
           </TouchableOpacity>
         </View>
         <ScrollView
@@ -34,7 +34,7 @@ const EditListing = () => {
           <View className="w-32 h-32 rounded-3xl bg-dark1"></View>
         </ScrollView>
         <TouchableOpacity className="w-full bg-dark1 rounded-3xl p-2 flex flex-row items-center justify-center gap-2">
-          <SvgXml xml={downloadIcon} width={16} height={16} color="#83BD0F" />
+          <SvgXml xml={downloadIcon} width={16} height={16} color="#E6E6E6" />
           <Text className="text-light2 font-sans text-lg">Download Photos</Text>
         </TouchableOpacity>
       </View>
@@ -62,7 +62,7 @@ const EditListing = () => {
         <Text className="text-light2 font-sans text-2xl">Description</Text>
         <TextInput
           className="text-light2 font-sans text-lg bg-dark3 px-4 py-2 rounded-3xl"
-          placeholder="Enter item description"
+          placeholder="Enter item price"
           placeholderTextColor="#999999"
         />
       </View>

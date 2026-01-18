@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity, Pressable, Text } from "react-native";
 import { useEffect, useState, useMemo } from "react";
 import {
   useCameraDevices,
@@ -12,8 +12,10 @@ import {
   zoomIn,
   zoomOut,
   settings,
+  logo,
 } from "../assets/icons/icons";
 import { BlurView } from "expo-blur";
+import * as ExpoRouter from "expo-router";
 
 interface CameraToolbarProps {
   onDeviceChange: (device: CameraDevice | undefined) => void;
@@ -123,7 +125,46 @@ const CameraToolbar = ({
   };
 
   return (
-    <TouchableOpacity
+    <View className="w-full flex flex-row rounded-3xl overflow-hidden relative justify-between">
+      <BlurView intensity={10} tint="dark" className="absolute inset-0" />
+      <View className="rounded-3xl overflow-hidden bg-dark2/50 py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative">
+        <BlurView intensity={10} tint="dark" className="absolute inset-0" />
+        <Pressable className="p-2" onPress={() => ExpoRouter.router.back()}>
+          <SvgXml xml={leftArrow} width={24} height={24} color="white" />
+        </Pressable>
+        <Pressable
+          className="p-2"
+          onPress={() => setFlashlightOn(!flashlightOn)}
+        >
+          <SvgXml
+            xml={flashlightOn ? flashlightOnIcon : flashlightOff}
+            width={24}
+            height={24}
+            color="white"
+          />
+        </Pressable>
+      </View>
+      <View className="flex flex-row items-center gap-2">
+        <SvgXml xml={logo} width={32} height={32} color="white" />
+        <Text className="text-light2 font-bold text-md">Dexly</Text>
+      </View>
+      <View className="rounded-3xl overflow-hidden bg-dark2/50 py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative">
+        <BlurView intensity={10} tint="dark" className="absolute inset-0" />
+        <Pressable className="p-2" onPress={() => handlePreviousLens()}>
+          <SvgXml xml={zoomOut} width={24} height={24} color="white" />
+        </Pressable>
+        <Pressable className="p-2" onPress={() => handleNextLens()}>
+          <SvgXml xml={zoomIn} width={24} height={24} color="white" />
+        </Pressable>
+      </View>
+    </View>
+  );
+};
+
+export default CameraToolbar;
+
+/*
+<TouchableOpacity
       className="self-start bg-neutral-900/90 w-fit p-3 rounded-full flex flex-row items-center gap-8 border border-white/10"
       onPress={() => setExpandToolbar(!expandToolbar)}
     >
@@ -153,7 +194,4 @@ const CameraToolbar = ({
         </View>
       )}
     </TouchableOpacity>
-  );
-};
-
-export default CameraToolbar;
+    */

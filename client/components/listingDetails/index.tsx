@@ -56,7 +56,7 @@ const ListingDetailsBottomSheet = forwardRef<BottomSheet>((_, ref) => {
           )}
         </View>
         {/* Listing Actions */}
-        <View className=" w-full gap-2">
+        <View className=" w-full gap-2 mb-4">
           <ListingActions />
         </View>
       </BottomSheetView>

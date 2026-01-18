@@ -22,6 +22,17 @@ import Animated, {
 } from "react-native-reanimated";
 import colors from "tailwindcss/colors";
 
+interface LineProps {
+  y1: number;
+  y2: number;
+  opacity: number;
+}
+
+interface RectProps {
+  y: number;
+  opacity: number;
+}
+
 const AnimatedLine = Animated.createAnimatedComponent(Line);
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 const AnimatedG = Animated.createAnimatedComponent(G);
@@ -140,7 +151,7 @@ const SvgScanOverlay = ({
     };
   }, [startAni, CUTOUT_Y, CUTOUT_HEIGHT]);
 
-  const animatedLineProps = useAnimatedProps(() => {
+  const animatedLineProps = useAnimatedProps<LineProps>(() => {
     if (!active.value) return { opacity: 0 };
     return {
       y1: scanLineY.value,
@@ -149,7 +160,7 @@ const SvgScanOverlay = ({
     };
   });
 
-  const animatedGlowProps = useAnimatedProps(() => {
+  const animatedGlowProps = useAnimatedProps<RectProps>(() => {
     if (!active.value) return { opacity: 0 };
     return {
       y: scanLineY.value - 20,

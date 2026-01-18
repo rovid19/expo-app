@@ -54,8 +54,8 @@ const TabBarButton = ({
         {icon && (
           <SvgXml
             xml={icon}
-            width={24}
-            height={24}
+            width={isFocused ? 28 : 24}
+            height={isFocused ? 28 : 24}
             color={
               (hideText && route.name === "home/index") ||
               (hideText && route.name === "profile/index")

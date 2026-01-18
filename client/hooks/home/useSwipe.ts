@@ -87,7 +87,6 @@ export function useSwipePager(
     })
 
     .onUpdate((e) => {
-      // 🔒 intent gate: only after real horizontal movement
       if (!hasIntent.value && Math.abs(e.translationX) > 12) {
         hasIntent.value = true;
 

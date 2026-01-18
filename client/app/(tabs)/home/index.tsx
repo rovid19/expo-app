@@ -15,6 +15,7 @@ import ListingDetailsBottomSheet from "../../../components/listingDetails/index"
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import { useSwipePager } from "../../../hooks/home/useSwipe";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState("overview");
@@ -35,6 +36,7 @@ export default function Dashboard() {
     goToTab,
   } = useSwipePager(setCurrentTab);
 
+  const tabBarHeight = useBottomTabBarHeight();
   const listingDetailsBottomSheetRef = useRef<BottomSheet>(null);
 
   useEffect(() => {
@@ -55,9 +57,14 @@ export default function Dashboard() {
     fetchUserItems();
   }, [triggerRefresh, user?.id, triggerDashboardRefresh]);
 
+  console.log("tabBarHeight", tabBarHeight);
+
   return (
-    <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1">
-      <View className="flex-1 items-center justify-center px-8 flex flex-col gap-12">
+    <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1 ">
+      <View
+        className="flex-1 items-center justify-center px-8 flex flex-col gap-8 mb-8"
+        style={{ paddingBottom: tabBarHeight + 2 }}
+      >
         <View className="w-full flex flex-col gap-4">
           <Header />
           <View className="flex flex-row px-4 justify-between w-full items-center ">
@@ -108,7 +115,7 @@ export default function Dashboard() {
         </View>
 
         <GestureDetector gesture={swipeGesture}>
-          <View className="flex-1 w-full overflow-hidden">
+          <View className="flex-1 w-full overflow-hidden mb-8">
             <Animated.View
               style={[overviewStyle]}
               className="absolute w-full h-full flex flex-col gap-2"
@@ -116,16 +123,17 @@ export default function Dashboard() {
               <Overview />
             </Animated.View>
 
-            <Animated.View
-              style={[collectionStyle]}
-              className="absolute w-full h-full flex flex-col gap-2"
+            <Animated.ScrollView
+              style={[{ flex: 1 }, collectionStyle]}
+              className="absolute w-full h-full flex-1 flex-col gap-2"
+              contentContainerStyle={{ flexGrow: 1, gap: 8 }}
             >
               <Collection
                 openListingDetails={() => {
                   listingDetailsBottomSheetRef.current?.snapToIndex(0);
                 }}
               />
-            </Animated.View>
+            </Animated.ScrollView>
           </View>
         </GestureDetector>
       </View>

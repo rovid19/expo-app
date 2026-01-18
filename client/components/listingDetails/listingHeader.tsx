@@ -9,17 +9,20 @@ import { useListingDetailsStore } from "../../stores/listingDetailsStore";
 const ListingHeader = () => {
   const { isEditDetails, setIsEditDetails } = useListingDetailsStore();
   return (
-    <View className="flex flex-row items-center justify-between">
+    <View
+      className={`flex flex-row items-center ${
+        isEditDetails ? "justify-start gap-4" : "justify-between"
+      }`}
+    >
       {!isEditDetails && (
         <>
           {" "}
           <Text className="text-light2 font-sans text-3xl">Macbook Pro M1</Text>
           <TouchableOpacity
-            className="bg-dark2 rounded-full px-4 py-2 flex flex-row items-center gap-2"
+            className="bg-accent2 rounded-full px-4 py-2 flex flex-row items-center gap-2"
             onPress={() => setIsEditDetails(true)}
           >
-            <SvgXml xml={editIcon} width={16} height={16} color="#E6E6E6" />
-            <Text className="text-light2 font-sans text-sm">Edit details</Text>
+            <SvgXml xml={editIcon} width={24} height={24} color="#E6E6E6" />
           </TouchableOpacity>{" "}
         </>
       )}

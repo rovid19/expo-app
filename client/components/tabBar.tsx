@@ -4,12 +4,10 @@ import { homeOutline, scanOutline, userOutline } from "../assets/icons/icons";
 import TabBarButton from "./tabBarButton";
 import { useState, useEffect } from "react";
 import Animated, {
-  interpolate,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { BlurView } from "expo-blur";
 import { useAppStore } from "../stores/appStore";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -19,132 +17,116 @@ export default function TabBar({
   descriptors,
   navigation,
 }: BottomTabBarProps) {
-  const [dimensions, setDimensions] = useState({ height: 20, width: 100 });
-  const buttonWidth = dimensions.width / state.routes.length;
   const { hideNavbar } = useAppStore();
+
   const icon = {
     "home/index": homeOutline,
     "scan/index": scanOutline,
     "profile/index": userOutline,
   };
 
-  const onTabbarLayout = (e: LayoutChangeEvent) => {
+  // THIS matches your old logic: measure the pill itself
+  const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
+
+  const onPillLayout = (e: LayoutChangeEvent) => {
     setDimensions({
       height: e.nativeEvent.layout.height,
       width: e.nativeEvent.layout.width,
     });
   };
 
+  const buttonWidth =
+    dimensions.width > 0 ? dimensions.width / state.routes.length : 0;
+
   const tabPositionX = useSharedValue(0);
 
-  // Update animation when route changes (including programmatic navigation)
   useEffect(() => {
-    if (dimensions.width > 0 && state.routes.length > 0) {
-      const buttonWidth = dimensions.width / state.routes.length;
+    if (buttonWidth > 0) {
       tabPositionX.value = withSpring(buttonWidth * state.index, {
-        duration: 500,
+        damping: 20,
+        stiffness: 180,
       });
     }
-  }, [state.index, dimensions.width, state.routes.length]);
+  }, [state.index, buttonWidth]);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return { transform: [{ translateX: tabPositionX.value }] };
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: tabPositionX.value }],
+  }));
 
-  // Check if current route is scan tab
   const currentRoute = state.routes[state.index]?.name;
   const isScanTab = currentRoute === "scan/index";
 
-  if (hideNavbar) {
-    return null;
-  }
+  if (hideNavbar) return null;
 
   return (
-    <View onLayout={onTabbarLayout} style={styles.tabBar}>
-      <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFill} />
-      <AnimatedView
-        className="bg-dark3/40 "
-        style={[
-          animatedStyle,
-          {
-            position: "absolute",
+    <View className="absolute bottom-0 left-0 right-0 h-32 w-full flex items-center justify-center px-8 pb-8">
+      <View
+        onLayout={onPillLayout}
+        className="relative py-6 w-full flex flex-row items-center justify-between bg-dark2/50 border border-dark3/50 rounded-full overflow-hidden"
+      >
+        {/* INDICATOR — same math as old version */}
+        <AnimatedView
+          className={isScanTab ? "bg-accent1" : "bg-dark2"}
+          style={[
+            animatedStyle,
+            {
+              position: "absolute",
+              left: 0,
+              marginHorizontal: 12,
+              height: dimensions.height - 15,
+              width: buttonWidth - 25,
+              borderRadius: 30,
+            },
+          ]}
+        />
 
-            borderRadius: 30,
-            marginHorizontal: 12,
-            height: dimensions.height - 15,
-            width: buttonWidth - 25,
-          },
-        ]}
-      />
-      {state.routes.map((route: any, index: number) => {
-        const { options } = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name;
+        {state.routes.map((route: any, index: number) => {
+          const { options } = descriptors[route.key];
+          const label = options.tabBarLabel ?? options.title ?? route.name;
 
-        const isFocused = state.index === index;
+          const isFocused = state.index === index;
 
-        const onPress = () => {
-          tabPositionX.value = withSpring(buttonWidth * index, {
-            duration: 500,
-          });
-          const event = navigation.emit({
-            type: "tabPress",
-            target: route.key,
-            canPreventDefault: true,
-          });
+          const onPress = () => {
+            tabPositionX.value = withSpring(buttonWidth * index, {
+              damping: 40,
+              stiffness: 180,
+            });
 
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
-          }
-        };
+            const event = navigation.emit({
+              type: "tabPress",
+              target: route.key,
+              canPreventDefault: true,
+            });
 
-        const onLongPress = () => {
-          navigation.emit({
-            type: "tabLongPress",
-            target: route.key,
-          });
-        };
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name, route.params);
+            }
+          };
 
-        return (
-          <TabBarButton
-            key={route.name}
-            route={route}
-            icon={icon[route.name as keyof typeof icon]}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            label={label}
-            color={isFocused ? "#E6E6E6" : "#999999"}
-            isFocused={isFocused}
-            hideText={isScanTab}
-          />
-        );
-      })}
+          const onLongPress = () => {
+            navigation.emit({
+              type: "tabLongPress",
+              target: route.key,
+            });
+          };
+
+          return (
+            <TabBarButton
+              key={route.name}
+              route={route}
+              icon={icon[route.name as keyof typeof icon]}
+              onPress={onPress}
+              onLongPress={onLongPress}
+              label={label}
+              color={isFocused ? "#E6E6E6" : "#999999"}
+              isFocused={isFocused}
+              hideText={isScanTab}
+            />
+          );
+        })}
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  tabBar: {
-    position: "absolute",
-    bottom: 50,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 32,
-    backgroundColor: "rgba(26,26,26,0.5)",
-    paddingVertical: 16,
-    borderRadius: 35,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 0 },
-    shadowRadius: 10,
-
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
-    shadowOpacity: 0.2,
-    overflow: "hidden",
-  },
-});
+const styles = StyleSheet.create({});

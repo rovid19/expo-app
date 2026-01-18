@@ -10,6 +10,7 @@ import {
   Roboto_500Medium,
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
+import GlobalPopup from "../components/popup";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -47,6 +48,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false }} />
+      <GlobalPopup />
     </GestureHandlerRootView>
   );
 }
