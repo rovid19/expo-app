@@ -4,13 +4,16 @@ import { rightArrow } from "../../assets/icons/icons";
 import { SvgXml } from "react-native-svg";
 import Item from "./item";
 
-const collection = () => {
+interface HeaderProps {
+  openListingDetails: () => void;
+}
+
+const collection = ({ openListingDetails }: HeaderProps) => {
   return (
     <>
-      <Item />
-      <Item />
-      <Item />
-      <Item />
+      <Item openListingDetails={openListingDetails} />
+      <Item openListingDetails={openListingDetails} />
+      <Item openListingDetails={openListingDetails} />
     </>
   );
 };

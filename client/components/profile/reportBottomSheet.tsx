@@ -54,8 +54,13 @@ const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
       android_keyboardInputMode="adjustResize"
-      handleIndicatorStyle={{ backgroundColor: "#a3a3a3" }}
-      backgroundStyle={{ backgroundColor: "#ffffff" }}
+      handleIndicatorStyle={{ backgroundColor: "#262626" }}
+      backgroundStyle={{
+        backgroundColor: "#0D0D0D",
+        borderWidth: 1,
+        borderColor: "#1A1A1A",
+        borderRadius: 16,
+      }}
       onChange={(index) => {
         if (index === -1) dismissKeyboard();
       }}
@@ -94,7 +99,7 @@ const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
           </View>
         </View>
       )}
-      <BottomSheetView className="flex-1 px-4 pt-2 relative">
+      <BottomSheetView className="flex-1 px-4 pt-2 relative ">
         <Pressable
           className="flex-1"
           onPress={dismissKeyboard}
@@ -102,32 +107,32 @@ const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
         >
           {/* Header */}
           <View className="pt-2 pb-3">
-            <Text className="text-2xl font-bold tracking-tight text-neutral-950">
+            <Text className="text-2xl font-bold tracking-tight text-light2">
               Report a bug
             </Text>
-            <Text className="text-sm text-neutral-500 tracking-tight mt-1">
+            <Text className="text-sm text-light3 tracking-tight mt-1 font-sans">
               Tell us what went wrong and how we can reproduce it.
             </Text>
           </View>
 
           {/* Content */}
-          <View className="flex-1">
-            <Text className="text-sm font-semibold text-neutral-900 mb-2">
+          <View className="flex-1 mt-2">
+            <Text className="text-sm font-sans text-light2 mb-2">
               Description
             </Text>
-            <View className="border border-neutral-200 rounded-2xl bg-neutral-50 px-4 py-3">
+            <View className=" rounded-2xl bg-dark2 px-4 py-3">
               <TextInput
                 ref={descriptionInputRef}
                 value={description}
                 onChangeText={setDescription}
                 placeholder="What happened? What did you expect to happen? Steps to reproduce…"
-                placeholderTextColor="#737373"
+                placeholderTextColor="#999999"
                 multiline
                 maxLength={maxLength}
                 textAlignVertical="top"
-                className="min-h-[160px] text-base text-neutral-950"
+                className="min-h-[160px] text-base text-light2 font-sans"
               />
-              <Text className="text-xs text-neutral-500 self-end mt-2">
+              <Text className="text-xs text-light3 self-end mt-2 font-sans">
                 {description.length}/{maxLength}
               </Text>
             </View>
@@ -135,7 +140,7 @@ const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
 
           {/* CTA */}
           <Pressable
-            className="bg-black py-4 rounded-full mt-4"
+            className="bg-accent1 py-4 rounded-full mt-4"
             onPress={async () => {
               if (description.length > 5) {
                 await handleSendReport();
@@ -149,7 +154,7 @@ const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
             {sendingReport ? (
               <ActivityIndicator size="small" color={colors.white} />
             ) : (
-              <Text className="text-white text-center font-semibold">
+              <Text className="text-dark1 text-center font-bold">
                 Send report
               </Text>
             )}

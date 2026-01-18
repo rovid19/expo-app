@@ -9,6 +9,7 @@ import {
   userOutline,
 } from "../../assets/icons/icons";
 import TabBar from "../../components/tabBar";
+import { useAppStore } from "../../stores/appStore";
 
 export default function TabLayout() {
   return (

@@ -3,7 +3,7 @@ import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { useMemo, forwardRef, useCallback } from "react";
+import { useMemo, forwardRef } from "react";
 
 const SubscriptionBottomSheet = forwardRef<BottomSheet>((_, ref) => {
   const snapPoints = useMemo(() => ["85%"], []);
@@ -15,6 +15,13 @@ const SubscriptionBottomSheet = forwardRef<BottomSheet>((_, ref) => {
       snapPoints={snapPoints}
       enablePanDownToClose
       enableDynamicSizing={false}
+      handleIndicatorStyle={{ backgroundColor: "#262626" }}
+      backgroundStyle={{
+        backgroundColor: "#0D0D0D",
+        borderWidth: 1,
+        borderColor: "#1A1A1A",
+        borderRadius: 16,
+      }}
       backdropComponent={(props) => (
         <BottomSheetBackdrop
           {...props}
@@ -28,16 +35,14 @@ const SubscriptionBottomSheet = forwardRef<BottomSheet>((_, ref) => {
 
         {/* Content */}
         <View className="flex-1">
-          <Text className="text-neutral-600">
+          <Text className="text-light2 font-sans">
             Subscription details go here.
           </Text>
         </View>
 
         {/* CTA */}
-        <Pressable className="bg-black py-4 rounded-full mb-4">
-          <Text className="text-white text-center font-semibold">
-            Subscribe
-          </Text>
+        <Pressable className="bg-accent1 py-4 rounded-full mb-4 mt-4">
+          <Text className="text-dark1 text-center font-bold">Subscribe</Text>
         </Pressable>
       </BottomSheetView>
     </BottomSheet>

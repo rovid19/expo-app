@@ -1,15 +1,11 @@
-import React from "react";
 import { View, Text } from "react-native";
-import { SvgXml } from "react-native-svg";
-import { logo, wavingHand } from "../../assets/icons/icons";
+import { logo } from "../../assets/icons/icons";
+import Header from "../header";
 
 const header = () => {
   return (
     <>
-      <View className="flex flex-row items-end justify-between w-full py-2">
-        <Text className="text-light3 font-bold text-md">HOME</Text>
-        <SvgXml xml={logo} />
-      </View>
+      <Header title="HOME" svg={logo} />
 
       <View className="flex flex-col ">
         <Text className="text-5xl font-bold font-bold text-light2">Hello,</Text>

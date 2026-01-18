@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useRef } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { rightArrow } from "../../assets/icons/icons";
-const item = () => {
+import { useAppStore } from "../../stores/appStore";
+interface HeaderProps {
+  openListingDetails: () => void;
+}
+
+const item = ({ openListingDetails }: HeaderProps) => {
+  const { setHideNavbar } = useAppStore();
   return (
     <View className="w-full flex flex-row bg-dark2 rounded-3xl ">
       {/*Image*/}
@@ -40,7 +46,13 @@ const item = () => {
         </View>
 
         {/*Item actions*/}
-        <TouchableOpacity className="bg-dark3 rounded-full px-4 py-4 flex flex-row items-center justify-center gap-2 ">
+        <TouchableOpacity
+          className="bg-dark3 rounded-full px-4 py-4 flex flex-row items-center justify-center gap-2 "
+          onPress={() => {
+            setHideNavbar(true);
+            openListingDetails();
+          }}
+        >
           <Text className="text-light2 font-sans text-md">Edit listing</Text>
           <SvgXml
             xml={rightArrow}

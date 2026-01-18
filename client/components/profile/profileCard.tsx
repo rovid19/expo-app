@@ -2,6 +2,7 @@ import { useUserStore } from "../../stores/userStore";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { defaultAvatar } from "../../assets/icons/icons";
+import { logo } from "../../assets/icons/icons";
 
 const profileCard = () => {
   const user = useUserStore((state) => state.user);
@@ -12,7 +13,7 @@ const profileCard = () => {
     ? user.user_metadata.avatar_url
     : "";
   return (
-    <View className="w-full flex flex-row mb-4 border border-neutral-200 rounded-2xl p-2 bg-white">
+    <View className="w-full flex flex-row mb-4 rounded-2xl p-2 bg-dark2">
       <View className="w-[40%] flex items-center justify-center p-2">
         {avatar ? (
           <Image
@@ -22,13 +23,12 @@ const profileCard = () => {
             className="rounded-full"
           />
         ) : (
-          <SvgXml xml={defaultAvatar} width={84} height={84} />
+          <SvgXml xml={logo} width={84} height={84} />
         )}
       </View>
       <View className="flex-1 flex flex-col p-2 justify-center">
-        <Text className="text-2xl font-bold">{name}</Text>
-        <Text className="text-sm text-neutral-500">{email}</Text>
-        <TouchableOpacity className="bg-primary-500 p-2 rounded-lg"></TouchableOpacity>
+        <Text className="text-2xl font-bold text-light2">{name}</Text>
+        <Text className="text-sm text-light3">{email}</Text>
       </View>
     </View>
   );

@@ -10,6 +10,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { BlurView } from "expo-blur";
+import { useAppStore } from "../stores/appStore";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -20,7 +21,7 @@ export default function TabBar({
 }: BottomTabBarProps) {
   const [dimensions, setDimensions] = useState({ height: 20, width: 100 });
   const buttonWidth = dimensions.width / state.routes.length;
-
+  const { hideNavbar } = useAppStore();
   const icon = {
     "home/index": homeOutline,
     "scan/index": scanOutline,
@@ -54,10 +55,15 @@ export default function TabBar({
   const currentRoute = state.routes[state.index]?.name;
   const isScanTab = currentRoute === "scan/index";
 
+  if (hideNavbar) {
+    return null;
+  }
+
   return (
-    <BlurView intensity={30} onLayout={onTabbarLayout} style={styles.tabBar}>
+    <View onLayout={onTabbarLayout} style={styles.tabBar}>
+      <BlurView intensity={30} tint="dark" style={StyleSheet.absoluteFill} />
       <AnimatedView
-        className="bg-dark3"
+        className="bg-dark3/40 "
         style={[
           animatedStyle,
           {
@@ -111,13 +117,13 @@ export default function TabBar({
             onPress={onPress}
             onLongPress={onLongPress}
             label={label}
-            color={isFocused ? "#FFF" : "#CCCCCC"}
+            color={isFocused ? "#E6E6E6" : "#999999"}
             isFocused={isFocused}
             hideText={isScanTab}
           />
         );
       })}
-    </BlurView>
+    </View>
   );
 }
 
@@ -128,15 +134,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginHorizontal: 20,
+    marginHorizontal: 32,
+    backgroundColor: "rgba(26,26,26,0.5)",
     paddingVertical: 16,
     borderRadius: 35,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 10,
-    shadowOpacity: 0.1,
+
     borderWidth: 1,
-    borderColor: "#262626",
+    borderColor: "rgba(255,255,255,0.08)",
+    shadowOpacity: 0.2,
     overflow: "hidden",
   },
 });

@@ -33,45 +33,28 @@ const profileActions = ({
     <View className="w-full flex flex-col gap-2">
       <TouchableOpacity
         onPress={onPressSubscription}
-        className="bg-neutral-100 p-2 rounded-2xl h-[44px] flex items-center px-4 flex-row gap-2 border border-neutral-200"
+        className="bg-dark2 p-2 rounded-2xl h-[44px] flex items-center px-4 flex-row gap-2 "
       >
-        <SvgXml
-          xml={paywall}
-          width={24}
-          height={24}
-          color={colors.neutral[900]}
-        />
-        <Text className="text-md font-medium text-neutral-950">
+        <SvgXml xml={paywall} width={24} height={24} color="#E6E6E6" />
+        <Text className="text-md font-sans text-light2">
           Subscription details
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={onPressReport}
-        className="bg-neutral-100 p-2 rounded-2xl h-[44px] flex items-center px-4 flex-row gap-2 border border-neutral-200"
+        className="bg-dark2 p-2 rounded-2xl h-[44px] flex items-center px-4 flex-row gap-2 "
       >
-        <SvgXml
-          xml={report}
-          width={24}
-          height={24}
-          color={colors.neutral[900]}
-        />
-        <Text className="text-md font-medium text-neutral-950">
-          Report a bug
-        </Text>
+        <SvgXml xml={report} width={24} height={24} color="#E6E6E6" />
+        <Text className="text-md font-sans text-light2">Report a bug</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         onPress={handleLogout}
-        className="bg-neutral-100 p-2 rounded-2xl h-[44px] flex items-center px-4 flex-row gap-2 border border-neutral-200"
+        className="bg-dark2 p-2 rounded-2xl h-[44px] flex items-center px-4 flex-row gap-2 "
       >
-        <SvgXml
-          xml={logout}
-          width={24}
-          height={24}
-          color={colors.neutral[900]}
-        />
-        <Text className="text-md font-medium text-neutral-950">Logout</Text>
+        <SvgXml xml={logout} width={24} height={24} color="#E6E6E6" />
+        <Text className="text-md font-sans text-light2">Logout</Text>
       </TouchableOpacity>
     </View>
   );
