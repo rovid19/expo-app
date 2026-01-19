@@ -5,13 +5,25 @@ import { SvgXml } from "react-native-svg";
 import { moreIcon, sellIcon } from "../../assets/icons/icons";
 import { usePopupStore } from "../../stores/popupStore";
 import ActionPopup from "../actionPopup";
+import SalePopup from "../salePopup";
 
 const ListingActions = () => {
   const { isEditDetails } = useListingDetailsStore();
   const { open } = usePopupStore();
   return (
     <>
-      <TouchableOpacity className="w-full bg-accent1 flex flex-row items-center justify-center p-4 rounded-3xl gap-2">
+      <TouchableOpacity
+        className="w-full bg-accent1 flex flex-row items-center justify-center p-4 rounded-3xl gap-2"
+        onPress={() => {
+          console.log("onPress", isEditDetails);
+          if (isEditDetails) {
+            // save
+          } else {
+            console.log("opening sale popup");
+            open(<SalePopup />);
+          }
+        }}
+      >
         <Text className="text-lg font-bold text-dark1">
           {isEditDetails ? "Save" : "Sell"}
         </Text>

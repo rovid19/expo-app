@@ -6,7 +6,8 @@ import { useState, useEffect } from "react";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
+  withTiming,
+  Easing,
 } from "react-native-reanimated";
 import { useAppStore } from "../stores/appStore";
 
@@ -25,7 +26,6 @@ export default function TabBar({
     "profile/index": userOutline,
   };
 
-  // THIS matches your old logic: measure the pill itself
   const [dimensions, setDimensions] = useState({ height: 0, width: 0 });
 
   const onPillLayout = (e: LayoutChangeEvent) => {
@@ -42,9 +42,9 @@ export default function TabBar({
 
   useEffect(() => {
     if (buttonWidth > 0) {
-      tabPositionX.value = withSpring(buttonWidth * state.index, {
-        damping: 20,
-        stiffness: 180,
+      tabPositionX.value = withTiming(buttonWidth * state.index, {
+        duration: 200,
+        easing: Easing.out(Easing.cubic),
       });
     }
   }, [state.index, buttonWidth]);
@@ -59,12 +59,11 @@ export default function TabBar({
   if (hideNavbar) return null;
 
   return (
-    <View className="absolute bottom-0 left-0 right-0 h-32 w-full flex items-center justify-center px-8 pb-8">
+    <View className="absolute bottom-0 left-0 right-0 h-32 w-full flex items-center justify-center px-8 pb-12">
       <View
         onLayout={onPillLayout}
         className="relative py-6 w-full flex flex-row items-center justify-between bg-dark2/50 border border-dark3/50 rounded-full overflow-hidden"
       >
-        {/* INDICATOR — same math as old version */}
         <AnimatedView
           className={isScanTab ? "bg-accent1" : "bg-dark2"}
           style={[
@@ -75,7 +74,7 @@ export default function TabBar({
               marginHorizontal: 12,
               height: dimensions.height - 15,
               width: buttonWidth - 25,
-              borderRadius: 30,
+              borderRadius: 50,
             },
           ]}
         />
@@ -83,13 +82,12 @@ export default function TabBar({
         {state.routes.map((route: any, index: number) => {
           const { options } = descriptors[route.key];
           const label = options.tabBarLabel ?? options.title ?? route.name;
-
           const isFocused = state.index === index;
 
           const onPress = () => {
-            tabPositionX.value = withSpring(buttonWidth * index, {
-              damping: 40,
-              stiffness: 180,
+            tabPositionX.value = withTiming(buttonWidth * index, {
+              duration: 200,
+              easing: Easing.out(Easing.cubic),
             });
 
             const event = navigation.emit({
@@ -103,20 +101,15 @@ export default function TabBar({
             }
           };
 
-          const onLongPress = () => {
-            navigation.emit({
-              type: "tabLongPress",
-              target: route.key,
-            });
-          };
-
           return (
             <TabBarButton
               key={route.name}
               route={route}
               icon={icon[route.name as keyof typeof icon]}
               onPress={onPress}
-              onLongPress={onLongPress}
+              onLongPress={() =>
+                navigation.emit({ type: "tabLongPress", target: route.key })
+              }
               label={label}
               color={isFocused ? "#E6E6E6" : "#999999"}
               isFocused={isFocused}

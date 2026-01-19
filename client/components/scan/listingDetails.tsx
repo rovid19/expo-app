@@ -16,7 +16,6 @@ import {
 } from "react-native";
 import { useItemsStore } from "../../stores/itemsStore";
 import AddAdditionalImages from "./addAdditionalImages";
-import FacebookMarketplacePost from "./FacebookMarketplacePost";
 import { useUserStore } from "../../stores/userStore";
 import { supabase } from "../../services/supabase/supabaseClient";
 import { uploadImages } from "../../services/supabase/uploadImages";
@@ -515,18 +514,6 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
         onRequestClose={() => setIsAddImageModalVisible(false)}
       >
         <AddAdditionalImages onClose={() => setIsAddImageModalVisible(false)} />
-      </Modal>
-
-      <Modal
-        visible={isFacebookModalVisible}
-        animationType="slide"
-        transparent={false}
-        onRequestClose={() => setIsFacebookModalVisible(false)}
-      >
-        <FacebookMarketplacePost
-          listing={selectedScannedItem}
-          onClose={() => setIsFacebookModalVisible(false)}
-        />
       </Modal>
 
       <Modal

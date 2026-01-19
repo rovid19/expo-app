@@ -6,7 +6,7 @@ import SubscriptionBottomSheet from "../../../components/profile/subscriptionBot
 import BottomSheet from "@gorhom/bottom-sheet";
 import ReportBottomSheet from "../../../components/profile/reportBottomSheet";
 import Header from "../../../components/header";
-import { settingsIcon } from "../../../assets/icons/icons";
+import { logo } from "../../../assets/icons/icons";
 
 export default function Profile() {
   const subscriptionBottomSheetRef = useRef<BottomSheet>(null);
@@ -14,7 +14,7 @@ export default function Profile() {
   return (
     <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1 px-8">
       {/* Header */}
-      <Header title="PROFILE" svg={settingsIcon} />
+      <Header title="PROFILE" svg={logo} />
 
       {/* Profile */}
       <ProfileCard />
