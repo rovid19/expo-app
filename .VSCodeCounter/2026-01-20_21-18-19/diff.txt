@@ -1,0 +1,83 @@
+Date : 2026-01-20 21:18:19
+Directory : /Users/rock/Documents/Projekti/expo-app/client/app
+Total : 34 files,  -13468 codes, -32 comments, -253 blanks, all -13753 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| Properties         |          1 |         -3 |          0 |         -2 |         -5 |
+| CSS                |          1 |         -3 |          0 |         -4 |         -7 |
+| JSON with Comments |          1 |        -13 |          0 |          0 |        -13 |
+| JavaScript         |          4 |        -88 |         -1 |         -7 |        -96 |
+| TypeScript         |          9 |       -416 |        -10 |        -92 |       -518 |
+| TypeScript JSX     |         16 |     -1,795 |        -21 |       -146 |     -1,962 |
+| JSON               |          2 |    -11,150 |          0 |         -2 |    -11,152 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                        | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| (tabs)                                                                                      |          5 |         -2 |          2 |          2 |          2 |
+| (tabs) (Files)                                                                              |          1 |         23 |          0 |          0 |         23 |
+| (tabs)/dashboard                                                                            |          1 |        -62 |          0 |         -6 |        -68 |
+| (tabs)/home                                                                                 |          1 |        117 |          4 |         11 |        132 |
+| (tabs)/profile                                                                              |          1 |        -16 |          4 |          1 |        -11 |
+| (tabs)/scan                                                                                 |          1 |        -64 |         -6 |         -4 |        -74 |
+| .                                                                                           |         34 |    -13,468 |        -32 |       -253 |    -13,753 |
+| . (Files)                                                                                   |          2 |         73 |          3 |          3 |         79 |
+| ..                                                                                          |         27 |    -13,539 |        -37 |       -258 |    -13,834 |
+| .. (Files)                                                                                  |         12 |    -11,285 |         -2 |        -22 |    -11,309 |
+| ../components                                                                               |          9 |     -1,866 |        -26 |       -151 |     -2,043 |
+| ../components (Files)                                                                       |          1 |       -144 |        -11 |        -18 |       -173 |
+| ../components/auth                                                                          |          1 |       -164 |          0 |        -24 |       -188 |
+| ../components/dashboard                                                                     |          2 |       -177 |          0 |        -21 |       -198 |
+| ../components/scan                                                                          |          5 |     -1,381 |        -15 |        -88 |     -1,484 |
+| ../lib                                                                                      |          1 |        -14 |          0 |         -4 |        -18 |
+| ../services                                                                                 |          3 |       -224 |          0 |        -48 |       -272 |
+| ../services (Files)                                                                         |          2 |       -211 |          0 |        -45 |       -256 |
+| ../services/supabase                                                                        |          1 |        -13 |          0 |         -3 |        -16 |
+| ../stores                                                                                   |          2 |       -150 |         -9 |        -33 |       -192 |
++---------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                    | language           | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| /Users/rock/Documents/Projekti/expo-app/client/.env                                         | Properties         |         -3 |          0 |         -2 |         -5 |
+| /Users/rock/Documents/Projekti/expo-app/client/app.config.js                                | JavaScript         |        -56 |          0 |         -1 |        -57 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/_layout.tsx                       | TypeScript JSX     |         23 |          0 |          0 |         23 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/dashboard/index.tsx               | TypeScript JSX     |        -62 |          0 |         -6 |        -68 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/home/index.tsx                    | TypeScript JSX     |        117 |          4 |         11 |        132 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/profile/index.tsx                 | TypeScript JSX     |        -16 |          4 |          1 |        -11 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/scan/index.tsx                    | TypeScript JSX     |        -64 |         -6 |         -4 |        -74 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/_layout.tsx                              | TypeScript JSX     |         72 |          0 |          3 |         75 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/index.tsx                                | TypeScript JSX     |          1 |          3 |          0 |          4 |
+| /Users/rock/Documents/Projekti/expo-app/client/babel.config.js                              | JavaScript         |        -19 |          0 |         -1 |        -20 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/auth/auth.tsx                     | TypeScript JSX     |       -164 |          0 |        -24 |       -188 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/cameraToolbar.tsx                 | TypeScript JSX     |       -144 |        -11 |        -18 |       -173 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/dashboard/userIncome.tsx          | TypeScript JSX     |        -64 |          0 |         -9 |        -73 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/dashboard/userItems.tsx           | TypeScript JSX     |       -113 |          0 |        -12 |       -125 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/scan/FacebookMarketplacePost.tsx  | TypeScript JSX     |       -134 |         -3 |        -12 |       -149 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/scan/addAdditionalImages.tsx      | TypeScript JSX     |       -235 |         -5 |        -18 |       -258 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/scan/additionalImageContainer.tsx | TypeScript JSX     |        -53 |          0 |         -6 |        -59 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/scan/listingDetails.tsx           | TypeScript JSX     |       -830 |         -7 |        -43 |       -880 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/scan/scannedItemContainer.tsx     | TypeScript JSX     |       -129 |          0 |         -9 |       -138 |
+| /Users/rock/Documents/Projekti/expo-app/client/env.d.ts                                     | TypeScript         |         -8 |          0 |         -1 |         -9 |
+| /Users/rock/Documents/Projekti/expo-app/client/global.css                                   | CSS                |         -3 |          0 |         -4 |         -7 |
+| /Users/rock/Documents/Projekti/expo-app/client/globalTypes.ts                               | TypeScript         |        -20 |          0 |         -2 |        -22 |
+| /Users/rock/Documents/Projekti/expo-app/client/lib/axios.ts                                 | TypeScript         |        -14 |          0 |         -4 |        -18 |
+| /Users/rock/Documents/Projekti/expo-app/client/metro.config.js                              | JavaScript         |         -5 |          0 |         -4 |         -9 |
+| /Users/rock/Documents/Projekti/expo-app/client/nativewind-env.d.ts                          | TypeScript         |          0 |         -1 |         -4 |         -5 |
+| /Users/rock/Documents/Projekti/expo-app/client/package-lock.json                            | JSON               |    -11,103 |          0 |         -1 |    -11,104 |
+| /Users/rock/Documents/Projekti/expo-app/client/package.json                                 | JSON               |        -47 |          0 |         -1 |        -48 |
+| /Users/rock/Documents/Projekti/expo-app/client/services/facebookService.ts                  | TypeScript         |        -95 |          0 |        -19 |       -114 |
+| /Users/rock/Documents/Projekti/expo-app/client/services/imageService.ts                     | TypeScript         |       -116 |          0 |        -26 |       -142 |
+| /Users/rock/Documents/Projekti/expo-app/client/services/supabase/supabaseClient.ts          | TypeScript         |        -13 |          0 |         -3 |        -16 |
+| /Users/rock/Documents/Projekti/expo-app/client/stores/itemsStore.ts                         | TypeScript         |       -137 |         -9 |        -30 |       -176 |
+| /Users/rock/Documents/Projekti/expo-app/client/stores/userStore.ts                          | TypeScript         |        -13 |          0 |         -3 |        -16 |
+| /Users/rock/Documents/Projekti/expo-app/client/tailwind.config.js                           | JavaScript         |         -8 |         -1 |         -1 |        -10 |
+| /Users/rock/Documents/Projekti/expo-app/client/tsconfig.json                                | JSON with Comments |        -13 |          0 |          0 |        -13 |
+| Total                                                                                       |                    |    -13,468 |        -32 |       -253 |    -13,753 |
++---------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

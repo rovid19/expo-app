@@ -7,7 +7,7 @@ export default function Index() {
   const user = useUserStore((state) => state.user);
   const router = useRouter();
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (user) {
       router.replace("/(tabs)/home");
     }
@@ -17,9 +17,9 @@ export default function Index() {
     return <Auth />;
   }
 
-  return null;*/
+  return null;
 
-  useEffect(() => {
+  /*useEffect(() => {
     router.replace("/(tabs)/home");
-  }, []);
+  }, []);*/
 }

@@ -1,8 +1,8 @@
 module.exports = {
   expo: {
-    name: "client",
+    name: "dexly",
     slug: "client",
-    scheme: "client",
+    scheme: "dexly",
     version: "1.0.0",
 
     extra: {

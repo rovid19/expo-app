@@ -18,6 +18,7 @@ import FacebookMarketplacePost from "../components/listingDetails/modals/Faceboo
 import { useItemsStore } from "../stores/itemsStore";
 import * as Linking from "expo-linking";
 import Toast from "react-native-toast-message";
+import toastConfig from "../components/toastConfig";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -44,28 +45,6 @@ export default function RootLayout() {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const sub = Linking.addEventListener("url", ({ url }) => {
-      if (url === "dexly://ebay-success") {
-        console.log("ebay success");
-        Toast.show({
-          type: "success",
-          text1:
-            "Your eBay account has been connected successfully. Try listing your first item now!",
-        });
-      }
-      if (url === "dexly://ebay-error") {
-        console.log("ebay error");
-        Toast.show({
-          type: "error",
-          text1:
-            "There was an error connecting your eBay account. Please try again.",
-        });
-      }
-    });
-    return () => sub.remove();
   }, []);
 
   if (!loaded) {
@@ -102,7 +81,7 @@ export default function RootLayout() {
           onClose={() => setIsFacebookModalVisible(false)}
         />
       </Modal>
-      <Toast />
+      <Toast config={toastConfig} />
     </GestureHandlerRootView>
   );
 }
