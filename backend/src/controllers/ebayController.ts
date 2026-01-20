@@ -87,11 +87,18 @@ export const ebayOAuthCallback = async (req: Request, res: Response) => {
       return res.status(400).send("No refresh token returned");
     }
 
-    await supabase.from("ebay_accounts").upsert({
+    console.log("TOKEN RESPONSE", tokenRes.data);
+
+    const { error } = await supabase.from("ebay_accounts").upsert({
       owner_id: userId,
       refresh_token,
       revoked: false,
     });
+
+    if (error) {
+      console.error("Error saving eBay account:", error);
+      return res.status(500).send("Error saving eBay account");
+    }
 
     // Redirect back to app (or success page)
     return res.redirect("dexly://ebay-success");
