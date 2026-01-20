@@ -91,13 +91,12 @@ export const ebayOAuthCallback = async (req: Request, res: Response) => {
       owner_id: userId,
       refresh_token,
       revoked: false,
-      updated_at: new Date().toISOString(),
     });
 
     // Redirect back to app (or success page)
-    return res.redirect(`${process.env.APP_URL}/ebay-success`);
+    return res.redirect("dexly://ebay-success");
   } catch (err: any) {
     console.error("eBay OAuth callback error:", err.response?.data || err);
-    return res.redirect(`${process.env.APP_URL}/ebay-error`);
+    return res.redirect("dexly://ebay-error");
   }
 };
