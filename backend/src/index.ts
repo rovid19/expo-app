@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import stripeRoute from "./routes/stripeRoute";
 import scanRoute from "./routes/scanRoute";
 import profileRoute from "./routes/profileRoute";
 import ebayRoute from "./routes/ebayRoute";
@@ -17,7 +16,7 @@ app.use(
     origin: "*",
   })
 );
-app.use("/api/stripe", stripeRoute);
+
 app.use(express.json());
 app.use("/api/scan", scanRoute);
 app.use("/api/profile", profileRoute);

@@ -40,11 +40,11 @@ export const startEbayOAuth = async (req: Request, res: Response) => {
   const state = crypto.randomUUID();
 
   const authUrl =
-    "https://auth.sandbox.ebay.com/oauth2/authorize?" +
+    "https://auth.ebay.com/oauth2/authorize?" +
     new URLSearchParams({
-      client_id: process.env.EBAY_CLIENT_ID!,
+      client_id: process.env.EBAY_CLIENT_ID!, // PROD client id
       response_type: "code",
-      redirect_uri: process.env.EBAY_REDIRECT_URI!, // must match eBay app
+      redirect_uri: process.env.EBAY_REDIRECT_URI!, // PROD RuName
       scope: "https://api.ebay.com/oauth/api_scope",
       state,
     }).toString();
