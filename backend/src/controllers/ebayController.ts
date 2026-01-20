@@ -46,18 +46,19 @@ export const startEbayOAuth = async (req: Request, res: Response) => {
       response_type: "code",
       redirect_uri: process.env.EBAY_REDIRECT_URI!, // PROD RuName
       scope: "https://api.ebay.com/oauth/api_scope",
-      state,
+      state: JSON.stringify({ userId }),
     }).toString();
 
   return res.json({ authUrl });
 };
 
 export const ebayOAuthCallback = async (req: Request, res: Response) => {
-  const { code, state, userId } = req.query;
+  const { code, state } = req.query;
+  const { userId } = JSON.parse(state as string);
   console.log(process.env.EBAY_CLIENT_ID, process.env.EBAY_REDIRECT_URI);
 
-  if (!code || !userId) {
-    return res.status(400).send("Missing OAuth code or userId");
+  if (!code) {
+    return res.status(400).send("Missing OAuth code");
   }
 
   try {
