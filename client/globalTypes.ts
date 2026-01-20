@@ -1,4 +1,4 @@
-export interface ScannedItem {
+export interface Item {
   detected_item: string;
   details: string;
   resale_price_min: number;
@@ -12,5 +12,5 @@ export interface ScannedItem {
   isSold?: boolean;
   owner_id?: string;
   created_at?: string;
-  id?: string;
+  id: number;
 }

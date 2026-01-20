@@ -1,11 +1,11 @@
 import { SafeAreaView, View, Text, TouchableOpacity } from "react-native";
 import { WebView } from "react-native-webview";
 import { setStringAsync } from "expo-clipboard";
-import { ScannedItem } from "../../../globalTypes";
+import { Item } from "../../../globalTypes";
 import { StyleSheet } from "react-native";
 
 interface FacebookMarketplacePostProps {
-  listing: ScannedItem;
+  listing: Item;
   onClose: () => void;
 }
 

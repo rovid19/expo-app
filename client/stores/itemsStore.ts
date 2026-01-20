@@ -1,22 +1,22 @@
 import { create } from "zustand";
 import * as MediaLibrary from "expo-media-library";
-import { ScannedItem } from "../globalTypes";
+import { Item } from "../globalTypes";
 import api from "../lib/axios";
 
 interface ItemsStore {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
-  scannedItems: ScannedItem[];
-  selectedScannedItem: ScannedItem | null;
+  scannedItems: Item[];
+  selectedScannedItem: Item | null;
   containerIndex: number;
-  addScannedItem: (item: ScannedItem) => void;
-  updateScannedItem: (index: number, item: ScannedItem) => void;
-  setSelectedScannedItem: (item: ScannedItem | null) => void;
+  addScannedItem: (item: Item) => void;
+  updateScannedItem: (index: number, item: Item) => void;
+  setSelectedScannedItem: (item: Item | null) => void;
   setContainerIndex: (index: number) => void;
-  removeScannedItem: (item: ScannedItem) => void;
+  removeScannedItem: (item: Item) => void;
   addPhoto: (uri: string) => Promise<void>;
   addOrRemovePhotoFromAlbum: (
-    selectedScannedItem: ScannedItem,
+    selectedScannedItem: Item,
     uri: string,
     type: "add" | "remove"
   ) => Promise<void>;
@@ -124,19 +124,17 @@ export const useItemsStore = create<ItemsStore>((set) => ({
     };
 
     useItemsStore.setState({
-      selectedScannedItem: updatedItem as ScannedItem,
+      selectedScannedItem: updatedItem as Item,
       scannedItems: scannedItems.map((item, i) =>
-        i === containerIndex
-          ? (updatedItem as ScannedItem)
-          : (item as ScannedItem)
+        i === containerIndex ? (updatedItem as Item) : (item as Item)
       ),
     });
 
-    await addOrRemovePhotoFromAlbum(updatedItem as ScannedItem, uri, "remove");
+    await addOrRemovePhotoFromAlbum(updatedItem as Item, uri, "remove");
   },
 
   addOrRemovePhotoFromAlbum: async (
-    selectedScannedItem: ScannedItem,
+    selectedScannedItem: Item,
     uri: string,
     type: "add" | "remove"
   ) => {

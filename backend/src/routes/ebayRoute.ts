@@ -1,12 +1,14 @@
 import express from "express";
 import {
   hasEbayConnection,
-  sendReport,
-} from "../controllers/profileController";
+  startEbayOAuth,
+  ebayOAuthCallback,
+} from "../controllers/ebayController";
 
 const router = express.Router();
 
-router.post("/send-report", sendReport);
 router.get("/has-ebay-connection", hasEbayConnection);
+router.get("/oauth-start", startEbayOAuth);
+router.get("/oauth/callback", ebayOAuthCallback);
 
 export default router;

@@ -65,6 +65,7 @@ export default function RootLayout() {
       >
         <FacebookMarketplacePost
           listing={{
+            id: 1,
             detected_item: "Macbook Pro M1",
             resale_price_min: 1000,
             resale_price_max: 1500,

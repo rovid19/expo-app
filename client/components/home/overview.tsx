@@ -2,8 +2,11 @@ import React from "react";
 import { View, Text } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { coinIcon, inventoryIcon, walletIcon } from "../../assets/icons/icons";
+import { useItems2Store } from "../../stores/items2Store";
 
 const overview = () => {
+  const { items } = useItems2Store();
+
   return (
     <>
       {/* Profit */}

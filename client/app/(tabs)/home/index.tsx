@@ -1,6 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import { useState, useEffect, useRef } from "react";
-import { ScannedItem } from "../../../globalTypes";
+import { Item } from "../../../globalTypes";
 import { supabase } from "../../../services/supabase/supabaseClient";
 import { useUserStore } from "../../../stores/userStore";
 //import { useItemsStore } from "../../../stores/itemsStore";
@@ -16,15 +16,17 @@ import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import { useSwipePager } from "../../../hooks/home/useSwipe";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useItems2Store } from "../../../stores/items2Store";
 
 export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState("overview");
-  const [userItems, setUserItems] = useState<ScannedItem[]>([]);
+  const [userItems, setUserItems] = useState<Item[]>([]);
   const [triggerRefresh, setTriggerRefresh] = useState(false);
   //const [isListingDetailsVisible, setIsListingDetailsVisible] = useState(false);
   const { user, triggerDashboardRefresh } = useUserStore();
   /*const { setSelectedScannedItem, setContainerIndex, setIsLoading } =
     useItemsStore();*/
+  const { fetchItems } = useItems2Store();
   const {
     overviewStyle,
     collectionStyle,
@@ -36,26 +38,11 @@ export default function Dashboard() {
     goToTab,
   } = useSwipePager(setCurrentTab);
 
+  useEffect(() => {
+    fetchItems();
+  }, []);
   const tabBarHeight = useBottomTabBarHeight();
   const listingDetailsBottomSheetRef = useRef<BottomSheet>(null);
-
-  useEffect(() => {
-    const fetchUserItems = async () => {
-      console.log("fetching user items");
-      //setIsLoading(true);
-      const { data, error } = await supabase
-        .from("items")
-        .select("*")
-        .eq("owner_id", user?.id);
-      if (error) {
-        console.error("Error fetching user items:", error);
-      } else {
-        setUserItems((data ?? []) as ScannedItem[]);
-      }
-      // setIsLoading(false);
-    };
-    fetchUserItems();
-  }, [triggerRefresh, user?.id, triggerDashboardRefresh]);
 
   console.log("tabBarHeight", tabBarHeight);
 

@@ -3,12 +3,16 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { rightArrow } from "../../assets/icons/icons";
 import { useAppStore } from "../../stores/appStore";
+import { Item } from "../../globalTypes";
+import { useItems2Store } from "../../stores/items2Store";
 interface HeaderProps {
+  item: Item;
   openListingDetails: () => void;
 }
 
-const item = ({ openListingDetails }: HeaderProps) => {
+const item = ({ item, openListingDetails }: HeaderProps) => {
   const { setHideNavbar } = useAppStore();
+  const { setSelectedItemId } = useItems2Store();
   return (
     <View className="w-full flex flex-row bg-dark2 rounded-3xl ">
       {/*Image*/}
@@ -19,12 +23,14 @@ const item = ({ openListingDetails }: HeaderProps) => {
         <View className="flex flex-col gap-2">
           {/*Item Worth*/}
           <View className="px-4 py-1 bg-dark1 ">
-            <Text className="text-light2 font-sans text-lg">Worth: $300</Text>
+            <Text className="text-light2 font-sans text-lg">
+              Worth: ${item.price}
+            </Text>
           </View>
           {/*Item Name*/}
           <View className="px-2">
             <Text className="text-light2 font-sans text-lg">
-              Macbook Pro M1 2020
+              {item.detected_item}
             </Text>
           </View>
           {/*Item Profits*/}
@@ -34,13 +40,17 @@ const item = ({ openListingDetails }: HeaderProps) => {
               <Text className="text-light3 font-sans text-sm">
                 Buying price:
               </Text>
-              <Text className="text-light2 font-sans text-sm">$100</Text>
+              <Text className="text-light2 font-sans text-sm">
+                ${item.price}
+              </Text>
             </View>
             {/*net profit*/}
 
             <View className="flex flex-col gap-1">
               <Text className="text-light3 font-sans text-sm">Net profit:</Text>
-              <Text className="text-accent1 font-sans text-sm">$100</Text>
+              <Text className="text-accent1 font-sans text-sm">
+                ${item.price - item.resale_price_min}
+              </Text>
             </View>
           </View>
         </View>
@@ -51,6 +61,7 @@ const item = ({ openListingDetails }: HeaderProps) => {
           onPress={() => {
             setHideNavbar(true);
             openListingDetails();
+            setSelectedItemId(item.id);
           }}
         >
           <Text className="text-light2 font-sans text-md">Edit listing</Text>
