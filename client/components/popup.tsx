@@ -3,7 +3,7 @@ import { Modal, View, Pressable } from "react-native";
 import { usePopupStore } from "../stores/popupStore";
 import { BlurView } from "expo-blur";
 export default function GlobalPopup() {
-  const { visible, content, close } = usePopupStore();
+  const { visible, content, close, isFullscreen } = usePopupStore();
 
   return (
     <Modal
@@ -28,7 +28,9 @@ export default function GlobalPopup() {
         />
         <Pressable
           onPress={() => {}}
-          className="w-[90%] bg-dark1 rounded-3xl p-8 border border-dark2/50"
+          className={`${
+            isFullscreen ? "w-full h-full" : "w-[90%]"
+          } bg-dark1 rounded-3xl p-8 border border-dark2/50`}
         >
           {content}
         </Pressable>

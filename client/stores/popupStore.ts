@@ -2,6 +2,7 @@
 import { create } from "zustand";
 
 type PopupState = {
+  isFullscreen: boolean;
   visible: boolean;
   content: React.ReactNode | null;
   requiresConfirmation: {
@@ -12,11 +13,12 @@ type PopupState = {
     isTrue: boolean,
     action: (() => void) | null
   ) => void;
-  open: (content: React.ReactNode) => void;
+  open: (content: React.ReactNode, isFullscreen?: boolean) => void;
   close: () => void;
 };
 
 export const usePopupStore = create<PopupState>((set) => ({
+  isFullscreen: false,
   visible: false,
   content: null,
   requiresConfirmation: {
@@ -27,7 +29,8 @@ export const usePopupStore = create<PopupState>((set) => ({
     set({
       requiresConfirmation: { isTrue, action },
     }),
-  open: (content) => set({ visible: true, content }),
+  open: (content, isFullscreen = false) =>
+    set({ visible: true, content, isFullscreen }),
   close: () =>
     set((state) => ({
       ...state,

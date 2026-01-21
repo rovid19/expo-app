@@ -1,15 +1,12 @@
-import React from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import { useListingDetailsStore } from "../../stores/listingDetailsStore";
-import { SvgXml } from "react-native-svg";
-import { moreIcon, sellIcon } from "../../assets/icons/icons";
 import { usePopupStore } from "../../stores/popupStore";
 import ActionPopup from "../actionPopup";
 import SalePopup from "../salePopup";
 
 const ListingActions = () => {
-  const { isEditDetails } = useListingDetailsStore();
-  const { open } = usePopupStore();
+  const { isEditDetails, setIsEditDetails } = useListingDetailsStore();
+  const { open, close } = usePopupStore();
   return (
     <>
       <TouchableOpacity
@@ -17,7 +14,8 @@ const ListingActions = () => {
         onPress={() => {
           console.log("onPress", isEditDetails);
           if (isEditDetails) {
-            // save
+            setIsEditDetails(false);
+            close();
           } else {
             console.log("opening sale popup");
             open(<SalePopup />);
