@@ -2,21 +2,36 @@ import React from "react";
 import { TouchableOpacity, View, Image, TextInput } from "react-native";
 import { Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { plusOutline } from "../../../assets/icons/icons";
+import { leftArrow, plusOutline } from "../../../assets/icons/icons";
 import { SvgXml } from "react-native-svg";
 import { useItems2Store } from "../../../stores/items2Store";
-import ListingHeader from "../listingHeader";
-import ListingActions from "../listingActions";
+import { useListingDetailsStore } from "../../../stores/listingDetailsStore";
 
 const EditListing = () => {
   const { findSelectedItem } = useItems2Store();
+  const { setIsAdditionalPhotosModalVisible, setIsEditListingModalVisible } =
+    useListingDetailsStore();
   const item = findSelectedItem();
 
   if (!item) return null;
 
   return (
-    <View className="flex-1 relative pt-12">
-      <ListingHeader />
+    <View className="flex-1 relative pt-12 bg-dark1 px-6 pt-20 pb-8">
+      <View className="flex flex-row items-center justify-between mb-4">
+        <View className="flex-1">
+          <Text className="text-light2 font-sans text-3xl">Edit Listing</Text>
+        </View>
+        <View className=" flex justify-end items-end">
+          <TouchableOpacity
+            className="bg-accent2 rounded-full px-4 py-2 flex flex-row items-center gap-2"
+            onPress={() => {
+              setIsEditListingModalVisible(false);
+            }}
+          >
+            <SvgXml xml={leftArrow} width={24} height={24} color="#E6E6E6" />
+          </TouchableOpacity>
+        </View>
+      </View>
 
       <KeyboardAwareScrollView
         className="flex-1"
@@ -41,7 +56,13 @@ const EditListing = () => {
             ))}
           </View>
 
-          <TouchableOpacity className="flex flex-row items-center justify-center gap-2 bg-dark1 rounded-3xl py-4 px-4">
+          <TouchableOpacity
+            onPress={() => {
+              setIsEditListingModalVisible(false);
+              setIsAdditionalPhotosModalVisible(true);
+            }}
+            className="flex flex-row items-center justify-center gap-2 bg-dark1 rounded-3xl py-4 px-4"
+          >
             <SvgXml xml={plusOutline} width={16} height={16} color="#E6E6E6" />
             <Text className="text-light2 font-sans text-md">Add photos</Text>
           </TouchableOpacity>
@@ -82,7 +103,15 @@ const EditListing = () => {
           />
         </View>
       </KeyboardAwareScrollView>
-      <ListingActions />
+
+      <TouchableOpacity
+        className="w-full bg-accent1 flex flex-row items-center justify-center p-4 rounded-3xl gap-2"
+        onPress={() => {
+          setIsEditListingModalVisible(false);
+        }}
+      >
+        <Text className="text-lg font-bold text-dark1">Save</Text>
+      </TouchableOpacity>
     </View>
   );
 };

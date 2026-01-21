@@ -513,7 +513,7 @@ const ListingDetails: React.FC<ListingDetailsProps> = ({
         transparent={false}
         onRequestClose={() => setIsAddImageModalVisible(false)}
       >
-        <AddAdditionalImages onClose={() => setIsAddImageModalVisible(false)} />
+        <AddAdditionalImages />
       </Modal>
 
       <Modal

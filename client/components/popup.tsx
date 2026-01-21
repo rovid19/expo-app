@@ -29,8 +29,8 @@ export default function GlobalPopup() {
         <Pressable
           onPress={() => {}}
           className={`${
-            isFullscreen ? "w-full h-full" : "w-[90%]"
-          } bg-dark1 rounded-3xl p-8 border border-dark2/50`}
+            isFullscreen ? "w-full h-full px-6 py-8" : "w-[90%] p-8"
+          } bg-dark1 rounded-3xl  border border-dark2/50`}
         >
           {content}
         </Pressable>

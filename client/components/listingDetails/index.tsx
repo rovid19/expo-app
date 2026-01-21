@@ -14,7 +14,6 @@ import { useListingDetailsStore } from "../../stores/listingDetailsStore";
 const ListingDetailsBottomSheet = forwardRef<BottomSheet>((_, ref) => {
   const { setHideNavbar } = useAppStore();
   const snapPoints = useMemo(() => ["85%"], []);
-  const { isEditDetails } = useListingDetailsStore();
 
   return (
     <BottomSheet
@@ -22,10 +21,9 @@ const ListingDetailsBottomSheet = forwardRef<BottomSheet>((_, ref) => {
       index={-1}
       snapPoints={snapPoints}
       enableDynamicSizing={false}
-      // 🔒 freeze sheet while editing
-      enablePanDownToClose={!isEditDetails}
-      enableHandlePanningGesture={!isEditDetails}
-      enableContentPanningGesture={!isEditDetails}
+      enablePanDownToClose={true}
+      enableHandlePanningGesture={true}
+      enableContentPanningGesture={true}
       handleIndicatorStyle={{ backgroundColor: "#262626" }}
       backgroundStyle={{
         backgroundColor: "#0D0D0D",
@@ -51,18 +49,12 @@ const ListingDetailsBottomSheet = forwardRef<BottomSheet>((_, ref) => {
         <View className="flex-1 flex flex-col gap-8">
           <ListingHeader />
 
-          {!isEditDetails && (
-            <>
-              <ListingInfo />
-              <SimilarListings />
-            </>
-          )}
+          <ListingInfo />
+          <SimilarListings />
 
-          {!isEditDetails && (
-            <View className="w-full gap-2 mb-4">
-              <ListingActions />
-            </View>
-          )}
+          <View className="w-full gap-2 mb-4">
+            <ListingActions />
+          </View>
         </View>
       </BottomSheetView>
     </BottomSheet>

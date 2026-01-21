@@ -19,12 +19,20 @@ import { useItemsStore } from "../stores/itemsStore";
 import * as Linking from "expo-linking";
 import Toast from "react-native-toast-message";
 import toastConfig from "../components/toastConfig";
+import AddAdditionalImages from "../components/scan/addAdditionalImages";
+import EditListing from "../components/listingDetails/modals/editListing";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const setUser = useUserStore((state) => state.setUser);
-  const { isFacebookModalVisible, setIsFacebookModalVisible } =
-    useListingDetailsStore();
+  const {
+    isFacebookModalVisible,
+    setIsFacebookModalVisible,
+    isAdditionalPhotosModalVisible,
+    setIsAdditionalPhotosModalVisible,
+    isEditListingModalVisible,
+    setIsEditListingModalVisible,
+  } = useListingDetailsStore();
   const { selectedScannedItem } = useItemsStore();
   const [loaded] = useFonts({
     Roboto_400Regular,
@@ -80,6 +88,22 @@ export default function RootLayout() {
           }}
           onClose={() => setIsFacebookModalVisible(false)}
         />
+      </Modal>
+      <Modal
+        visible={isAdditionalPhotosModalVisible}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setIsAdditionalPhotosModalVisible(false)}
+      >
+        <AddAdditionalImages />
+      </Modal>
+      <Modal
+        visible={isEditListingModalVisible}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setIsEditListingModalVisible(false)}
+      >
+        <EditListing />
       </Modal>
       <Toast config={toastConfig} />
     </GestureHandlerRootView>
