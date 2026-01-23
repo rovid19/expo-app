@@ -62,7 +62,9 @@ export default function TabBar({
     <View className="absolute bottom-0 left-0 right-0 h-32 w-full flex items-center justify-center px-8 pb-12">
       <View
         onLayout={onPillLayout}
-        className="relative py-6 w-full flex flex-row items-center justify-between bg-dark2/50 border border-dark3/50 rounded-full overflow-hidden"
+        className={`relative py-6 w-full flex flex-row items-center justify-between ${
+          isScanTab ? "bg-dark2/80" : "bg-dark2/50"
+        } border border-dark3/50 rounded-full overflow-hidden`}
       >
         <AnimatedView
           className={isScanTab ? "bg-accent1" : "bg-dark2"}

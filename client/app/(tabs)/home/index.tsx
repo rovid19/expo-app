@@ -17,6 +17,8 @@ import Animated from "react-native-reanimated";
 import { useSwipePager } from "../../../hooks/home/useSwipe";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useItems2Store } from "../../../stores/items2Store";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState("overview");
@@ -26,7 +28,7 @@ export default function Dashboard() {
   const { user, triggerDashboardRefresh } = useUserStore();
   /*const { setSelectedScannedItem, setContainerIndex, setIsLoading } =
     useItemsStore();*/
-  const { fetchItems } = useItems2Store();
+  const { fetchItems, setItemType } = useItems2Store();
   const {
     overviewStyle,
     collectionStyle,
@@ -38,9 +40,12 @@ export default function Dashboard() {
     goToTab,
   } = useSwipePager(setCurrentTab);
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      setItemType("listed");
+      fetchItems();
+    }, [])
+  );
   const tabBarHeight = useBottomTabBarHeight();
   const listingDetailsBottomSheetRef = useRef<BottomSheet>(null);
 

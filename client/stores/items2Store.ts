@@ -14,6 +14,11 @@ interface Items2Store {
   setSelectedItemId: (itemId: number | null) => void;
   findSelectedItem: () => Item | null;
   fetchItems: () => Promise<void>;
+  updateItemImages: (
+    photoUri: string,
+    action: "add" | "remove"
+  ) => Promise<void>;
+  addScannedItem: (item: Item) => void;
 }
 
 export const useItems2Store = create<Items2Store>((set, get) => ({
@@ -32,8 +37,43 @@ export const useItems2Store = create<Items2Store>((set, get) => ({
   selectedItemId: null,
   setSelectedItemId: (itemId: number | null) => set({ selectedItemId: itemId }),
   findSelectedItem: () => {
-    const { selectedItemId, items, itemType, scannedItems } = get();
+    const { itemType, items, scannedItems, selectedItemId } = get();
     const itemArray = itemType === "listed" ? items : scannedItems;
     return itemArray.find((item) => item.id === selectedItemId) || null;
+  },
+
+  updateItemImages: async (photoUri: string, action: "add" | "remove") => {
+    const { selectedItemId, itemType, items, scannedItems, findSelectedItem } =
+      get();
+    const user = useUserStore.getState().user;
+
+    if (!user?.id) return;
+    if (selectedItemId == null) return;
+
+    const currentImages = findSelectedItem()?.image ?? [];
+
+    let newImages: string[];
+
+    if (action === "add") {
+      newImages = [...currentImages, photoUri];
+    } else {
+      newImages = currentImages.filter((uri) => uri !== photoUri);
+    }
+
+    const update = (arr: Item[]) =>
+      arr.map((item) =>
+        item.id === selectedItemId ? { ...item, image: newImages } : item
+      );
+
+    if (itemType === "listed") {
+      set({ items: update(items) });
+    } else {
+      set({ scannedItems: update(scannedItems) });
+    }
+
+    await ItemsService.updateItemImages(user.id, newImages);
+  },
+  addScannedItem: (item: Item) => {
+    set({ scannedItems: [...get().scannedItems, item] });
   },
 }));

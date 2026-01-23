@@ -1,5 +1,11 @@
 import React from "react";
-import { TouchableOpacity, View, Image, TextInput } from "react-native";
+import {
+  TouchableOpacity,
+  View,
+  Image,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import { Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { leftArrow, plusOutline } from "../../../assets/icons/icons";
@@ -45,7 +51,10 @@ const EditListing = () => {
         <View className="flex flex-col gap-4 bg-dark2 rounded-3xl p-4 w-full">
           <Text className="text-light2 font-sans text-2xl">Photos</Text>
 
-          <View className="flex flex-row items-center gap-2">
+          <ScrollView
+            horizontal
+            contentContainerClassName="flex flex-row items-center gap-2"
+          >
             {item.image?.map((image) => (
               <View key={image} className="w-32 h-32 rounded-3xl bg-dark1">
                 <Image
@@ -54,7 +63,7 @@ const EditListing = () => {
                 />
               </View>
             ))}
-          </View>
+          </ScrollView>
 
           <TouchableOpacity
             onPress={() => {
@@ -68,6 +77,32 @@ const EditListing = () => {
           </TouchableOpacity>
         </View>
 
+        <View className="flex flex-row items-center gap-2">
+          {" "}
+          {/* BUYING PRICE */}
+          <View className="flex flex-col gap-2 bg-dark2 rounded-3xl p-4 flex-1">
+            <Text className="text-light2 font-sans text-2xl">Buying Price</Text>
+            <TextInput
+              className="text-light2 font-sans text-lg bg-dark3 px-4 py-2 rounded-3xl"
+              placeholder={String(item.price)}
+              placeholderTextColor="#999999"
+              keyboardType="numeric"
+            />
+          </View>
+          {/* SELLING PRICE */}
+          <View className="flex flex-col gap-2 bg-dark2 rounded-3xl p-4 flex-1">
+            <Text className="text-light2 font-sans text-2xl">
+              Selling Price
+            </Text>
+            <TextInput
+              className="text-light2 font-sans text-lg bg-dark3 px-4 py-2 rounded-3xl"
+              placeholder={String(item.price)}
+              placeholderTextColor="#999999"
+              keyboardType="numeric"
+            />
+          </View>
+        </View>
+
         {/* NAME */}
         <View className="flex flex-col gap-2 bg-dark2 rounded-3xl p-4 w-full">
           <Text className="text-light2 font-sans text-2xl">Name</Text>
@@ -75,17 +110,6 @@ const EditListing = () => {
             className="text-light2 font-sans text-lg bg-dark3 px-4 py-2 rounded-3xl"
             placeholder={item.detected_item}
             placeholderTextColor="#999999"
-          />
-        </View>
-
-        {/* PRICE */}
-        <View className="flex flex-col gap-2 bg-dark2 rounded-3xl p-4 w-full">
-          <Text className="text-light2 font-sans text-2xl">Price</Text>
-          <TextInput
-            className="text-light2 font-sans text-lg bg-dark3 px-4 py-2 rounded-3xl"
-            placeholder={String(item.price)}
-            placeholderTextColor="#999999"
-            keyboardType="numeric"
           />
         </View>
 

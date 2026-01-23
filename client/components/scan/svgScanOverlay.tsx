@@ -21,7 +21,19 @@ import Animated, {
   cancelAnimation,
 } from "react-native-reanimated";
 import colors from "tailwindcss/colors";
+import { Dimensions } from "react-native";
 
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+const CUTOUT_WIDTH = 350;
+const CUTOUT_HEIGHT = 550;
+
+const R = 20;
+const CORNER_LENGTH = 40;
+const STROKE = 4;
+
+const CUTOUT_X = (SCREEN_WIDTH - CUTOUT_WIDTH) / 2;
+const CUTOUT_Y = (SCREEN_HEIGHT - CUTOUT_HEIGHT) / 2;
 interface LineProps {
   y1: number;
   y2: number;
@@ -38,26 +50,10 @@ const AnimatedRect = Animated.createAnimatedComponent(Rect);
 const AnimatedG = Animated.createAnimatedComponent(G);
 
 interface SvgScanOverlayProps {
-  CUTOUT_WIDTH: number;
-  CUTOUT_HEIGHT: number;
-  R: number;
-  CORNER_LENGTH: number;
-  STROKE: number;
-  CUTOUT_X: number;
-  CUTOUT_Y: number;
   startAni: boolean;
 }
 
-const SvgScanOverlay = ({
-  CUTOUT_WIDTH,
-  CUTOUT_HEIGHT,
-  R,
-  CORNER_LENGTH,
-  STROKE,
-  CUTOUT_X,
-  CUTOUT_Y,
-  startAni,
-}: SvgScanOverlayProps) => {
+const SvgScanOverlay = ({ startAni }: SvgScanOverlayProps) => {
   const [textWidth, setTextWidth] = useState(0);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [dots, setDots] = useState("");
@@ -180,7 +176,7 @@ const SvgScanOverlay = ({
 
   return (
     <>
-      <Svg style={StyleSheet.absoluteFill} pointerEvents="none">
+      <Svg className="absolute inset-0" pointerEvents="none">
         <Defs>
           <Mask id="mask">
             <Rect width="100%" height="100%" fill="white" />

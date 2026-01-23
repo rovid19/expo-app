@@ -1,56 +1,24 @@
 import React, { useRef, useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  ScrollView,
-} from "react-native";
-import { useItemsStore } from "../../stores/itemsStore";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import AdditionalImageContainer from "./additionalImageContainer";
 import CameraToolbar from "../cameraToolbar";
 import { Camera, useCameraPermission } from "react-native-vision-camera";
 import useCameraDevicesHook from "../../hooks/useCameraDevicesHook";
 import * as MediaLibrary from "expo-media-library";
-import * as FileSystem from "expo-file-system";
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-const BUTTON_SIZE = 70;
-const BUTTON_X = SCREEN_WIDTH / 2;
-const BUTTON_Y = SCREEN_HEIGHT - 120;
+import { useItems2Store } from "../../stores/items2Store";
+import { BlurView } from "expo-blur";
+import useCapturePhoto from "../../hooks/useCapturePhoto";
 
 const AddAdditionalImages = () => {
-  const [flashlightOn, setFlashlightOn] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
   const cameraRef = useRef<Camera>(null);
-  const { selectedScannedItem, addPhoto } = useItemsStore();
   const { currentDevice, setCurrentDevice } = useCameraDevicesHook();
-
-  const handleCapture = async () => {
-    if (!cameraRef.current) return;
-
-    const photo = await cameraRef.current.takePhoto({
-      flash: flashlightOn ? "on" : "off",
-    });
-
-    // Vision Camera gives a raw path → convert to file URI
-    const tempUri = `file://${photo.path}`;
-
-    const filename = `${Date.now()}.jpg`;
-    const appUri = FileSystem.documentDirectory + filename;
-
-    // Move into app-owned storage (this is critical)
-    await FileSystem.moveAsync({
-      from: tempUri,
-      to: appUri,
-    });
-
-    // Copy to gallery (do NOT rely on this)
-    MediaLibrary.createAssetAsync(appUri).catch(() => {});
-
-    // Store ONLY the app URI
-    addPhoto(appUri);
-  };
+  const { findSelectedItem } = useItems2Store();
+  const { handleCapture, flashlightOn, setFlashlightOn } = useCapturePhoto({
+    cameraRef,
+  });
+  const item = findSelectedItem();
+  if (!item) return null;
 
   useEffect(() => {
     if (!hasPermission) requestPermission();
@@ -84,57 +52,58 @@ const AddAdditionalImages = () => {
   }
 
   return (
-    <View className="flex-1 bg-black">
+    <View className="flex-1 bg-dark1">
       <Camera
         ref={cameraRef}
-        className="flex-1"
+        style={{ flex: 1 }}
         device={currentDevice}
-        isActive
+        isActive={true}
         photo
+        torch={flashlightOn ? "on" : "off"}
       />
 
       {/* overlay */}
-      <View className="absolute inset-0" pointerEvents="box-none">
+      <View className="absolute inset-0 flex flex-col" pointerEvents="box-none">
         {/* top toolbar */}
-        <View className="absolute top-0 z-20 w-full px-4 pt-16 h-30 items-center">
+        <View className=" z-20 w-full px-4 pt-16 h-30 items-center">
           <CameraToolbar
             onDeviceChange={setCurrentDevice}
             onFlashlightChange={setFlashlightOn}
+            flashlightOn={flashlightOn}
           />
         </View>
+        <View className="flex-1" />
 
         {/* thumbnails */}
-        {/*selectedScannedItem?.image?.length > 0 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="absolute w-full h-[120px]"
-            contentContainerClassName="px-5 flex-row items-center gap-1"
-            style={{
-              top: BUTTON_Y - BUTTON_SIZE / 2 - 120,
-            }}
-          >
-            {selectedScannedItem.image.map((uri, index) => (
-              <View key={`${uri}-${index}`} className="mr-3">
-                <AdditionalImageContainer uri={uri} />
-              </View>
-            ))}
-          </ScrollView>
-        )}*/}
+        <View className=" px-6 py-4 bg-dark2/50 mb-4 relative">
+          <BlurView intensity={10} tint="dark" className="absolute inset-0" />
+          {item?.image && item?.image?.length > 0 && (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              className=" w-full "
+              contentContainerClassName=" flex-row gap-1 items-center"
+            >
+              {item.image.map((uri, index) => (
+                <View key={`${uri}-${index}`} className="mr-3">
+                  <AdditionalImageContainer uri={uri} />
+                </View>
+              ))}
+            </ScrollView>
+          )}
+        </View>
 
         {/* capture button */}
-        <TouchableOpacity
-          onPress={handleCapture}
-          className="absolute w-[70px] h-[70px] rounded-full"
-          style={{
-            left: BUTTON_X - BUTTON_SIZE / 2,
-            top: BUTTON_Y - BUTTON_SIZE / 2,
-          }}
-        >
-          <View className="flex-1 rounded-full border-4 border-white p-1">
-            <View className="flex-1 rounded-full bg-white" />
-          </View>
-        </TouchableOpacity>
+        <View className="pb-20 flex items-center justify-center">
+          <TouchableOpacity
+            onPress={handleCapture}
+            className="w-[70px] h-[70px] rounded-full"
+          >
+            <View className="flex-1 rounded-full border-4 border-white p-1">
+              <View className="flex-1 rounded-full bg-white" />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

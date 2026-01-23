@@ -1,7 +1,10 @@
 import React from "react";
-import { View, Image, StyleSheet, TouchableOpacity, Text } from "react-native";
-import { useItemsStore } from "../../stores/itemsStore";
+import { View, Image, TouchableOpacity, Text } from "react-native";
 import { BlurView } from "expo-blur";
+import { useItems2Store } from "../../stores/items2Store";
+import { thrash } from "../../assets/icons/icons";
+import { SvgXml } from "react-native-svg";
+
 interface AdditionalImageContainerProps {
   uri: string;
 }
@@ -9,58 +12,29 @@ interface AdditionalImageContainerProps {
 const AdditionalImageContainer: React.FC<AdditionalImageContainerProps> = ({
   uri,
 }) => {
-  const { removePhoto } = useItemsStore();
+  const { updateItemImages } = useItems2Store();
 
   return (
-    <BlurView
-      intensity={60}
-      tint="dark"
-      className="h-[100px] w-[100px] rounded-lg p-3 border border-white/10 overflow-hidden"
-    >
+    <View className="relative h-[100px] w-[100px] rounded-lg overflow-hidden bg-dark2/100">
+      <BlurView
+        intensity={10}
+        tint="dark"
+        className="absolute inset-0 rounded-lg overflow-hidden"
+      ></BlurView>
       <Image
         source={{ uri }}
-        className="h-full w-full rounded-lg"
         resizeMode="cover"
+        className="h-full w-full rounded-lg"
       />
+
       <TouchableOpacity
-        style={styles.removeButton}
-        onPress={() => removePhoto(uri)}
+        onPress={() => updateItemImages(uri, "remove")}
+        className="absolute top-0 right-0 p-2 rounded-bl-md bg-danger items-center justify-center"
       >
-        <Text style={styles.removeText}>✕</Text>
+        <SvgXml xml={thrash} width={16} height={16} color="#E6E6E6" />
       </TouchableOpacity>
-    </BlurView>
+    </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    width: 100,
-    height: 100,
-    borderRadius: 12,
-    backgroundColor: "#111827",
-    overflow: "hidden",
-    position: "relative",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-  removeButton: {
-    position: "absolute",
-    top: 4,
-    right: 4,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  removeText: {
-    color: "#FFF",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-});
 
 export default AdditionalImageContainer;

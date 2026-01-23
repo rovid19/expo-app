@@ -14,18 +14,20 @@ import { BlurView } from "expo-blur";
 import * as ExpoRouter from "expo-router";
 import useCameraDevicesHook from "../hooks/useCameraDevicesHook";
 import { useListingDetailsStore } from "../stores/listingDetailsStore";
+import { useAppStore } from "../stores/appStore";
 
 interface CameraToolbarProps {
   onDeviceChange: (device: CameraDevice | undefined) => void;
   onFlashlightChange: (on: boolean) => void;
+  flashlightOn: boolean;
 }
 
 const CameraToolbar = ({
   onDeviceChange,
   onFlashlightChange,
+  flashlightOn,
 }: CameraToolbarProps) => {
   const [cameraIndex, setCameraIndex] = useState<number>(1);
-  const [flashlightOn, setFlashlightOn] = useState<boolean>(false);
   const { backDevices, wideDevice, normalDevice, telephotoDevice } =
     useCameraDevicesHook();
   const {
@@ -33,7 +35,6 @@ const CameraToolbar = ({
     setIsAdditionalPhotosModalVisible,
     setIsEditListingModalVisible,
   } = useListingDetailsStore();
-
   // When cameraIndex changes, update the device
   useEffect(() => {
     let device: CameraDevice | undefined;
@@ -61,11 +62,6 @@ const CameraToolbar = ({
     onDeviceChange,
   ]);
 
-  // Notify parent of flashlight change
-  useEffect(() => {
-    onFlashlightChange(flashlightOn);
-  }, [flashlightOn, onFlashlightChange]);
-
   const handleNextLens = () => {
     // Plus: move to next lens (0 → 1 → 2)
     if (cameraIndex < 2) {
@@ -81,9 +77,11 @@ const CameraToolbar = ({
   };
 
   return (
-    <View className="w-full flex flex-row rounded-3xl overflow-hidden relative justify-between">
+    <View
+      className={`w-full flex flex-row rounded-3xl overflow-hidden relative justify-between ${"bg-dark2/50"}`}
+    >
       <BlurView intensity={10} tint="dark" className="absolute inset-0" />
-      <View className="rounded-3xl overflow-hidden bg-dark2/50 py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative">
+      <View className="rounded-3xl overflow-hidden bg-dark2/80 py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative">
         <BlurView intensity={10} tint="dark" className="absolute inset-0" />
         <Pressable
           className="p-2"
@@ -100,7 +98,7 @@ const CameraToolbar = ({
         </Pressable>
         <Pressable
           className="p-2"
-          onPress={() => setFlashlightOn(!flashlightOn)}
+          onPress={() => onFlashlightChange(!flashlightOn)}
         >
           <SvgXml
             xml={flashlightOn ? flashlightOnIcon : flashlightOff}
@@ -114,7 +112,9 @@ const CameraToolbar = ({
         <SvgXml xml={logo} width={32} height={32} color="white" />
         <Text className="text-light2 font-bold text-md">Dexly</Text>
       </View>
-      <View className="rounded-3xl overflow-hidden bg-dark2/50 py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative">
+      <View
+        className={`rounded-3xl overflow-hidden ${"bg-dark2/80"} py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative`}
+      >
         <BlurView intensity={10} tint="dark" className="absolute inset-0" />
         <Pressable className="p-2" onPress={() => handlePreviousLens()}>
           <SvgXml xml={zoomOut} width={24} height={24} color="white" />
