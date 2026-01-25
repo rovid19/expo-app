@@ -107,3 +107,57 @@ export const ebayOAuthCallback = async (req: Request, res: Response) => {
     return res.redirect("dexly://ebay-error");
   }
 };
+
+async function getEbayAccessToken(): Promise<string> {
+  const auth = Buffer.from(
+    `${process.env.EBAY_CLIENT_ID}:${process.env.EBAY_CLIENT_SECRET}`
+  ).toString("base64");
+
+  const res = await axios.post(
+    "https://api.ebay.com/identity/v1/oauth2/token",
+    "grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope",
+    {
+      headers: {
+        Authorization: `Basic ${auth}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+
+  return res.data.access_token;
+}
+
+export async function searchEbayItems(req: Request, res: Response) {
+  try {
+    const { itemName } = req.body;
+
+    if (!itemName || typeof itemName !== "string") {
+      return res.status(400).json({ error: "Invalid itemName" });
+    }
+
+    const accessToken = await getEbayAccessToken();
+
+    const ebayRes = await axios.get(
+      "https://api.ebay.com/buy/browse/v1/item_summary/search",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
+        },
+        params: {
+          q: itemName,
+          limit: 50,
+        },
+      }
+    );
+
+    return res.json({
+      query: itemName,
+      count: ebayRes.data.itemSummaries?.length ?? 0,
+      items: ebayRes.data.itemSummaries ?? [],
+    });
+  } catch (err: any) {
+    console.error(err?.response?.data || err);
+    return res.status(500).json({ error: "eBay search failed" });
+  }
+}

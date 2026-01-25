@@ -10,8 +10,8 @@ interface Items2Store {
   setItems: (items: Item[]) => void;
   scannedItems: Item[];
   setScannedItems: (items: Item[]) => void;
-  selectedItemId: number | null;
-  setSelectedItemId: (itemId: number | null) => void;
+  selectedItemId: string | null;
+  setSelectedItemId: (itemId: string | null) => void;
   findSelectedItem: () => Item | null;
   fetchItems: () => Promise<void>;
   updateItemImages: (
@@ -19,6 +19,8 @@ interface Items2Store {
     action: "add" | "remove"
   ) => Promise<void>;
   addScannedItem: (item: Item) => void;
+  saveItem: (item: Item, saveScannedItemAsListed?: boolean) => Promise<void>;
+  removeItem: (itemId: string) => Promise<void>;
 }
 
 export const useItems2Store = create<Items2Store>((set, get) => ({
@@ -35,11 +37,12 @@ export const useItems2Store = create<Items2Store>((set, get) => ({
     set({ items: items as Item[] });
   },
   selectedItemId: null,
-  setSelectedItemId: (itemId: number | null) => set({ selectedItemId: itemId }),
+  setSelectedItemId: (itemId: string | null) => set({ selectedItemId: itemId }),
   findSelectedItem: () => {
     const { itemType, items, scannedItems, selectedItemId } = get();
     const itemArray = itemType === "listed" ? items : scannedItems;
-    return itemArray.find((item) => item.id === selectedItemId) || null;
+    const item = itemArray.find((item) => item.id === selectedItemId);
+    return item ? structuredClone(item) : null;
   },
 
   updateItemImages: async (photoUri: string, action: "add" | "remove") => {
@@ -71,9 +74,44 @@ export const useItems2Store = create<Items2Store>((set, get) => ({
       set({ scannedItems: update(scannedItems) });
     }
 
-    await ItemsService.updateItemImages(user.id, newImages);
+    await ItemsService.updateItemImages(user.id, newImages, selectedItemId);
   },
   addScannedItem: (item: Item) => {
     set({ scannedItems: [...get().scannedItems, item] });
+  },
+  saveItem: async (item: Item, saveScannedItemAsListed: boolean = false) => {
+    const { itemType, scannedItems, items } = get();
+    const user = useUserStore.getState().user;
+    if (!user?.id) return;
+    if (!item) return;
+
+    if (itemType === "scanned" && !saveScannedItemAsListed) {
+      set({
+        scannedItems: scannedItems.map((arrayItem) =>
+          arrayItem.id === item.id ? item : arrayItem
+        ),
+      });
+    } else {
+      set({
+        items: items.map((arrayItem) =>
+          arrayItem.id === item.id ? item : arrayItem
+        ),
+      });
+    }
+
+    await ItemsService.saveItem(item, user.id);
+  },
+
+  removeItem: async (itemId: string) => {
+    const { scannedItems, itemType } = get();
+    const user = useUserStore.getState().user;
+    if (!user?.id) return;
+
+    if (itemType === "scanned") {
+      set({ scannedItems: scannedItems.filter((item) => item.id !== itemId) });
+    } else {
+      await ItemsService.deleteItem(itemId, user.id);
+      await get().fetchItems();
+    }
   },
 }));

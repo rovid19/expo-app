@@ -3,15 +3,17 @@ import React from "react";
 import { View } from "react-native";
 import { Text } from "react-native";
 import { TextInput } from "react-native";
+import ListingHeader from "./listingHeader";
 import { useItems2Store } from "../../stores/items2Store";
 const ListingInfo = () => {
-  const { selectedItemId, items } = useItems2Store();
-  const item = items.find((item) => item.id === selectedItemId);
+  const { selectedItemId, items, findSelectedItem } = useItems2Store();
+  const item = findSelectedItem();
   if (!item) return null;
 
   return (
-    <View className=" rounded-3xl gap-2 mt-2 ">
-      <View className="flex  flex-col bg-dark3 rounded-3xl px-8 py-4">
+    <View className=" rounded-3xl gap-2 flex-1">
+      <ListingHeader />
+      <View className="flex  flex-col bg-dark3 rounded-3xl px-8 py-4 mt-2">
         <Text className="text-light2 font-sans text-lg">
           Est. Resell Item Price
         </Text>
@@ -23,7 +25,9 @@ const ListingInfo = () => {
         {/* Buying price */}
         <View className="flex-1 flex-col gap-2 border border-dark2  rounded-l-3xl p-4 justify-center">
           <Text className="text-light3 font-sans text-lg ">Buying price</Text>
-          <Text className="text-light2 font-bold text-3xl">${item?.price}</Text>
+          <Text className="text-light2 font-bold text-3xl">
+            ${item.buying_price ? item.buying_price : 0}
+          </Text>
           {/*<View className="flex flex-row items-center gap-2 bg-dark2 rounded-3xl p-2">
             <View>
               <Text className="text-light3 font-sans text-3xl ">$</Text>
@@ -40,7 +44,10 @@ const ListingInfo = () => {
         <View className="flex-1 flex-col gap-2 rounded-r-3xl p-4 justify-center bg-dark2 ">
           <Text className="text-light3 font-sans text-lg ">Net profit</Text>
           <Text className="text-accent1 font-bold text-3xl">
-            ${item.price - item.resale_price_min}
+            $
+            {item.selling_price && item.buying_price
+              ? item.selling_price - item.buying_price
+              : 0}
           </Text>
           {/*<View className="flex flex-row items-center gap-2  rounded-3xl p-2">
          

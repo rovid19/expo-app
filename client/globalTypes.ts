@@ -12,5 +12,5 @@ export interface Item {
   isSold?: boolean;
   owner_id?: string;
   created_at?: string;
-  id: number;
+  id: string;
 }

@@ -5,7 +5,7 @@ import { useRef } from "react";
 import SubscriptionBottomSheet from "../../../components/profile/subscriptionBottomSheet";
 import BottomSheet from "@gorhom/bottom-sheet";
 import ReportBottomSheet from "../../../components/profile/reportBottomSheet";
-import Header from "../../../components/header";
+import Header from "../../../components/app/header";
 import { logo } from "../../../assets/icons/icons";
 
 export default function Profile() {

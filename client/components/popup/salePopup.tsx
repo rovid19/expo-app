@@ -1,16 +1,17 @@
 import { Linking, Text, TouchableOpacity, View } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { ebayIcon, facebookIcon, thrash } from "../assets/icons/icons";
-import { useListingDetailsStore } from "../stores/listingDetailsStore";
-import { usePopupStore } from "../stores/popupStore";
-import { useUserStore } from "../stores/userStore";
-import api from "../lib/axios";
+import { ebayIcon, facebookIcon } from "../../assets/icons/icons";
+import { usePopupStore } from "../../stores/popupStore";
+import { useUserStore } from "../../stores/userStore";
+import api from "../../lib/axios";
+import FacebookMarketplacePost from "../listingDetails/modals/FacebookMarketplacePost";
+import { useAppStore } from "../../stores/appStore";
 
 const SalePopup = () => {
   const { close } = usePopupStore();
-  const { setIsFacebookModalVisible } = useListingDetailsStore();
+  const { setIsModal, closeModal } = useAppStore();
   const { user } = useUserStore();
-
+  const { isModal } = useAppStore();
   const handleSellOnEbay = async () => {
     const checkEbayConnection = await api.get(
       `/ebay/has-ebay-connection?userId=${user?.id}`
@@ -25,6 +26,8 @@ const SalePopup = () => {
     }
   };
 
+  console.log("sale popup", isModal);
+
   return (
     <>
       <View className="  rounded-3xl gap-4">
@@ -35,7 +38,11 @@ const SalePopup = () => {
           onPress={() => {
             console.log("selling on facebook");
             close();
-            setIsFacebookModalVisible(true);
+            setIsModal({
+              visible: true,
+              content: <FacebookMarketplacePost onClose={() => closeModal()} />,
+              popupContent: null,
+            });
           }}
           className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2"
         >

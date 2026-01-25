@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import * as MediaLibrary from "expo-media-library";
 import { Camera, useCameraPermission } from "react-native-vision-camera";
 import ScannedItemContainer from "../../../components/scan/scannedItemContainer";
-import CameraToolbar from "../../../components/cameraToolbar";
+import CameraToolbar from "../../../components/app/cameraToolbar";
 import SvgScanOverlay from "../../../components/scan/svgScanOverlay";
 import { useItems2Store } from "../../../stores/items2Store";
 import { useFocusEffect } from "@react-navigation/native";
@@ -43,12 +43,12 @@ export default function Scan() {
   }, []);
 
   // animation when scanned item is added to the list
-  /*useEffect(() => {
+  useEffect(() => {
     if (scrollViewRef.current && scannedItems.length > 0) {
-      const offset = selectedItemId * (250 + 12);
+      const offset = scannedItems.length * (250 + 12);
       scrollViewRef.current.scrollTo({ x: offset, animated: true });
     }
-  }, [selectedItemId]);*/
+  }, [scannedItems]);
 
   if (!currentDevice) {
     return (
@@ -98,7 +98,7 @@ export default function Scan() {
         </View>
 
         {/* Scanned items */}
-        <View className=" px-6 py-4 mb-4 relative bg-green-500 flex justify-center items-center ">
+        <View className=" px-6 py-4 mb-4 relative flex justify-center items-center h-[150px] w-full">
           {!startAni && scannedItems.length > 0 && (
             <ScrollView
               ref={scrollViewRef}
@@ -106,12 +106,7 @@ export default function Scan() {
               showsHorizontalScrollIndicator={false}
               snapToInterval={262}
               decelerationRate="fast"
-              className=" w-full h-[120px]"
-              contentContainerClassName="gap-3 flex-row items-center bg-red-500"
-              onMomentumScrollEnd={(e) => {
-                const index = Math.round(e.nativeEvent.contentOffset.x / 262);
-                setSelectedItemId(index);
-              }}
+              contentContainerClassName="flex-row items-center gap-3"
             >
               {scannedItems.map((item, index) => (
                 <View key={`${item.detected_item}-${index}`} className="mr-3">

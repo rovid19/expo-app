@@ -1,18 +1,18 @@
 import { SafeAreaView, View, Text, TouchableOpacity } from "react-native";
 import { WebView } from "react-native-webview";
 import { setStringAsync } from "expo-clipboard";
-import { Item } from "../../../globalTypes";
 import { StyleSheet } from "react-native";
+import { useItems2Store } from "../../../stores/items2Store";
 
 interface FacebookMarketplacePostProps {
-  listing: Item;
   onClose: () => void;
 }
 
-const FacebookMarketplacePost = ({
-  listing,
-  onClose,
-}: FacebookMarketplacePostProps) => {
+const FacebookMarketplacePost = ({ onClose }: FacebookMarketplacePostProps) => {
+  const { findSelectedItem } = useItems2Store();
+  const listing = findSelectedItem();
+  if (!listing) return null;
+
   const copyTitle = async () => {
     await setStringAsync(listing.detected_item);
   };

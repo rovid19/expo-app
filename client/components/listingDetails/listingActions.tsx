@@ -1,11 +1,11 @@
 import { TouchableOpacity, Text } from "react-native";
-import { useListingDetailsStore } from "../../stores/listingDetailsStore";
 import { usePopupStore } from "../../stores/popupStore";
-import ActionPopup from "../actionPopup";
-import SalePopup from "../salePopup";
+import ActionPopup from "../popup/actionPopup";
+import SalePopup from "../popup/salePopup";
 
 const ListingActions = () => {
-  const { open, close } = usePopupStore();
+  const { open } = usePopupStore();
+
   return (
     <>
       <TouchableOpacity

@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "../services/supabase/supabaseClient";
 import { useUserStore } from "../stores/userStore";
 import "../global.css";
@@ -10,37 +10,31 @@ import {
   Roboto_500Medium,
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
-import GlobalPopup from "../components/popup";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import GlobalPopup from "../components/popup/popup";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useListingDetailsStore } from "../stores/listingDetailsStore";
 import { Modal } from "react-native";
-import FacebookMarketplacePost from "../components/listingDetails/modals/FacebookMarketplacePost";
-import { useItemsStore } from "../stores/itemsStore";
-import * as Linking from "expo-linking";
 import Toast from "react-native-toast-message";
-import toastConfig from "../components/toastConfig";
-import AddAdditionalImages from "../components/scan/addAdditionalImages";
-import EditListing from "../components/listingDetails/modals/editListing";
+import toastConfig from "../components/app/toastConfig";
+import ListingDetailsBottomSheet from "../components/listingDetails/index";
+import { useAppStore } from "../stores/appStore";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const setUser = useUserStore((state) => state.setUser);
-  const {
-    isFacebookModalVisible,
-    setIsFacebookModalVisible,
-    isAdditionalPhotosModalVisible,
-    setIsAdditionalPhotosModalVisible,
-    isEditListingModalVisible,
-    setIsEditListingModalVisible,
-  } = useListingDetailsStore();
-  const { selectedScannedItem } = useItemsStore();
+  const { setListingDetailsBottomSheetRef } = useListingDetailsStore();
+  const listingDetailsBottomSheetRef = useRef<BottomSheetModal>(null);
   const [loaded] = useFonts({
     Roboto_400Regular,
     Roboto_500Medium,
     Roboto_700Bold,
   });
+  const { isModal, closeModal } = useAppStore();
 
   useEffect(() => {
+    setListingDetailsBottomSheetRef(
+      listingDetailsBottomSheetRef as React.RefObject<BottomSheetModal>
+    );
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setIsLoading(false);
@@ -66,26 +60,32 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false }} />
-      <GlobalPopup />
-
       <Modal
+        visible={isModal?.visible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => closeModal()}
+      >
+        {isModal?.content}
+        {isModal?.popupContent && (
+          <GlobalPopup content={isModal.popupContent} />
+        )}
+      </Modal>
+      <ListingDetailsBottomSheet ref={listingDetailsBottomSheetRef} />
+      <Toast config={toastConfig} />
+    </GestureHandlerRootView>
+  );
+}
+
+//    <GlobalPopup />
+/*   <Modal
         visible={isFacebookModalVisible}
         animationType="slide"
         transparent={false}
         onRequestClose={() => setIsFacebookModalVisible(false)}
       >
         <FacebookMarketplacePost
-          listing={{
-            id: 1,
-            detected_item: "Macbook Pro M1",
-            resale_price_min: 1000,
-            resale_price_max: 1500,
-            confidence: 0.95,
-            image: [],
-            category: "other",
-            details: "Macbook Pro M1",
-            price: 1000,
-          }}
+          listing={item as Item}
           onClose={() => setIsFacebookModalVisible(false)}
         />
       </Modal>
@@ -104,8 +104,4 @@ export default function RootLayout() {
         onRequestClose={() => setIsEditListingModalVisible(false)}
       >
         <EditListing />
-      </Modal>
-      <Toast config={toastConfig} />
-    </GestureHandlerRootView>
-  );
-}
+      </Modal>*/

@@ -9,13 +9,13 @@ import {
   zoomIn,
   zoomOut,
   logo,
-} from "../assets/icons/icons";
+} from "../../assets/icons/icons";
 import { BlurView } from "expo-blur";
 import * as ExpoRouter from "expo-router";
-import useCameraDevicesHook from "../hooks/useCameraDevicesHook";
-import { useListingDetailsStore } from "../stores/listingDetailsStore";
-import { useAppStore } from "../stores/appStore";
-
+import useCameraDevicesHook from "../../hooks/useCameraDevicesHook";
+import { useListingDetailsStore } from "../../stores/listingDetailsStore";
+import { useAppStore } from "../../stores/appStore";
+import EditListing from "../listingDetails/modals/editListing";
 interface CameraToolbarProps {
   onDeviceChange: (device: CameraDevice | undefined) => void;
   onFlashlightChange: (on: boolean) => void;
@@ -30,11 +30,8 @@ const CameraToolbar = ({
   const [cameraIndex, setCameraIndex] = useState<number>(1);
   const { backDevices, wideDevice, normalDevice, telephotoDevice } =
     useCameraDevicesHook();
-  const {
-    isAdditionalPhotosModalVisible,
-    setIsAdditionalPhotosModalVisible,
-    setIsEditListingModalVisible,
-  } = useListingDetailsStore();
+  const { isModal, setIsModal } = useAppStore();
+
   // When cameraIndex changes, update the device
   useEffect(() => {
     let device: CameraDevice | undefined;
@@ -86,9 +83,12 @@ const CameraToolbar = ({
         <Pressable
           className="p-2"
           onPress={() => {
-            if (isAdditionalPhotosModalVisible) {
-              setIsAdditionalPhotosModalVisible(false);
-              setIsEditListingModalVisible(true);
+            if (isModal?.visible) {
+              setIsModal({
+                visible: true,
+                content: <EditListing />,
+                popupContent: null,
+              });
             } else {
               ExpoRouter.router.back();
             }

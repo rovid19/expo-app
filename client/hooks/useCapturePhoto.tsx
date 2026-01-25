@@ -12,7 +12,7 @@ interface useCapturePhotoProps {
 
 const useCapturePhoto = ({ cameraRef, setStartAni }: useCapturePhotoProps) => {
   const [flashlightOn, setFlashlightOn] = useState(false);
-  const { updateItemImages, addScannedItem } = useItems2Store();
+  const { updateItemImages, addScannedItem, selectedItemId } = useItems2Store();
   const handleCapture = async () => {
     if (!cameraRef.current) return;
 
@@ -42,7 +42,7 @@ const useCapturePhoto = ({ cameraRef, setStartAni }: useCapturePhotoProps) => {
     MediaLibrary.createAssetAsync(destUri).catch(() => {});
 
     // Store stable app-local URI
-    updateItemImages(destUri, "add");
+    if (!setStartAni) updateItemImages(destUri, "add");
 
     if (setStartAni) {
       const form = new FormData();
@@ -51,6 +51,7 @@ const useCapturePhoto = ({ cameraRef, setStartAni }: useCapturePhotoProps) => {
         type: "image/jpeg",
         name: "photo.jpg",
       } as any);
+      form.append("photoUri", destUri);
 
       const data = await ItemsService.scanItem(form);
 

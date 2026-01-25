@@ -47,7 +47,6 @@ export default function Dashboard() {
     }, [])
   );
   const tabBarHeight = useBottomTabBarHeight();
-  const listingDetailsBottomSheetRef = useRef<BottomSheet>(null);
 
   console.log("tabBarHeight", tabBarHeight);
 
@@ -59,7 +58,7 @@ export default function Dashboard() {
       >
         <View className="w-full flex flex-col gap-4">
           <Header />
-          <View className="flex flex-row px-4 justify-between w-full items-center ">
+          <View className="flex flex-row px-2 justify-between w-full items-center ">
             <View className="flex flex-row gap-2 ">
               <Pressable
                 onPress={() => goToTab("overview")}
@@ -107,7 +106,7 @@ export default function Dashboard() {
         </View>
 
         <GestureDetector gesture={swipeGesture}>
-          <View className="flex-1 w-full overflow-hidden mb-8">
+          <View className="flex-1 w-full overflow-hidden mb-8 px-2 justify-center items-center ">
             <Animated.View
               style={[overviewStyle]}
               className="absolute w-full h-full flex flex-col gap-2"
@@ -120,17 +119,11 @@ export default function Dashboard() {
               className="absolute w-full h-full flex-1 flex-col gap-2"
               contentContainerStyle={{ flexGrow: 1, gap: 8 }}
             >
-              <Collection
-                openListingDetails={() => {
-                  listingDetailsBottomSheetRef.current?.snapToIndex(0);
-                }}
-              />
+              <Collection />
             </Animated.ScrollView>
           </View>
         </GestureDetector>
       </View>
-
-      <ListingDetailsBottomSheet ref={listingDetailsBottomSheetRef} />
     </View>
   );
 }

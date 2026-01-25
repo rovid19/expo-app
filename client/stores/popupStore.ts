@@ -1,41 +1,25 @@
 // stores/popupStore.ts
 import { create } from "zustand";
-
+import { useAppStore } from "./appStore";
 type PopupState = {
-  isFullscreen: boolean;
-  visible: boolean;
-  content: React.ReactNode | null;
-  requiresConfirmation: {
-    isTrue: boolean;
-    action: (() => void) | null;
-  };
-  setRequiresConfirmation: (
-    isTrue: boolean,
-    action: (() => void) | null
-  ) => void;
-  open: (content: React.ReactNode, isFullscreen?: boolean) => void;
-  close: () => void;
+  requiresConfirmation: boolean;
+  setRequiresConfirmation: (requiresConfirmation: boolean) => void;
+  open: (content: React.ReactNode) => void;
 };
 
 export const usePopupStore = create<PopupState>((set) => ({
-  isFullscreen: false,
-  visible: false,
-  content: null,
-  requiresConfirmation: {
-    isTrue: false,
-    action: null,
+  requiresConfirmation: false,
+  setRequiresConfirmation: (requiresConfirmation: boolean) =>
+    set({ requiresConfirmation }),
+  open: (content: React.ReactNode) => {
+    const { isModal, setIsModal } = useAppStore.getState();
+
+    console.log("open popup", content);
+
+    setIsModal({
+      visible: true,
+      content: isModal?.content,
+      popupContent: content,
+    });
   },
-  setRequiresConfirmation: (isTrue: boolean, action: (() => void) | null) =>
-    set({
-      requiresConfirmation: { isTrue, action },
-    }),
-  open: (content, isFullscreen = false) =>
-    set({ visible: true, content, isFullscreen }),
-  close: () =>
-    set((state) => ({
-      ...state,
-      visible: false,
-      content: null,
-      requiresConfirmation: { isTrue: false, action: null },
-    })),
 }));

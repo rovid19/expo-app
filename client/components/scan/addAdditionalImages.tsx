@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import AdditionalImageContainer from "./additionalImageContainer";
-import CameraToolbar from "../cameraToolbar";
+import CameraToolbar from "../app/cameraToolbar";
 import { Camera, useCameraPermission } from "react-native-vision-camera";
 import useCameraDevicesHook from "../../hooks/useCameraDevicesHook";
 import * as MediaLibrary from "expo-media-library";

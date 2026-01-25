@@ -1,22 +1,28 @@
 import React, { useRef } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { rightArrow } from "../../assets/icons/icons";
 import { useAppStore } from "../../stores/appStore";
 import { Item } from "../../globalTypes";
 import { useItems2Store } from "../../stores/items2Store";
+import { useListingDetailsStore } from "../../stores/listingDetailsStore";
 interface HeaderProps {
   item: Item;
-  openListingDetails: () => void;
 }
 
-const item = ({ item, openListingDetails }: HeaderProps) => {
-  const { setHideNavbar } = useAppStore();
+const item = ({ item }: HeaderProps) => {
+  const { openListingDetails } = useListingDetailsStore();
+  const { setHideNavbar, setIsModal } = useAppStore();
   const { setSelectedItemId } = useItems2Store();
   return (
     <View className="w-full flex flex-row bg-dark2 rounded-3xl ">
       {/*Image*/}
-      <View className="w-[30%] h-full  rounded-l-3xl"></View>
+      <View className="w-[30%] flex-1  rounded-l-3xl">
+        <Image
+          source={{ uri: item.image ? item.image[0] : "" }}
+          className="flex-1 object-cover rounded-l-3xl"
+        />
+      </View>
       {/*Details*/}
       <View className="w-[70%] h-full rounded-r-3xl p-4 flex flex-col gap-3">
         {/*Item details*/}
@@ -41,7 +47,7 @@ const item = ({ item, openListingDetails }: HeaderProps) => {
                 Buying price:
               </Text>
               <Text className="text-light2 font-sans text-sm">
-                ${item.price}
+                ${item.buying_price ? item.buying_price : 0}
               </Text>
             </View>
             {/*net profit*/}
@@ -49,7 +55,10 @@ const item = ({ item, openListingDetails }: HeaderProps) => {
             <View className="flex flex-col gap-1">
               <Text className="text-light3 font-sans text-sm">Net profit:</Text>
               <Text className="text-accent1 font-sans text-sm">
-                ${item.price - item.resale_price_min}
+                $
+                {item.selling_price && item.buying_price
+                  ? item.selling_price - item.buying_price
+                  : 0}
               </Text>
             </View>
           </View>
@@ -61,6 +70,7 @@ const item = ({ item, openListingDetails }: HeaderProps) => {
           onPress={() => {
             setHideNavbar(true);
             openListingDetails();
+            //setIsModal({ visible: true, content: <EditListing /> });
             setSelectedItemId(item.id);
           }}
         >

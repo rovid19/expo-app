@@ -16,11 +16,17 @@ export class ItemsService {
     return data;
   }
 
-  static async updateItemImages(userId: string, photoUriArray: string[]) {
+  static async updateItemImages(
+    userId: string,
+    photoUriArray: string[],
+    itemId: string
+  ) {
     const { data, error } = await supabase
       .from("items")
       .update({ image: photoUriArray })
-      .eq("owner_id", userId);
+      .eq("owner_id", userId)
+      .eq("id", itemId);
+
     if (error) {
       console.error("Error updating item images:", error);
     }
@@ -35,5 +41,39 @@ export class ItemsService {
       console.error("Error scanning item:", error);
     }
     return res.data.scannedItem;
+  }
+
+  static async saveItem(item: Item, userId: string) {
+    const { data, error } = await supabase.from("items").upsert({
+      ...item,
+      owner_id: userId,
+    });
+    if (error) {
+      console.error("Error saving item:", error);
+    }
+    return data;
+  }
+
+  static async deleteItem(itemId: string, userId: string) {
+    const { data, error } = await supabase
+      .from("items")
+      .delete()
+      .eq("id", itemId)
+      .eq("owner_id", userId);
+    if (error) {
+      console.error("Error deleting item:", error);
+    }
+  }
+
+  static async updateItemDetails(item: Item, userId: string) {
+    const { data, error } = await supabase
+      .from("items")
+      .update(item)
+      .eq("id", item.id)
+      .eq("owner_id", userId);
+    if (error) {
+      console.error("Error updating item details:", error);
+    }
+    return data;
   }
 }

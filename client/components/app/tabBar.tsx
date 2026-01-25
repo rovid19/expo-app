@@ -1,6 +1,10 @@
 import { View, StyleSheet, LayoutChangeEvent } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { homeOutline, scanOutline, userOutline } from "../assets/icons/icons";
+import {
+  homeOutline,
+  scanOutline,
+  userOutline,
+} from "../../assets/icons/icons";
 import TabBarButton from "./tabBarButton";
 import { useState, useEffect } from "react";
 import Animated, {
@@ -9,7 +13,7 @@ import Animated, {
   withTiming,
   Easing,
 } from "react-native-reanimated";
-import { useAppStore } from "../stores/appStore";
+import { useAppStore } from "../../stores/appStore";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 

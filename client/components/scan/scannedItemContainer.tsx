@@ -1,27 +1,22 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Modal, Image } from "react-native";
-import { ScannedItem as ScannedItemType } from "../../globalTypes";
-import ListingDetails from "./listingDetails";
-import { useItemsStore } from "../../stores/itemsStore";
 import { useUserStore } from "../../stores/userStore";
 import { BlurView } from "expo-blur";
+import { useListingDetailsStore } from "../../stores/listingDetailsStore";
+import { Item } from "../../globalTypes";
+import { useItems2Store } from "../../stores/items2Store";
 
 interface ScannedItemProps {
-  item: ScannedItemType;
+  item: Item;
   index: number;
 }
 
 const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
   const { currency } = useUserStore();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const { setSelectedScannedItem } = useItemsStore();
-  const { setTriggerDashboardRefresh, triggerDashboardRefresh } =
-    useUserStore();
+  const { setSelectedItemId } = useItems2Store();
+  const { openListingDetails } = useListingDetailsStore();
 
-  const handleOpenModal = () => {
-    setSelectedScannedItem(item);
-    setIsModalVisible(true);
-  };
+  console.log("item", item);
 
   return (
     <>
@@ -56,7 +51,10 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
               </Text>
               <TouchableOpacity
                 className="p-4   rounded-lg  border border-white/10 justify-center items-center"
-                onPress={handleOpenModal}
+                onPress={() => {
+                  openListingDetails();
+                  setSelectedItemId(item.id);
+                }}
               >
                 <Text className="text-xs font-semibold text-gray-50">Edit</Text>
               </TouchableOpacity>
@@ -64,22 +62,6 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
           </View>
         </View>
       </BlurView>
-
-      <Modal
-        visible={isModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setIsModalVisible(false)}
-      >
-        <ListingDetails
-          onClose={() => setIsModalVisible(false)}
-          onSaved={() => {
-            setTriggerDashboardRefresh(!triggerDashboardRefresh);
-            setIsModalVisible(false);
-          }}
-          whichTab="scan"
-        />
-      </Modal>
     </>
   );
 };

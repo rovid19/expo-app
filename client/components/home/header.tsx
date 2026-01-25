@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import { logo } from "../../assets/icons/icons";
-import Header from "../header";
+import Header from "../app/header";
 
 const header = () => {
   return (

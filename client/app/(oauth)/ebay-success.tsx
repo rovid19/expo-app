@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { usePopupStore } from "../../stores/popupStore";
 import Toast from "react-native-toast-message";
 import * as Linking from "expo-linking";
 import { router } from "expo-router";
+import { useAppStore } from "../../stores/appStore";
 
 export default function EbaySuccess() {
-  const { close } = usePopupStore();
+  const { closeModal } = useAppStore();
   useEffect(() => {
-    close();
+    closeModal();
     console.log("ebay success");
     Toast.show({
       type: "success",
