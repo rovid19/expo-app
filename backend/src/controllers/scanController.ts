@@ -4,7 +4,8 @@ import { ScanItem } from "../services/openai/detectItem";
 import fs from "fs";
 import path from "path";
 import { supabase } from "../services/supabase/supabaseClient";
-
+import { searchEbayItems } from "./ebayController";
+import axios from "axios";
 const upload = multer({ dest: "uploads/" });
 
 export const scanImage = async (req: Request, res: Response) => {
@@ -38,9 +39,32 @@ export const scanImage = async (req: Request, res: Response) => {
     scannedItem.price = 0;
     scannedItem.id = Math.random().toString(36).substr(2, 9);
     scannedItem.image = [photoUri];
-
-    console.log("scanned item", scannedItem);
+    scannedItem.estimated_resale_price = await findRealListingPrice(
+      scannedItem.ebay_search_query
+    );
 
     res.status(200).json({ scannedItem });
   });
+};
+
+const findRealListingPrice = async (itemName: string) => {
+  const response = await axios.post(
+    "http://localhost:3000/api/ebay/get-similar-listings",
+    { itemName }
+  );
+
+  const listings = response.data.items ?? [];
+
+  const prices = listings
+    .map((item: any) => Number(item?.price?.value))
+    .filter((v: number) => Number.isFinite(v));
+
+  if (prices.length === 0) {
+    return null; // explicit: no usable price data
+  }
+
+  const averagePrice =
+    prices.reduce((sum: number, v: number) => sum + v, 0) / prices.length;
+
+  return Math.round(averagePrice);
 };

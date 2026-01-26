@@ -7,16 +7,26 @@ import ConfirmationPopup from "./confirmationPopup";
 import { useItems2Store } from "../../stores/items2Store";
 import { useListingDetailsStore } from "../../stores/listingDetailsStore";
 import { useAppStore } from "../../stores/appStore";
+import toast from "react-native-toast-message";
 const actionPopup = () => {
   const { requiresConfirmation, setRequiresConfirmation } = usePopupStore();
-  const { itemType, selectedItemId, removeItem, findSelectedItem, saveItem } =
-    useItems2Store();
+  const {
+    itemType,
+    selectedItemId,
+    removeItem,
+    findSelectedItem,
+    saveItem,
+    toggleItemSold,
+  } = useItems2Store();
   const { closeListingDetails } = useListingDetailsStore();
   const { closeModal } = useAppStore();
   const handleDeleteItem = async () => {
     await removeItem(selectedItemId as string);
     closeListingDetails();
   };
+
+  const item = findSelectedItem();
+  if (!item) return null;
   return (
     <>
       {!requiresConfirmation ? (
@@ -25,9 +35,21 @@ const actionPopup = () => {
             Actions
           </Text>
           {itemType === "listed" && (
-            <TouchableOpacity className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2">
+            <TouchableOpacity
+              onPress={() => {
+                toggleItemSold(item.is_sold ? false : true);
+                closeModal();
+                toast.show({
+                  type: "success",
+                  text1: item.is_sold
+                    ? "Item marked as available"
+                    : "Item marked as sold",
+                });
+              }}
+              className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2"
+            >
               <Text className="text-light2 text-lg font-sans">
-                Mark as sold
+                {item.is_sold ? "Mark as available" : "Mark as sold"}
               </Text>
             </TouchableOpacity>
           )}
@@ -38,6 +60,10 @@ const actionPopup = () => {
                 if (!item) return;
                 saveItem(item, true);
                 closeModal();
+                toast.show({
+                  type: "success",
+                  text1: "Item added to your collection",
+                });
               }}
               className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2"
             >

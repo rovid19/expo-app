@@ -21,6 +21,7 @@ interface Items2Store {
   addScannedItem: (item: Item) => void;
   saveItem: (item: Item, saveScannedItemAsListed?: boolean) => Promise<void>;
   removeItem: (itemId: string) => Promise<void>;
+  toggleItemSold: (sold: boolean) => Promise<void>;
 }
 
 export const useItems2Store = create<Items2Store>((set, get) => ({
@@ -103,15 +104,31 @@ export const useItems2Store = create<Items2Store>((set, get) => ({
   },
 
   removeItem: async (itemId: string) => {
-    const { scannedItems, itemType } = get();
+    const { scannedItems, itemType, items } = get();
     const user = useUserStore.getState().user;
     if (!user?.id) return;
 
     if (itemType === "scanned") {
       set({ scannedItems: scannedItems.filter((item) => item.id !== itemId) });
     } else {
-      await ItemsService.deleteItem(itemId, user.id);
-      await get().fetchItems();
+      set({ items: items.filter((item) => item.id !== itemId) });
+      ItemsService.deleteItem(itemId, user.id);
     }
+  },
+
+  toggleItemSold: async (sold: boolean) => {
+    const { items, findSelectedItem } = get();
+    const user = useUserStore.getState().user;
+    const itemToUpdate = findSelectedItem();
+    if (!user?.id || !itemToUpdate) return;
+    itemToUpdate.is_sold = sold;
+
+    set({
+      items: items.map((item) =>
+        item.id === itemToUpdate.id ? itemToUpdate : item
+      ),
+    });
+
+    ItemsService.saveItem(itemToUpdate, user.id);
   },
 }));

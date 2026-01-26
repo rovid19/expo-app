@@ -18,7 +18,7 @@ const FacebookMarketplacePost = ({ onClose }: FacebookMarketplacePostProps) => {
   };
 
   const copyPrice = async () => {
-    await setStringAsync(String(listing.resale_price_min));
+    await setStringAsync(String(listing.estimated_resale_price));
   };
 
   return (
@@ -62,7 +62,7 @@ const FacebookMarketplacePost = ({ onClose }: FacebookMarketplacePostProps) => {
           <View>
             <Text className="text-xs text-slate-400">Price</Text>
             <Text className="text-sm text-slate-50">
-              {listing.resale_price_min}
+              {listing.estimated_resale_price}
             </Text>
           </View>
           <Text className="text-lime-400 font-semibold">Copy</Text>

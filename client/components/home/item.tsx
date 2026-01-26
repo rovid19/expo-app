@@ -15,23 +15,31 @@ const item = ({ item }: HeaderProps) => {
   const { setHideNavbar, setIsModal } = useAppStore();
   const { setSelectedItemId } = useItems2Store();
   return (
-    <View className="w-full flex flex-row bg-dark2 rounded-3xl ">
+    <View className="w-full flex flex-row bg-dark2 rounded-3xl">
       {/*Image*/}
-      <View className="w-[30%] flex-1  rounded-l-3xl">
+      <View className="w-[40%] flex-1  rounded-l-3xl">
         <Image
           source={{ uri: item.image ? item.image[0] : "" }}
           className="flex-1 object-cover rounded-l-3xl"
         />
       </View>
       {/*Details*/}
-      <View className="w-[70%] h-full rounded-r-3xl p-4 flex flex-col gap-3">
+      <View className="w-[60%] h-full rounded-r-3xl p-4 flex flex-col gap-3">
         {/*Item details*/}
         <View className="flex flex-col gap-2">
           {/*Item Worth*/}
-          <View className="px-4 py-1 bg-dark1 ">
-            <Text className="text-light2 font-sans text-lg">
-              Worth: ${item.price}
-            </Text>
+          <View
+            className={`px-4 py-1 rounded-3xl ${
+              item.is_sold ? "bg-accent1 rounded-3xl" : "bg-dark1"
+            }`}
+          >
+            {item.is_sold ? (
+              <Text className="text-dark1 font-bold text-lg">Sold</Text>
+            ) : (
+              <Text className="text-light2 font-sans text-lg">
+                Worth: ${item.estimated_resale_price}
+              </Text>
+            )}
           </View>
           {/*Item Name*/}
           <View className="px-2">

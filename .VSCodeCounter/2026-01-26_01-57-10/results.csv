@@ -1,0 +1,71 @@
+"filename", "language", "TypeScript", "JSON", "Properties", "JavaScript", "XML", "TypeScript JSX", "JSON with Comments", "CSS", "comment", "blank", "total"
+"/Users/rock/Documents/Projekti/expo-app/client/.env", "Properties", 0, 0, 4, 0, 0, 0, 0, 0, 0, 1, 5
+"/Users/rock/Documents/Projekti/expo-app/client/app.config.js", "JavaScript", 0, 0, 0, 61, 0, 0, 0, 0, 0, 3, 64
+"/Users/rock/Documents/Projekti/expo-app/client/app/(oauth)/ebay-success.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 20, 0, 0, 0, 2, 22
+"/Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/_layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 64, 0, 0, 0, 2, 66
+"/Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/home/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 116, 0, 0, 4, 10, 130
+"/Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/profile/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 28, 0, 0, 4, 6, 38
+"/Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/scan/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 115, 0, 0, 5, 14, 134
+"/Users/rock/Documents/Projekti/expo-app/client/app/_layout.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 71, 0, 0, 28, 9, 108
+"/Users/rock/Documents/Projekti/expo-app/client/app/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 18, 0, 0, 3, 5, 26
+"/Users/rock/Documents/Projekti/expo-app/client/assets/icons/icons.ts", "TypeScript", 267, 0, 0, 0, 0, 0, 0, 0, 0, 52, 319
+"/Users/rock/Documents/Projekti/expo-app/client/assets/logo.svg", "XML", 0, 0, 0, 0, 6, 0, 0, 0, 0, 1, 7
+"/Users/rock/Documents/Projekti/expo-app/client/babel.config.js", "JavaScript", 0, 0, 0, 19, 0, 0, 0, 0, 0, 1, 20
+"/Users/rock/Documents/Projekti/expo-app/client/components/app/cameraToolbar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 116, 0, 0, 6, 9, 131
+"/Users/rock/Documents/Projekti/expo-app/client/components/app/header.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 16, 0, 0, 0, 4, 20
+"/Users/rock/Documents/Projekti/expo-app/client/components/app/loader.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 68, 0, 0, 0, 14, 82
+"/Users/rock/Documents/Projekti/expo-app/client/components/app/tabBar.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 113, 0, 0, 0, 19, 132
+"/Users/rock/Documents/Projekti/expo-app/client/components/app/tabBarButton.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 74, 0, 0, 0, 9, 83
+"/Users/rock/Documents/Projekti/expo-app/client/components/app/toastConfig.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 0, 0, 4, 21
+"/Users/rock/Documents/Projekti/expo-app/client/components/auth/auth.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 163, 0, 0, 0, 23, 186
+"/Users/rock/Documents/Projekti/expo-app/client/components/home/collection.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 17, 0, 0, 0, 3, 20
+"/Users/rock/Documents/Projekti/expo-app/client/components/home/header.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 20, 0, 0, 0, 4, 24
+"/Users/rock/Documents/Projekti/expo-app/client/components/home/item.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 76, 0, 0, 10, 5, 91
+"/Users/rock/Documents/Projekti/expo-app/client/components/home/overview.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 34, 0, 0, 3, 6, 43
+"/Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 79, 0, 0, 1, 5, 85
+"/Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/listingActions.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 27, 0, 0, 0, 5, 32
+"/Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/listingHeader.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 44, 0, 0, 1, 4, 49
+"/Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/listingInfo.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 42, 0, 0, 16, 4, 62
+"/Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/modals/FacebookMarketplacePost.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 83, 0, 0, 3, 13, 99
+"/Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/modals/editListing.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 174, 0, 0, 5, 16, 195
+"/Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/similarListings.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 122, 0, 0, 3, 15, 140
+"/Users/rock/Documents/Projekti/expo-app/client/components/popup/actionPopup.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 69, 0, 0, 0, 2, 71
+"/Users/rock/Documents/Projekti/expo-app/client/components/popup/confirmationPopup.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 60, 0, 0, 0, 5, 65
+"/Users/rock/Documents/Projekti/expo-app/client/components/popup/popup.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 33, 0, 0, 20, 6, 59
+"/Users/rock/Documents/Projekti/expo-app/client/components/popup/salePopup.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 61, 0, 0, 0, 6, 67
+"/Users/rock/Documents/Projekti/expo-app/client/components/profile/profileActions.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 58, 0, 0, 0, 6, 64
+"/Users/rock/Documents/Projekti/expo-app/client/components/profile/profileCard.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 34, 0, 0, 0, 4, 38
+"/Users/rock/Documents/Projekti/expo-app/client/components/profile/reportBottomSheet.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 157, 0, 0, 3, 9, 169
+"/Users/rock/Documents/Projekti/expo-app/client/components/profile/subscriptionBottomSheet.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 44, 0, 0, 3, 6, 53
+"/Users/rock/Documents/Projekti/expo-app/client/components/scan/addAdditionalImages.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 99, 0, 0, 4, 10, 113
+"/Users/rock/Documents/Projekti/expo-app/client/components/scan/additionalImageContainer.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 35, 0, 0, 0, 6, 41
+"/Users/rock/Documents/Projekti/expo-app/client/components/scan/scannedItemContainer.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 64, 0, 0, 0, 6, 70
+"/Users/rock/Documents/Projekti/expo-app/client/components/scan/svgScanOverlay.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 292, 0, 0, 0, 44, 336
+"/Users/rock/Documents/Projekti/expo-app/client/eas.json", "JSON with Comments", 0, 0, 0, 0, 0, 0, 21, 0, 0, 1, 22
+"/Users/rock/Documents/Projekti/expo-app/client/env.d.ts", "TypeScript", 8, 0, 0, 0, 0, 0, 0, 0, 0, 1, 9
+"/Users/rock/Documents/Projekti/expo-app/client/global.css", "CSS", 0, 0, 0, 0, 0, 0, 0, 3, 0, 7, 10
+"/Users/rock/Documents/Projekti/expo-app/client/globalTypes.ts", "TypeScript", 16, 0, 0, 0, 0, 0, 0, 0, 0, 1, 17
+"/Users/rock/Documents/Projekti/expo-app/client/hooks/home/useSwipe.ts", "TypeScript", 118, 0, 0, 0, 0, 0, 0, 0, 3, 23, 144
+"/Users/rock/Documents/Projekti/expo-app/client/hooks/listingDetails/useSimilarListingAni.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 36, 0, 0, 0, 5, 41
+"/Users/rock/Documents/Projekti/expo-app/client/hooks/useCameraDevicesHook.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 51, 0, 0, 2, 6, 59
+"/Users/rock/Documents/Projekti/expo-app/client/hooks/useCapturePhoto.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 50, 0, 0, 4, 17, 71
+"/Users/rock/Documents/Projekti/expo-app/client/hooks/useKeyboardHeight.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 32, 0, 0, 1, 10, 43
+"/Users/rock/Documents/Projekti/expo-app/client/lib/axios.ts", "TypeScript", 33, 0, 0, 0, 0, 0, 0, 0, 0, 6, 39
+"/Users/rock/Documents/Projekti/expo-app/client/metro.config.js", "JavaScript", 0, 0, 0, 5, 0, 0, 0, 0, 0, 4, 9
+"/Users/rock/Documents/Projekti/expo-app/client/nativewind-env.d.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 1, 7, 8
+"/Users/rock/Documents/Projekti/expo-app/client/package-lock.json", "JSON", 0, 11561, 0, 0, 0, 0, 0, 0, 0, 1, 11562
+"/Users/rock/Documents/Projekti/expo-app/client/package.json", "JSON", 0, 58, 0, 0, 0, 0, 0, 0, 0, 1, 59
+"/Users/rock/Documents/Projekti/expo-app/client/services/facebookService.ts", "TypeScript", 95, 0, 0, 0, 0, 0, 0, 0, 0, 19, 114
+"/Users/rock/Documents/Projekti/expo-app/client/services/imageService.ts", "TypeScript", 116, 0, 0, 0, 0, 0, 0, 0, 0, 26, 142
+"/Users/rock/Documents/Projekti/expo-app/client/services/supabase/itemsServices.ts", "TypeScript", 70, 0, 0, 0, 0, 0, 0, 0, 1, 9, 80
+"/Users/rock/Documents/Projekti/expo-app/client/services/supabase/supabaseClient.ts", "TypeScript", 13, 0, 0, 0, 0, 0, 0, 0, 0, 3, 16
+"/Users/rock/Documents/Projekti/expo-app/client/services/supabase/uploadImages.ts", "TypeScript", 38, 0, 0, 0, 0, 0, 0, 0, 0, 11, 49
+"/Users/rock/Documents/Projekti/expo-app/client/stores/appStore.ts", "TypeScript", 46, 0, 0, 0, 0, 0, 0, 0, 0, 6, 52
+"/Users/rock/Documents/Projekti/expo-app/client/stores/items2Store.ts", "TypeScript", 103, 0, 0, 0, 0, 0, 0, 0, 0, 15, 118
+"/Users/rock/Documents/Projekti/expo-app/client/stores/itemsStore.ts", "TypeScript", 171, 0, 0, 0, 0, 0, 0, 0, 6, 27, 204
+"/Users/rock/Documents/Projekti/expo-app/client/stores/listingDetailsStore.ts", "TypeScript", 32, 0, 0, 0, 0, 0, 0, 0, 0, 2, 34
+"/Users/rock/Documents/Projekti/expo-app/client/stores/popupStore.ts", "TypeScript", 21, 0, 0, 0, 0, 0, 0, 0, 1, 4, 26
+"/Users/rock/Documents/Projekti/expo-app/client/stores/userStore.ts", "TypeScript", 18, 0, 0, 0, 0, 0, 0, 0, 0, 3, 21
+"/Users/rock/Documents/Projekti/expo-app/client/tailwind.config.js", "JavaScript", 0, 0, 0, 25, 0, 0, 0, 0, 1, 1, 27
+"/Users/rock/Documents/Projekti/expo-app/client/tsconfig.json", "JSON with Comments", 0, 0, 0, 0, 0, 0, 13, 0, 0, 0, 13
+"Total", "-", 1165, 11619, 4, 110, 6, 2892, 34, 3, 142, 594, 16569

@@ -46,8 +46,8 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
             <View className="flex-row justify-between mt-2">
               <Text className="text-sm font-semibold text-green-500 self-end">
                 {currency === "EUR"
-                  ? `€${item.resale_price_min.toFixed(2)}`
-                  : `$${item.resale_price_min.toFixed(2)}`}
+                  ? `€${item.estimated_resale_price.toFixed(2)}`
+                  : `$${item.estimated_resale_price.toFixed(2)}`}
               </Text>
               <TouchableOpacity
                 className="p-4   rounded-lg  border border-white/10 justify-center items-center"

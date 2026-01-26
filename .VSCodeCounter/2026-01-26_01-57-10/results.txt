@@ -1,0 +1,131 @@
+Date : 2026-01-26 01:57:10
+Directory : /Users/rock/Documents/Projekti/expo-app/client
+Total : 69 files,  15833 codes, 142 comments, 594 blanks, all 16569 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          2 |     11,619 |          0 |          2 |     11,621 |
+| TypeScript JSX     |         41 |      2,892 |        129 |        358 |      3,379 |
+| TypeScript         |         17 |      1,165 |         12 |        215 |      1,392 |
+| JavaScript         |          4 |        110 |          1 |          9 |        120 |
+| JSON with Comments |          2 |         34 |          0 |          1 |         35 |
+| XML                |          1 |          6 |          0 |          1 |          7 |
+| Properties         |          1 |          4 |          0 |          1 |          5 |
+| CSS                |          1 |          3 |          0 |          7 |         10 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                        | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                           |         69 |     15,833 |        142 |        594 |     16,569 |
+| . (Files)                                                                                                   |         13 |     11,794 |          2 |         29 |     11,825 |
+| app                                                                                                         |          7 |        432 |         44 |         48 |        524 |
+| app (Files)                                                                                                 |          2 |         89 |         31 |         14 |        134 |
+| app/(oauth)                                                                                                 |          1 |         20 |          0 |          2 |         22 |
+| app/(tabs)                                                                                                  |          4 |        323 |         13 |         32 |        368 |
+| app/(tabs) (Files)                                                                                          |          1 |         64 |          0 |          2 |         66 |
+| app/(tabs)/home                                                                                             |          1 |        116 |          4 |         10 |        130 |
+| app/(tabs)/profile                                                                                          |          1 |         28 |          4 |          6 |         38 |
+| app/(tabs)/scan                                                                                             |          1 |        115 |          5 |         14 |        134 |
+| assets                                                                                                      |          2 |        273 |          0 |         53 |        326 |
+| assets (Files)                                                                                              |          1 |          6 |          0 |          1 |          7 |
+| assets/icons                                                                                                |          1 |        267 |          0 |         52 |        319 |
+| components                                                                                                  |         30 |      2,291 |         78 |        272 |      2,641 |
+| components/app                                                                                              |          6 |        404 |          6 |         59 |        469 |
+| components/auth                                                                                             |          1 |        163 |          0 |         23 |        186 |
+| components/home                                                                                             |          4 |        147 |         13 |         18 |        178 |
+| components/listingDetails                                                                                   |          7 |        571 |         29 |         62 |        662 |
+| components/listingDetails (Files)                                                                           |          5 |        314 |         21 |         33 |        368 |
+| components/listingDetails/modals                                                                            |          2 |        257 |          8 |         29 |        294 |
+| components/popup                                                                                            |          4 |        223 |         20 |         19 |        262 |
+| components/profile                                                                                          |          4 |        293 |          6 |         25 |        324 |
+| components/scan                                                                                             |          4 |        490 |          4 |         66 |        560 |
+| hooks                                                                                                       |          5 |        287 |         10 |         61 |        358 |
+| hooks (Files)                                                                                               |          3 |        133 |          7 |         33 |        173 |
+| hooks/home                                                                                                  |          1 |        118 |          3 |         23 |        144 |
+| hooks/listingDetails                                                                                        |          1 |         36 |          0 |          5 |         41 |
+| lib                                                                                                         |          1 |         33 |          0 |          6 |         39 |
+| services                                                                                                    |          5 |        332 |          1 |         68 |        401 |
+| services (Files)                                                                                            |          2 |        211 |          0 |         45 |        256 |
+| services/supabase                                                                                           |          3 |        121 |          1 |         23 |        145 |
+| stores                                                                                                      |          6 |        391 |          7 |         57 |        455 |
++-------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                                    | language           | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| /Users/rock/Documents/Projekti/expo-app/client/.env                                                         | Properties         |          4 |          0 |          1 |          5 |
+| /Users/rock/Documents/Projekti/expo-app/client/app.config.js                                                | JavaScript         |         61 |          0 |          3 |         64 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(oauth)/ebay-success.tsx                                 | TypeScript JSX     |         20 |          0 |          2 |         22 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/_layout.tsx                                       | TypeScript JSX     |         64 |          0 |          2 |         66 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/home/index.tsx                                    | TypeScript JSX     |        116 |          4 |         10 |        130 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/profile/index.tsx                                 | TypeScript JSX     |         28 |          4 |          6 |         38 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/(tabs)/scan/index.tsx                                    | TypeScript JSX     |        115 |          5 |         14 |        134 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/_layout.tsx                                              | TypeScript JSX     |         71 |         28 |          9 |        108 |
+| /Users/rock/Documents/Projekti/expo-app/client/app/index.tsx                                                | TypeScript JSX     |         18 |          3 |          5 |         26 |
+| /Users/rock/Documents/Projekti/expo-app/client/assets/icons/icons.ts                                        | TypeScript         |        267 |          0 |         52 |        319 |
+| /Users/rock/Documents/Projekti/expo-app/client/assets/logo.svg                                              | XML                |          6 |          0 |          1 |          7 |
+| /Users/rock/Documents/Projekti/expo-app/client/babel.config.js                                              | JavaScript         |         19 |          0 |          1 |         20 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/app/cameraToolbar.tsx                             | TypeScript JSX     |        116 |          6 |          9 |        131 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/app/header.tsx                                    | TypeScript JSX     |         16 |          0 |          4 |         20 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/app/loader.tsx                                    | TypeScript JSX     |         68 |          0 |         14 |         82 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/app/tabBar.tsx                                    | TypeScript JSX     |        113 |          0 |         19 |        132 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/app/tabBarButton.tsx                              | TypeScript JSX     |         74 |          0 |          9 |         83 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/app/toastConfig.tsx                               | TypeScript JSX     |         17 |          0 |          4 |         21 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/auth/auth.tsx                                     | TypeScript JSX     |        163 |          0 |         23 |        186 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/home/collection.tsx                               | TypeScript JSX     |         17 |          0 |          3 |         20 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/home/header.tsx                                   | TypeScript JSX     |         20 |          0 |          4 |         24 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/home/item.tsx                                     | TypeScript JSX     |         76 |         10 |          5 |         91 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/home/overview.tsx                                 | TypeScript JSX     |         34 |          3 |          6 |         43 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/index.tsx                          | TypeScript JSX     |         79 |          1 |          5 |         85 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/listingActions.tsx                 | TypeScript JSX     |         27 |          0 |          5 |         32 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/listingHeader.tsx                  | TypeScript JSX     |         44 |          1 |          4 |         49 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/listingInfo.tsx                    | TypeScript JSX     |         42 |         16 |          4 |         62 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/modals/FacebookMarketplacePost.tsx | TypeScript JSX     |         83 |          3 |         13 |         99 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/modals/editListing.tsx             | TypeScript JSX     |        174 |          5 |         16 |        195 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/listingDetails/similarListings.tsx                | TypeScript JSX     |        122 |          3 |         15 |        140 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/popup/actionPopup.tsx                             | TypeScript JSX     |         69 |          0 |          2 |         71 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/popup/confirmationPopup.tsx                       | TypeScript JSX     |         60 |          0 |          5 |         65 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/popup/popup.tsx                                   | TypeScript JSX     |         33 |         20 |          6 |         59 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/popup/salePopup.tsx                               | TypeScript JSX     |         61 |          0 |          6 |         67 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/profile/profileActions.tsx                        | TypeScript JSX     |         58 |          0 |          6 |         64 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/profile/profileCard.tsx                           | TypeScript JSX     |         34 |          0 |          4 |         38 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/profile/reportBottomSheet.tsx                     | TypeScript JSX     |        157 |          3 |          9 |        169 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/profile/subscriptionBottomSheet.tsx               | TypeScript JSX     |         44 |          3 |          6 |         53 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/scan/addAdditionalImages.tsx                      | TypeScript JSX     |         99 |          4 |         10 |        113 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/scan/additionalImageContainer.tsx                 | TypeScript JSX     |         35 |          0 |          6 |         41 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/scan/scannedItemContainer.tsx                     | TypeScript JSX     |         64 |          0 |          6 |         70 |
+| /Users/rock/Documents/Projekti/expo-app/client/components/scan/svgScanOverlay.tsx                           | TypeScript JSX     |        292 |          0 |         44 |        336 |
+| /Users/rock/Documents/Projekti/expo-app/client/eas.json                                                     | JSON with Comments |         21 |          0 |          1 |         22 |
+| /Users/rock/Documents/Projekti/expo-app/client/env.d.ts                                                     | TypeScript         |          8 |          0 |          1 |          9 |
+| /Users/rock/Documents/Projekti/expo-app/client/global.css                                                   | CSS                |          3 |          0 |          7 |         10 |
+| /Users/rock/Documents/Projekti/expo-app/client/globalTypes.ts                                               | TypeScript         |         16 |          0 |          1 |         17 |
+| /Users/rock/Documents/Projekti/expo-app/client/hooks/home/useSwipe.ts                                       | TypeScript         |        118 |          3 |         23 |        144 |
+| /Users/rock/Documents/Projekti/expo-app/client/hooks/listingDetails/useSimilarListingAni.tsx                | TypeScript JSX     |         36 |          0 |          5 |         41 |
+| /Users/rock/Documents/Projekti/expo-app/client/hooks/useCameraDevicesHook.tsx                               | TypeScript JSX     |         51 |          2 |          6 |         59 |
+| /Users/rock/Documents/Projekti/expo-app/client/hooks/useCapturePhoto.tsx                                    | TypeScript JSX     |         50 |          4 |         17 |         71 |
+| /Users/rock/Documents/Projekti/expo-app/client/hooks/useKeyboardHeight.tsx                                  | TypeScript JSX     |         32 |          1 |         10 |         43 |
+| /Users/rock/Documents/Projekti/expo-app/client/lib/axios.ts                                                 | TypeScript         |         33 |          0 |          6 |         39 |
+| /Users/rock/Documents/Projekti/expo-app/client/metro.config.js                                              | JavaScript         |          5 |          0 |          4 |          9 |
+| /Users/rock/Documents/Projekti/expo-app/client/nativewind-env.d.ts                                          | TypeScript         |          0 |          1 |          7 |          8 |
+| /Users/rock/Documents/Projekti/expo-app/client/package-lock.json                                            | JSON               |     11,561 |          0 |          1 |     11,562 |
+| /Users/rock/Documents/Projekti/expo-app/client/package.json                                                 | JSON               |         58 |          0 |          1 |         59 |
+| /Users/rock/Documents/Projekti/expo-app/client/services/facebookService.ts                                  | TypeScript         |         95 |          0 |         19 |        114 |
+| /Users/rock/Documents/Projekti/expo-app/client/services/imageService.ts                                     | TypeScript         |        116 |          0 |         26 |        142 |
+| /Users/rock/Documents/Projekti/expo-app/client/services/supabase/itemsServices.ts                           | TypeScript         |         70 |          1 |          9 |         80 |
+| /Users/rock/Documents/Projekti/expo-app/client/services/supabase/supabaseClient.ts                          | TypeScript         |         13 |          0 |          3 |         16 |
+| /Users/rock/Documents/Projekti/expo-app/client/services/supabase/uploadImages.ts                            | TypeScript         |         38 |          0 |         11 |         49 |
+| /Users/rock/Documents/Projekti/expo-app/client/stores/appStore.ts                                           | TypeScript         |         46 |          0 |          6 |         52 |
+| /Users/rock/Documents/Projekti/expo-app/client/stores/items2Store.ts                                        | TypeScript         |        103 |          0 |         15 |        118 |
+| /Users/rock/Documents/Projekti/expo-app/client/stores/itemsStore.ts                                         | TypeScript         |        171 |          6 |         27 |        204 |
+| /Users/rock/Documents/Projekti/expo-app/client/stores/listingDetailsStore.ts                                | TypeScript         |         32 |          0 |          2 |         34 |
+| /Users/rock/Documents/Projekti/expo-app/client/stores/popupStore.ts                                         | TypeScript         |         21 |          1 |          4 |         26 |
+| /Users/rock/Documents/Projekti/expo-app/client/stores/userStore.ts                                          | TypeScript         |         18 |          0 |          3 |         21 |
+| /Users/rock/Documents/Projekti/expo-app/client/tailwind.config.js                                           | JavaScript         |         25 |          1 |          1 |         27 |
+| /Users/rock/Documents/Projekti/expo-app/client/tsconfig.json                                                | JSON with Comments |         13 |          0 |          0 |         13 |
+| Total                                                                                                       |                    |     15,833 |        142 |        594 |     16,569 |
++-------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

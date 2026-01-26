@@ -18,7 +18,7 @@ const ListingInfo = () => {
           Est. Resell Item Price
         </Text>
         <Text className="text-light2 font-bold text-3xl">
-          ${item?.resale_price_min}
+          ${item?.estimated_resale_price}
         </Text>
       </View>
       <View className="flex flex-row w-full rounded-3xl   ">

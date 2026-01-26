@@ -117,7 +117,7 @@ export default function Dashboard() {
             <Animated.ScrollView
               style={[{ flex: 1 }, collectionStyle]}
               className="absolute w-full h-full flex-1 flex-col gap-2"
-              contentContainerStyle={{ flexGrow: 1, gap: 8 }}
+              contentContainerStyle={{ flexGrow: 1, gap: 16 }}
             >
               <Collection />
             </Animated.ScrollView>
