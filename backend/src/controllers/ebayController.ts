@@ -69,7 +69,11 @@ export const startEbayOAuth = async (req: Request, res: Response) => {
       client_id: process.env.EBAY_CLIENT_ID!, // PROD client id
       response_type: "code",
       redirect_uri: process.env.EBAY_REDIRECT_URI!, // PROD RuName
-      scope: "https://api.ebay.com/oauth/api_scope",
+      scope: [
+        "https://api.ebay.com/oauth/api_scope",
+        "https://api.ebay.com/oauth/api_scope/sell.inventory",
+        "https://api.ebay.com/oauth/api_scope/sell.account",
+      ].join(" "),
       state: JSON.stringify({ userId }),
     }).toString();
 
