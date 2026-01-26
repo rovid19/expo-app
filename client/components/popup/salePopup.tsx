@@ -6,18 +6,23 @@ import { useUserStore } from "../../stores/userStore";
 import api from "../../lib/axios";
 import FacebookMarketplacePost from "../listingDetails/modals/FacebookMarketplacePost";
 import { useAppStore } from "../../stores/appStore";
+import axios from "axios";
+import { useItems2Store } from "../../stores/items2Store";
 
 const SalePopup = () => {
-  const { close } = usePopupStore();
   const { setIsModal, closeModal } = useAppStore();
   const { user } = useUserStore();
   const { isModal } = useAppStore();
+  const { findSelectedItem } = useItems2Store();
+  const item = findSelectedItem();
+  if (!item) return;
   const handleSellOnEbay = async () => {
     const checkEbayConnection = await api.get(
       `/ebay/has-ebay-connection?userId=${user?.id}`
     );
 
     if (checkEbayConnection.data.hasEbayConnection) {
+      autoListOnEbay();
       console.log("user has ebay connection");
     } else {
       console.log("user does not have ebay connection");
@@ -25,8 +30,32 @@ const SalePopup = () => {
       Linking.openURL(response.data.authUrl);
     }
   };
+  const autoListOnEbay = async () => {
+    const formData = new FormData();
 
-  console.log("sale popup", isModal);
+    // 1. append images
+    item.image?.forEach((uri, index) => {
+      formData.append("files", {
+        uri: uri.startsWith("file://") ? uri : `file://${uri}`,
+        name: `image_${index}.jpg`,
+        type: "image/jpeg",
+      } as any);
+    });
+
+    // 2. append userId
+    formData.append("userId", user?.id as string);
+
+    // 3. append item (must be string)
+    formData.append("item", JSON.stringify(item));
+
+    const response = await api.post("/ebay/auto-list-on-ebay", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log("auto list on ebay", response.data);
+  };
 
   return (
     <>
@@ -37,7 +66,6 @@ const SalePopup = () => {
         <TouchableOpacity
           onPress={() => {
             console.log("selling on facebook");
-            close();
             setIsModal({
               visible: true,
               content: <FacebookMarketplacePost onClose={() => closeModal()} />,

@@ -39,9 +39,14 @@ export const scanImage = async (req: Request, res: Response) => {
     scannedItem.price = 0;
     scannedItem.id = Math.random().toString(36).substr(2, 9);
     scannedItem.image = [photoUri];
-    scannedItem.estimated_resale_price = await findRealListingPrice(
-      scannedItem.ebay_search_query
-    );
+    scannedItem.estimated_resale_price =
+      (await findRealListingPrice(scannedItem.ebay_search_query)) ??
+      scannedItem.estimated_resale_price;
+    scannedItem.detected_item =
+      scannedItem.detected_item.charAt(0).toUpperCase() +
+      scannedItem.detected_item.slice(1);
+
+    console.log("scannedItem", scannedItem);
 
     res.status(200).json({ scannedItem });
   });

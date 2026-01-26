@@ -15,7 +15,7 @@ export default function EbaySuccess() {
       text2: "Try listing your first item now!",
       position: "top",
     });
-    router.back();
+    router.replace("/(tabs)/home");
   }, []);
   return null;
 }

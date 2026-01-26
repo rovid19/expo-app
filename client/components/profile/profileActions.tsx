@@ -30,7 +30,7 @@ const profileActions = ({
     }
   };
   return (
-    <View className="w-full flex flex-col gap-2">
+    <View className="w-full flex flex-col gap-2 px-2">
       <TouchableOpacity
         onPress={onPressSubscription}
         className="bg-dark2 p-2 rounded-2xl h-[44px] flex items-center px-4 flex-row gap-2 "
