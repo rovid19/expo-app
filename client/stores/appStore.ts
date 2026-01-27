@@ -1,6 +1,8 @@
 import { create } from "zustand";
 
 interface AppStore {
+  hideNavbar: boolean;
+  setHideNavbar: (hideNavbar: boolean) => void;
   isModal: {
     visible: boolean;
     content: React.ReactNode | null;
@@ -12,9 +14,12 @@ interface AppStore {
     popupContent: React.ReactNode | null;
   }) => void;
   closeModal: () => void;
-
-  hideNavbar: boolean;
-  setHideNavbar: (hideNavbar: boolean) => void;
+  currency: string;
+  setCurrency: (currency: string) => void;
+  currencySymbol: string;
+  setCurrencySymbol: (currencySymbol: string) => void;
+  name: string;
+  setName: (name: string) => void;
 }
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -48,4 +53,10 @@ export const useAppStore = create<AppStore>((set) => ({
 
   hideNavbar: false,
   setHideNavbar: (hideNavbar: boolean) => set({ hideNavbar }),
+  currency: "USD",
+  setCurrency: (currency: string) => set({ currency }),
+  currencySymbol: "$",
+  setCurrencySymbol: (currencySymbol: string) => set({ currencySymbol }),
+  name: "John Doe",
+  setName: (name: string) => set({ name }),
 }));

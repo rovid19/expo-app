@@ -12,8 +12,9 @@ interface HeaderProps {
 
 const item = ({ item }: HeaderProps) => {
   const { openListingDetails } = useListingDetailsStore();
-  const { setHideNavbar, setIsModal } = useAppStore();
+  const { setHideNavbar, currencySymbol } = useAppStore();
   const { setSelectedItemId } = useItems2Store();
+
   return (
     <View className="w-full flex flex-row bg-dark2 rounded-3xl">
       {/*Image*/}
@@ -30,14 +31,15 @@ const item = ({ item }: HeaderProps) => {
           {/*Item Worth*/}
           <View
             className={`px-4 py-1 rounded-3xl ${
-              item.is_sold ? "bg-accent1 rounded-3xl" : "bg-dark1"
+              item.is_sold ? "bg-dark1 rounded-3xl" : "bg-dark1"
             }`}
           >
             {item.is_sold ? (
-              <Text className="text-dark1 font-bold text-lg">Sold</Text>
+              <Text className="text-light2 font-sans text-lg">Sold</Text>
             ) : (
               <Text className="text-light2 font-sans text-lg">
-                Worth: ${item.estimated_resale_price}
+                Worth: {currencySymbol}
+                {item.estimated_resale_price}
               </Text>
             )}
           </View>
@@ -55,7 +57,7 @@ const item = ({ item }: HeaderProps) => {
                 Buying price:
               </Text>
               <Text className="text-light2 font-sans text-sm">
-                ${item.buying_price ? item.buying_price : 0}
+                {currencySymbol} {item.buying_price ? item.buying_price : 0}
               </Text>
             </View>
             {/*net profit*/}
@@ -63,7 +65,7 @@ const item = ({ item }: HeaderProps) => {
             <View className="flex flex-col gap-1">
               <Text className="text-light3 font-sans text-sm">Net profit:</Text>
               <Text className="text-accent1 font-sans text-sm">
-                $
+                {currencySymbol}
                 {item.selling_price && item.buying_price
                   ? item.selling_price - item.buying_price
                   : 0}

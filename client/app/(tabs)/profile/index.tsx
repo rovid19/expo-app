@@ -12,7 +12,7 @@ export default function Profile() {
   const subscriptionBottomSheetRef = useRef<BottomSheet>(null);
   const reportBottomSheetRef = useRef<BottomSheet>(null);
   return (
-    <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1 px-8">
+    <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1 px-6">
       {/* Header */}
       <Header title="PROFILE" svg={logo} />
 

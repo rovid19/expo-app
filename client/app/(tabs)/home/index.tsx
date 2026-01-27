@@ -4,14 +4,11 @@ import { Item } from "../../../globalTypes";
 import { supabase } from "../../../services/supabase/supabaseClient";
 import { useUserStore } from "../../../stores/userStore";
 //import { useItemsStore } from "../../../stores/itemsStore";
-import Header from "../../../components/home/header";
 import Overview from "../../../components/home/overview";
 import Collection from "../../../components/home/collection";
 import { TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { settingsIcon } from "../../../assets/icons/icons";
-import BottomSheet from "@gorhom/bottom-sheet";
-import ListingDetailsBottomSheet from "../../../components/listingDetails/index";
+import { logo, settingsIcon } from "../../../assets/icons/icons";
 import { GestureDetector } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import { useSwipePager } from "../../../hooks/home/useSwipe";
@@ -19,6 +16,10 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useItems2Store } from "../../../stores/items2Store";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import Header from "../../../components/app/header";
+import AppSettingsModal from "../../../components/appModals/appSettingsModal";
+import { useAppStore } from "../../../stores/appStore";
+import useOncePerLaunch from "../../../hooks/useOncePerLaunch";
 
 export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState("overview");
@@ -29,6 +30,8 @@ export default function Dashboard() {
   /*const { setSelectedScannedItem, setContainerIndex, setIsLoading } =
     useItemsStore();*/
   const { fetchItems, setItemType } = useItems2Store();
+  const { setIsModal, name } = useAppStore();
+  const { performAccountSetup, runOncePerLaunch } = useOncePerLaunch();
   const {
     overviewStyle,
     collectionStyle,
@@ -48,16 +51,29 @@ export default function Dashboard() {
   );
   const tabBarHeight = useBottomTabBarHeight();
 
-  console.log("tabBarHeight", tabBarHeight);
+  useEffect(() => {
+    runOncePerLaunch();
+  }, []);
 
   return (
     <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1 ">
       <View
-        className="flex-1 items-center justify-center px-8 flex flex-col gap-8 mb-8"
+        className="flex-1 items-center justify-center px-6 flex flex-col gap-8 mb-8"
         style={{ paddingBottom: tabBarHeight + 2 }}
       >
         <View className="w-full flex flex-col gap-4">
-          <Header />
+          <Header title="HOME" svg={logo} />
+          <View className="flex flex-col ">
+            <Text className="text-5xl font-bold font-bold text-light2">
+              Hello,
+            </Text>
+            <View className="flex flex-row items-center gap-2">
+              <Text className="text-5xl font-bold font-bold text-light2">
+                {name}
+              </Text>
+              <Text className="text-4xl">👋</Text>
+            </View>
+          </View>
           <View className="flex flex-row px-2 justify-between w-full items-center ">
             <View className="flex flex-row gap-2 ">
               <Pressable
@@ -94,7 +110,16 @@ export default function Dashboard() {
                 </Animated.Text>
               </Pressable>
             </View>
-            <TouchableOpacity className="flex items-center justify-center">
+            <TouchableOpacity
+              className="flex items-center justify-center py-2"
+              onPress={() => {
+                setIsModal({
+                  visible: true,
+                  content: <AppSettingsModal />,
+                  popupContent: null,
+                });
+              }}
+            >
               <SvgXml
                 xml={settingsIcon}
                 width={24}

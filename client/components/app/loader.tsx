@@ -15,11 +15,18 @@ import { mascotLoadingDown, mascotLoadingUp } from "../../assets/icons/icons";
 interface LoaderProps {
   text: string;
   textOptional?: string;
+  dots?: boolean;
+  size?: number;
 }
 
 const DOTS = ["", ".", "..", "..."];
 
-const Loader = ({ text, textOptional }: LoaderProps) => {
+const Loader = ({
+  text,
+  textOptional,
+  dots = true,
+  size = 64,
+}: LoaderProps) => {
   const t = useSharedValue(0);
   const dot = useSharedValue(0);
   const [dotIndex, setDotIndex] = useState(0);
@@ -54,19 +61,19 @@ const Loader = ({ text, textOptional }: LoaderProps) => {
 
   return (
     <View className="flex-1 justify-center items-center gap-3">
-      <View style={{ width: 64, height: 64 }}>
+      <View style={{ width: size, height: size }}>
         <Animated.View style={[{ position: "absolute", inset: 0 }, downStyle]}>
-          <SvgXml xml={mascotLoadingDown} width={64} height={64} />
+          <SvgXml xml={mascotLoadingDown} width={size} height={size} />
         </Animated.View>
 
         <Animated.View style={[{ position: "absolute", inset: 0 }, upStyle]}>
-          <SvgXml xml={mascotLoadingUp} width={64} height={64} />
+          <SvgXml xml={mascotLoadingUp} width={size} height={size} />
         </Animated.View>
       </View>
 
       <Animated.Text className="text-light2 text-base" style={textPulseStyle}>
         {text}
-        {DOTS[dotIndex]}
+        {dots && DOTS[dotIndex]}
       </Animated.Text>
 
       {textOptional && (

@@ -4,6 +4,8 @@ import { useUserStore } from "./userStore";
 import type { Item } from "../globalTypes";
 
 interface Items2Store {
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
   itemType: "scanned" | "listed";
   setItemType: (itemType: "scanned" | "listed") => void;
   items: Item[];
@@ -25,6 +27,8 @@ interface Items2Store {
 }
 
 export const useItems2Store = create<Items2Store>((set, get) => ({
+  isLoading: false,
+  setIsLoading: (isLoading: boolean) => set({ isLoading }),
   itemType: "listed",
   setItemType: (itemType: "scanned" | "listed") => set({ itemType }),
   items: [],
@@ -32,10 +36,12 @@ export const useItems2Store = create<Items2Store>((set, get) => ({
   scannedItems: [],
   setScannedItems: (items: Item[]) => set({ scannedItems: items }),
   fetchItems: async () => {
+    set({ isLoading: true });
     const user = useUserStore.getState().user;
     if (!user?.id) return;
     const items = await ItemsService.fetchUserItems(user.id);
     set({ items: items as Item[] });
+    set({ isLoading: false });
   },
   selectedItemId: null,
   setSelectedItemId: (itemId: string | null) => set({ selectedItemId: itemId }),

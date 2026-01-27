@@ -3,9 +3,14 @@ import { View, Text } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { coinIcon, inventoryIcon, walletIcon } from "../../assets/icons/icons";
 import { useItems2Store } from "../../stores/items2Store";
+import Loader from "../app/loader";
+import { useAppStore } from "../../stores/appStore";
 
 const overview = () => {
-  const { items } = useItems2Store();
+  const { items, isLoading } = useItems2Store();
+  const { currencySymbol } = useAppStore();
+
+  console.log("currencySymbo2222l", currencySymbol);
 
   const totalProfit =
     items.reduce((acc, item) => {
@@ -21,22 +26,25 @@ const overview = () => {
     items.reduce((acc, item) => {
       return acc + (item.estimated_resale_price ?? 0);
     }, 0) ?? 0;
-  return (
+  return !isLoading ? (
     <>
       {/* Profit */}
       <View className="p-6 flex flex-col gap-2 bg-accent1 rounded-3xl w-full">
         <View className="flex flex-row gap-2 items-center">
           <SvgXml xml={coinIcon} width={24} height={24} color="#0D0D0D" />
-          <Text className=" font-sans text-lg text-dark1"> Profit</Text>
+          <Text className="font-sans text-lg text-dark1"> Profit</Text>
         </View>
-        <Text className="font-bold text-5xl text-dark1">${totalProfit}</Text>
+        <Text className="font-bold text-5xl text-dark1">
+          {currencySymbol}
+          {totalProfit}
+        </Text>
       </View>
 
       {/* Inventory */}
       <View className="p-6 flex flex-col gap-2 bg-dark2 rounded-3xl w-full">
         <View className="flex flex-row gap-2 items-center">
           <SvgXml xml={inventoryIcon} width={24} height={24} color="#E6E6E6" />
-          <Text className=" font-sans text-lg text-light2"> Inventory</Text>
+          <Text className="font-sans text-lg text-light2"> Inventory</Text>
         </View>
         <Text className="font-medium text-3xl text-light2">
           {totalItems} items
@@ -47,12 +55,16 @@ const overview = () => {
       <View className="p-6 flex flex-col gap-2 bg-dark2 rounded-3xl w-full">
         <View className="flex flex-row gap-2 items-center">
           <SvgXml xml={walletIcon} width={24} height={24} color="#E6E6E6" />
-          <Text className=" font-sans text-lg text-light2"> Total worth</Text>
+          <Text className="font-sans text-lg text-light2"> Total worth</Text>
         </View>
-        <Text className="font-medium text-3xl text-light2">${totalWorth}</Text>
+        <Text className="font-medium text-3xl text-light2">
+          {currencySymbol}
+          {totalWorth}
+        </Text>
       </View>
     </>
+  ) : (
+    <Loader text="" dots={false} />
   );
 };
-
 export default overview;

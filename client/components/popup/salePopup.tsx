@@ -8,8 +8,11 @@ import FacebookMarketplacePost from "../listingDetails/modals/FacebookMarketplac
 import { useAppStore } from "../../stores/appStore";
 import axios from "axios";
 import { useItems2Store } from "../../stores/items2Store";
+import { useState } from "react";
+import Loader from "../app/loader";
 
 const SalePopup = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const { setIsModal, closeModal } = useAppStore();
   const { user } = useUserStore();
   const { isModal } = useAppStore();
@@ -17,12 +20,14 @@ const SalePopup = () => {
   const item = findSelectedItem();
   if (!item) return;
   const handleSellOnEbay = async () => {
+    setIsLoading(true);
+
     const checkEbayConnection = await api.get(
       `/ebay/has-ebay-connection?userId=${user?.id}`
     );
 
     if (checkEbayConnection.data.hasEbayConnection) {
-      autoListOnEbay();
+      await autoListOnEbay();
       console.log("user has ebay connection");
     } else {
       console.log("user does not have ebay connection");
@@ -48,44 +53,63 @@ const SalePopup = () => {
     // 3. append item (must be string)
     formData.append("item", JSON.stringify(item));
 
-    const response = await api.post("/ebay/auto-list-on-ebay", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    console.log("auto list on ebay", response.data);
+    try {
+      const response = await api.post("/ebay/auto-list-on-ebay", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    } catch (error) {
+      console.log("error", error);
+      setIsLoading(false);
+      closeModal();
+    }
   };
 
   return (
     <>
-      <View className="  rounded-3xl gap-4">
-        <Text className="text-light2 text-2xl font-bold text-center mb-2">
-          Actions
-        </Text>
-        <TouchableOpacity
-          onPress={() => {
-            console.log("selling on facebook");
-            setIsModal({
-              visible: true,
-              content: <FacebookMarketplacePost onClose={() => closeModal()} />,
-              popupContent: null,
-            });
-          }}
-          className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2"
-        >
-          <SvgXml xml={facebookIcon} width={24} height={24} color="#E6E6E6" />
-          <Text className="text-light2 text-lg font-sans">
-            Sell on facebook
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleSellOnEbay}
-          className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2"
-        >
-          <SvgXml xml={ebayIcon} width={24} height={24} color="#E6E6E6" />
-          <Text className="text-light2 text-lg font-sans">Sell on ebay</Text>
-        </TouchableOpacity>
+      <View className={`  rounded-3xl gap-4 ${isLoading ? "h-32" : ""}`}>
+        {!isLoading ? (
+          <>
+            <Text className="text-light2 text-2xl font-bold text-center mb-2">
+              Actions
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                console.log("selling on facebook");
+                setIsModal({
+                  visible: true,
+                  content: (
+                    <FacebookMarketplacePost onClose={() => closeModal()} />
+                  ),
+                  popupContent: null,
+                });
+              }}
+              className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2"
+            >
+              <SvgXml
+                xml={facebookIcon}
+                width={24}
+                height={24}
+                color="#E6E6E6"
+              />
+              <Text className="text-light2 text-lg font-sans">
+                Sell on facebook
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSellOnEbay}
+              className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2"
+            >
+              <SvgXml xml={ebayIcon} width={24} height={24} color="#E6E6E6" />
+              <Text className="text-light2 text-lg font-sans">
+                Sell on ebay
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <Loader text="Listing on ebay..." />
+        )}
       </View>
     </>
   );

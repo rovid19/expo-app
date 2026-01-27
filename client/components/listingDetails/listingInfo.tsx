@@ -5,11 +5,12 @@ import { Text } from "react-native";
 import { TextInput } from "react-native";
 import ListingHeader from "./listingHeader";
 import { useItems2Store } from "../../stores/items2Store";
+import { useAppStore } from "../../stores/appStore";
 const ListingInfo = () => {
   const { selectedItemId, items, findSelectedItem } = useItems2Store();
   const item = findSelectedItem();
   if (!item) return null;
-
+  const { currencySymbol } = useAppStore();
   return (
     <View className=" rounded-3xl gap-2 flex-1">
       <ListingHeader />
@@ -18,7 +19,8 @@ const ListingInfo = () => {
           Est. Resell Item Price
         </Text>
         <Text className="text-light2 font-bold text-3xl">
-          ${item?.estimated_resale_price}
+          {currencySymbol}
+          {item?.estimated_resale_price}
         </Text>
       </View>
       <View className="flex flex-row w-full rounded-3xl   ">
@@ -26,7 +28,8 @@ const ListingInfo = () => {
         <View className="flex-1 flex-col gap-2 border border-dark2  rounded-l-3xl p-4 justify-center">
           <Text className="text-light3 font-sans text-lg ">Buying price</Text>
           <Text className="text-light2 font-bold text-3xl">
-            ${item.buying_price ? item.buying_price : 0}
+            {currencySymbol}
+            {item.buying_price ? item.buying_price : 0}
           </Text>
           {/*<View className="flex flex-row items-center gap-2 bg-dark2 rounded-3xl p-2">
             <View>
@@ -44,7 +47,7 @@ const ListingInfo = () => {
         <View className="flex-1 flex-col gap-2 rounded-r-3xl p-4 justify-center bg-dark2 ">
           <Text className="text-light3 font-sans text-lg ">Net profit</Text>
           <Text className="text-accent1 font-bold text-3xl">
-            $
+            {currencySymbol}
             {item.selling_price && item.buying_price
               ? item.selling_price - item.buying_price
               : 0}

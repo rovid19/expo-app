@@ -196,56 +196,34 @@ export async function searchEbayItems(req: Request, res: Response) {
 export const listItemForUser = async (req: Request, res: Response) => {
   upload.array("files")(req, res, async (err) => {
     try {
-      if (err) {
+      if (err)
         return res.status(500).json({ message: "Error uploading files" });
-      }
-
-      if (!req.files || !(req.files instanceof Array)) {
+      if (!req.files || !(req.files instanceof Array))
         return res.status(400).json({ message: "No images provided" });
-      }
 
       const userId = req.body.userId;
       const item: Item = JSON.parse(req.body.item);
-
-      if (!userId || !item) {
+      if (!userId || !item)
         return res.status(400).json({ message: "Missing userId or item" });
-      }
 
-      /* --------------------------------
-           1. Upload images to Supabase
-        -------------------------------- */
-
+      /* 1. Upload images */
       const imageUrls: string[] = [];
-
       for (const file of req.files) {
-        const filePath = file.path;
-        const buffer = fs.readFileSync(path.resolve(filePath));
-
+        const buffer = fs.readFileSync(path.resolve(file.path));
         const fileName = `ebay/${userId}/${crypto.randomUUID()}.jpg`;
 
         const { error } = await supabase.storage
           .from("images")
-          .upload(fileName, buffer, {
-            contentType: file.mimetype,
-            upsert: false,
-          });
+          .upload(fileName, buffer, { contentType: file.mimetype });
 
-        if (error) {
-          throw error;
-        }
+        if (error) throw error;
 
         const { data } = supabase.storage.from("images").getPublicUrl(fileName);
-
         imageUrls.push(data.publicUrl);
-
-        // cleanup temp file
-        fs.unlinkSync(filePath);
+        fs.unlinkSync(file.path);
       }
 
-      /* --------------------------------
-           2. Get refresh token
-        -------------------------------- */
-
+      /* 2. Refresh token */
       const { data: account } = await supabase
         .from("ebay_accounts")
         .select("refresh_token")
@@ -253,20 +231,19 @@ export const listItemForUser = async (req: Request, res: Response) => {
         .eq("revoked", false)
         .single();
 
-      if (!account) {
+      if (!account)
         return res.status(400).json({ message: "No eBay account connected" });
-      }
-
-      /* --------------------------------
-           3. Mint access token
-        -------------------------------- */
 
       const tokenRes = await axios.post(
         "https://api.ebay.com/identity/v1/oauth2/token",
         new URLSearchParams({
           grant_type: "refresh_token",
           refresh_token: account.refresh_token,
-          scope: "https://api.ebay.com/oauth/api_scope/sell.inventory",
+          scope: [
+            "https://api.ebay.com/oauth/api_scope",
+            "https://api.ebay.com/oauth/api_scope/sell.inventory",
+            "https://api.ebay.com/oauth/api_scope/sell.account",
+          ].join(" "),
         }),
         {
           headers: {
@@ -282,54 +259,113 @@ export const listItemForUser = async (req: Request, res: Response) => {
 
       const accessToken = tokenRes.data.access_token;
 
-      /* --------------------------------
-           4. List item on eBay
-        -------------------------------- */
-
+      /* 5. List item */
       await listItemOnEbay(accessToken, item, imageUrls);
 
-      return res.status(200).json({ success: true });
-    } catch (error: any) {
-      console.error(error?.response?.data || error);
-      return res.status(500).json({
-        error: error?.response?.data || error.message,
-      });
+      res.json({ success: true });
+    } catch (e: any) {
+      console.error(e?.response?.data || e);
+      res.status(500).json({ error: e?.response?.data || e.message });
     }
   });
 };
 
+async function getDefaultPolicies(accessToken: string) {
+  const headers = {
+    Authorization: `Bearer ${accessToken}`,
+    "Content-Type": "application/json",
+    "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
+  };
+
+  // Payment policies
+  const paymentRes = await axios.get(
+    "https://api.ebay.com/sell/account/v1/payment_policy?marketplace_id=EBAY_US",
+    { headers }
+  ); // returns paymentPolicies[] [web:1][web:3]
+  const paymentPolicy =
+    paymentRes.data.paymentPolicies?.find((p: any) => p.default === true) ??
+    paymentRes.data.paymentPolicies?.[0];
+
+  // Return policies
+  const returnRes = await axios.get(
+    "https://api.ebay.com/sell/account/v1/return_policy?marketplace_id=EBAY_US",
+    { headers }
+  ); // returns returnPolicies[] [web:3][web:6]
+  const returnPolicy =
+    returnRes.data.returnPolicies?.find((p: any) => p.default === true) ??
+    returnRes.data.returnPolicies?.[0];
+
+  // Fulfillment (shipping) policies
+  const fulfillmentRes = await axios.get(
+    "https://api.ebay.com/sell/account/v1/fulfillment_policy?marketplace_id=EBAY_US",
+    { headers }
+  ); // returns fulfillmentPolicies[] [web:3][web:13]
+  const fulfillmentPolicy =
+    fulfillmentRes.data.fulfillmentPolicies?.find(
+      (p: any) => p.default === true
+    ) ?? fulfillmentRes.data.fulfillmentPolicies?.[0];
+
+  return {
+    paymentPolicyId: paymentPolicy?.paymentPolicyId,
+    returnPolicyId: returnPolicy?.returnPolicyId,
+    fulfillmentPolicyId: fulfillmentPolicy?.fulfillmentPolicyId,
+  };
+}
+
+/* ---------- LISTING ---------- */
 async function listItemOnEbay(
   accessToken: string,
   item: Item,
   imageUrls: string[]
 ) {
-  const sku = item.id;
+  const sku = `${item.id}-${Date.now()}`;
 
-  // 1. inventory item
+  const { paymentPolicyId, returnPolicyId, fulfillmentPolicyId } =
+    await getDefaultPolicies(accessToken);
+
+  const merchantLocationKey = await getOrCreateMerchantLocation(
+    accessToken,
+    item.owner_id as string,
+    "HR",
+    "49210",
+    "Zagreb"
+  );
+
+  const leafCategoryId = "48828";
+  console.log("Using leaf category:", leafCategoryId); // Debug
+
+  const inventoryHeaders = {
+    Authorization: `Bearer ${accessToken}`,
+    "Content-Type": "application/json",
+    "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
+    "Content-Language": "en-US",
+  };
+
+  // 1. Inventory item
   await axios.put(
     `https://api.ebay.com/sell/inventory/v1/inventory_item/${sku}`,
     {
       product: {
-        title: item.detected_item,
+        title: item.detected_item.slice(0, 80),
         description: item.details || item.detected_item,
         imageUrls,
+        condition: "3000",
+        categoryId: "48828", // 👈 important
+        conditionDescriptors: [
+          {
+            name: "Condition",
+            values: ["Used"],
+          },
+        ],
       },
       availability: {
-        shipToLocationAvailability: {
-          quantity: 1,
-        },
+        shipToLocationAvailability: { quantity: 1 },
       },
-      condition: "USED_GOOD",
     },
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
+    { headers: inventoryHeaders }
   );
 
-  // 2. offer
+  // 2. Offer
   const offerRes = await axios.post(
     "https://api.ebay.com/sell/inventory/v1/offer",
     {
@@ -337,48 +373,91 @@ async function listItemOnEbay(
       marketplaceId: "EBAY_US",
       format: "FIXED_PRICE",
       quantity: 1,
+      merchantLocationKey,
       pricingSummary: {
         price: {
           value: item.selling_price ?? item.price,
           currency: "USD",
         },
       },
-      categoryId: mapCategoryToEbay(item.category),
+      categoryId: 48828,
       listingPolicies: {
-        paymentPolicyId: process.env.EBAY_PAYMENT_POLICY_ID!,
-        fulfillmentPolicyId: process.env.EBAY_FULFILLMENT_POLICY_ID!,
-        returnPolicyId: process.env.EBAY_RETURN_POLICY_ID!,
+        paymentPolicyId,
+        returnPolicyId,
+        fulfillmentPolicyId,
       },
     },
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
+    { headers: inventoryHeaders }
   );
 
-  // 3. publish
+  // 3. Publish
   await axios.post(
     `https://api.ebay.com/sell/inventory/v1/offer/${offerRes.data.offerId}/publish`,
     {},
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
+    { headers: inventoryHeaders }
   );
 }
 
-function mapCategoryToEbay(category: string): string {
-  switch (category) {
-    case "shoes":
-      return "93427";
-    case "clothes":
-      return "11450";
-    case "car":
-      return "6000";
-    default:
-      return "99";
+async function getOrCreateMerchantLocation(
+  accessToken: string,
+  userId: string,
+  country: string,
+  postalCode: string,
+  city: string,
+  stateOrProvince: string = city
+): Promise<string> {
+  const MERCHANT_LOCATION_KEY = `default-${userId.slice(-8)}`;
+
+  const headers = {
+    Authorization: `Bearer ${accessToken}`,
+    "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
+  };
+
+  // 1. Check existing
+  try {
+    const locationsRes = await axios.get(
+      "https://api.ebay.com/sell/inventory/v1/location",
+      { headers }
+    );
+    const existing = locationsRes.data.locations?.find(
+      (loc: any) => loc.merchantLocationKey === MERCHANT_LOCATION_KEY
+    );
+    if (existing) {
+      console.log(`✅ Using existing: ${MERCHANT_LOCATION_KEY}`);
+      return MERCHANT_LOCATION_KEY;
+    }
+  } catch (e) {
+    console.warn("No locations found, creating...");
+  }
+
+  // 2. Create CORRECT structure
+  try {
+    const response = await axios.post(
+      `https://api.ebay.com/sell/inventory/v1/location/${MERCHANT_LOCATION_KEY}`,
+      {
+        name: `Shipping ${city}`,
+        location: {
+          address: {
+            country: country.toUpperCase(),
+            postalCode,
+            city,
+            stateOrProvince,
+          },
+        },
+        locationType: "WAREHOUSE", // FIXED: ROOT level, not in location [web:28]
+      },
+      {
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("✅ Location created:", MERCHANT_LOCATION_KEY);
+    return MERCHANT_LOCATION_KEY;
+  } catch (error: any) {
+    console.error("🚨 ERROR:", error.response?.data?.errors);
+    throw error;
   }
 }

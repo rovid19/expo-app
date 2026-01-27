@@ -4,6 +4,9 @@ import { supabase } from "../../services/supabase/supabaseClient";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import * as AppleAuthentication from "expo-apple-authentication";
+import Loader from "../app/loader";
+import { SvgXml } from "react-native-svg";
+import { appleLogo, googleLogo } from "../../assets/icons/icons";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -102,84 +105,86 @@ const Auth = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>Welcome</Text>
-        <Text style={styles.subtitle}>Sign in to continue</Text>
+    <View className="flex-1 bg-dark1 py-8 px-4">
+      <View className="flex-1">
+        <Loader text="" dots={false} size={128} />
+      </View>
 
-        <View style={styles.buttonsContainer}>
+      <View className="flex-1 flex flex-col gap-8 px-2">
+        <View className="flex flex-col gap-1 items-center justify-center">
+          <Text className="text-5xl font-bold text-white">Welcome</Text>
+          <Text className="text-lg text-light3 font-sans">
+            Your journey starts from here
+          </Text>
+        </View>
+
+        <View className="flex flex-col gap-4 w-full">
           <TouchableOpacity
-            style={[styles.button, styles.googleButton]}
             onPress={signInWithGoogle}
             activeOpacity={0.8}
+            className="w-full p-6 rounded-3xl bg-dark2 justify-center items-center flex flex-row gap-2"
           >
-            <Text style={styles.googleButtonText}>Continue with Google</Text>
+            <SvgXml xml={googleLogo} width={20} height={20} color="#E94335" />
+            <Text className="text-md font-sans text-light1">
+              Continue with Google
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.button, styles.appleButton]}
             onPress={signInWithApple}
             activeOpacity={0.8}
+            className="w-full p-6 rounded-3xl bg-dark2 justify-center items-center flex flex-row gap-2"
           >
-            <Text style={styles.appleButtonText}>Continue with Apple</Text>
+            <SvgXml xml={appleLogo} width={24} height={24} color="#000000" />
+            <Text className="text-md font-sans text-light1">
+              Continue with Apple
+            </Text>
           </TouchableOpacity>
+        </View>
+
+        <View className="flex flex-row gap-2 items-center justify-center">
+          <Text className="text-sm font-sans text-light3 text-center">
+            By pressing on “Continue with...” you agree to our{" "}
+            <Text className="font-bold text-light3">Terms of Service</Text> and{" "}
+            <Text className="font-bold text-light3">Privacy Policy</Text>
+          </Text>
         </View>
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-  },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 32,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "700",
-    color: "#000000",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#666666",
-    marginBottom: 48,
-  },
-  buttonsContainer: {
-    width: "100%",
-    gap: 16,
-  },
-  button: {
-    width: "100%",
-    height: 56,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  googleButton: {
-    backgroundColor: "#ffffff",
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-  },
-  googleButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000000",
-  },
-  appleButton: {
-    backgroundColor: "#000000",
-  },
-  appleButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#ffffff",
-  },
-});
-
 export default Auth;
+
+/*
+  <View className="flex-1 justify-center items-center px-8">
+        <Text className="text-3xl font-bold text-black mb-2">Welcome</Text>
+
+        <Text className="text-base text-gray-500 mb-12">
+          Sign in to continue
+        </Text>
+
+        <View className="w-full gap-4">
+          <TouchableOpacity
+            onPress={signInWithGoogle}
+            activeOpacity={0.8}
+            className="w-full h-14 rounded-xl border border-gray-200 bg-white justify-center items-center"
+          >
+            <Text className="text-base font-semibold text-black">
+              Continue with Google
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={signInWithApple}
+            activeOpacity={0.8}
+            className="w-full h-14 rounded-xl bg-black justify-center items-center"
+          >
+            <Text className="text-base font-semibold text-white">
+              Continue with Apple
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      */
