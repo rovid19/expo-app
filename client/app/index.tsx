@@ -1,25 +1,23 @@
-import { useEffect } from "react";
-import { useUserStore } from "../stores/userStore";
 import Auth from "../components/auth/auth";
 import { useRouter } from "expo-router";
-import { Stack } from "expo-router";
+import Onboarding from "../components/onboarding/index";
+import useOnAppStart from "../hooks/useOnAppStart";
+
 export default function Index() {
-  const user = useUserStore((state) => state.user);
+  const { startOnboarding, startAuth, startApp } = useOnAppStart();
   const router = useRouter();
 
-  useEffect(() => {
-    if (user) {
-      router.replace("/(tabs)/home");
-    }
-  }, [user]);
+  if (startApp) {
+    router.replace("/(tabs)/home");
+  }
 
-  if (!user) {
+  if (startAuth) {
     return <Auth />;
   }
 
-  return null;
+  if (startOnboarding) {
+    return <Onboarding />;
+  }
 
-  /*useEffect(() => {
-    router.replace("/(tabs)/home");
-  }, []);*/
+  return null;
 }

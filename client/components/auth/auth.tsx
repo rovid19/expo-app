@@ -125,7 +125,7 @@ const Auth = () => {
             className="w-full p-6 rounded-3xl bg-dark2 justify-center items-center flex flex-row gap-2"
           >
             <SvgXml xml={googleLogo} width={20} height={20} color="#E94335" />
-            <Text className="text-md font-sans text-light1">
+            <Text className="text-lg font-sans text-light1">
               Continue with Google
             </Text>
           </TouchableOpacity>
@@ -136,7 +136,7 @@ const Auth = () => {
             className="w-full p-6 rounded-3xl bg-dark2 justify-center items-center flex flex-row gap-2"
           >
             <SvgXml xml={appleLogo} width={24} height={24} color="#000000" />
-            <Text className="text-md font-sans text-light1">
+            <Text className="text-lg font-sans text-light1">
               Continue with Apple
             </Text>
           </TouchableOpacity>

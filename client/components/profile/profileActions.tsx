@@ -23,8 +23,10 @@ const profileActions = ({
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
-      setUser(null);
       router.replace("/");
+      setTimeout(() => {
+        setUser(null);
+      }, 500);
     } catch (error) {
       console.error("Logout error:", error);
     }
