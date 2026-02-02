@@ -8,6 +8,8 @@ import OnboardingValueProposition from "./onboardingValueProposition";
 import OnboardingVideo from "./onboardingVideo";
 import OnboardingRating from "./onboardingRating";
 import * as StoreReview from "expo-store-review";
+import OnboardingCheckout from "./onboardingCheckout";
+import Auth from "../auth/auth";
 
 const index = () => {
   const [onboardingStep, setOnboardingStep] = useState<number>(0);
@@ -19,7 +21,7 @@ const index = () => {
     onboardingStep !== 4 &&
     onboardingStep < 5;
 
-  console.log(answers);
+  console.log(onboardingStep);
   return (
     <View className="flex-1 bg-dark1 px-4 flex flex-col gap-8">
       {/*Header*/}
@@ -70,7 +72,7 @@ const index = () => {
       {onboardingStep === 7 && <OnboardingRating />}
 
       {/*Action Buttons*/}
-      {onboardingStep > 0 && (
+      {onboardingStep > 0 && onboardingStep < 8 && (
         <View className="pb-12 w-full">
           <TouchableOpacity
             disabled={disableContinueButton}
@@ -99,6 +101,20 @@ const index = () => {
             </Text>
           </TouchableOpacity>
         </View>
+      )}
+
+      {onboardingStep > 7 && onboardingStep < 10 && (
+        <>
+          <OnboardingCheckout
+            setOnboardingStep={setOnboardingStep}
+            onboardingStep={onboardingStep}
+
+          />
+        </>
+      )}
+
+      {onboardingStep === 10 && (
+       <Auth />
       )}
     </View>
   );

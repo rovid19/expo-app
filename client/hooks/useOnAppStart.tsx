@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useUserStore } from "../stores/userStore";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAppStore } from "../stores/appStore";
 
 const useOnAppStart = () => {
   const user = useUserStore((state) => state.user);
@@ -11,9 +12,11 @@ const useOnAppStart = () => {
   const [startApp, setStartApp] = useState(false);
   const [startOnboarding, setStartOnboarding] = useState(false);
 
+  const {onboardingFinished} = useAppStore();
+
   useEffect(() => {
     checkHasLaunched();
-  }, []);
+  }, [onboardingFinished]);
 
   const checkHasLaunched = async () => {
     const hasLaunched = await AsyncStorage.getItem("hasLaunched");
@@ -23,7 +26,6 @@ const useOnAppStart = () => {
   useEffect(() => {
     if (!hasLaunched) {
       setStartOnboarding(true);
-      //AsyncStorage.setItem("hasLaunched", "true");
     } else if (hasLaunched && !user) {
       setStartAuth(true);
     } else if (hasLaunched && user) {

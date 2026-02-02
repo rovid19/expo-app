@@ -1,6 +1,9 @@
 import { create } from "zustand";
+import { PurchasesPackage } from "react-native-purchases";
 
 interface AppStore {
+  selectedPackage: PurchasesPackage | null;
+  setSelectedPackage: (selectedPackage: PurchasesPackage | null) => void;
   hideNavbar: boolean;
   setHideNavbar: (hideNavbar: boolean) => void;
   isModal: {
@@ -20,9 +23,13 @@ interface AppStore {
   setCurrencySymbol: (currencySymbol: string) => void;
   name: string;
   setName: (name: string) => void;
+  onboardingFinished: boolean;
+  setOnboardingFinished: (onboardingFinished: boolean) => void;
 }
 
 export const useAppStore = create<AppStore>((set) => ({
+  selectedPackage: null,
+  setSelectedPackage: (selectedPackage: PurchasesPackage | null) => set({ selectedPackage }),
   isModal: {
     visible: false,
     content: null,
@@ -59,4 +66,6 @@ export const useAppStore = create<AppStore>((set) => ({
   setCurrencySymbol: (currencySymbol: string) => set({ currencySymbol }),
   name: "John Doe",
   setName: (name: string) => set({ name }),
+  onboardingFinished: false,
+  setOnboardingFinished: (onboardingFinished: boolean) => set({ onboardingFinished }),
 }));

@@ -5,6 +5,14 @@ module.exports = {
     scheme: "dexly",
     version: "1.0.0",
 
+    updates: {
+      url: "https://u.expo.dev/1451b288-3ed4-46f8-b4b9-082485d6da60",
+    },
+    runtimeVersion: {
+      policy: "appVersion",
+    },
+    
+
     extra: {
       eas: {
         projectId: "1451b288-3ed4-46f8-b4b9-082485d6da60",

@@ -13,11 +13,12 @@ import {
 import GlobalPopup from "../components/popup/popup";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useListingDetailsStore } from "../stores/listingDetailsStore";
-import { Modal } from "react-native";
+import { Modal, Platform } from "react-native";
 import Toast from "react-native-toast-message";
 import toastConfig from "../components/app/toastConfig";
 import ListingDetailsBottomSheet from "../components/listingDetails/index";
 import { useAppStore } from "../stores/appStore";
+import Purchases, { LOG_LEVEL } from "react-native-purchases";
 
 export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
@@ -32,6 +33,20 @@ export default function RootLayout() {
   const { isModal, closeModal } = useAppStore();
 
   useEffect(() => {
+    // Configure RevenueCat SDK at app startup
+    try {
+      Purchases.setLogLevel(LOG_LEVEL.VERBOSE);
+      
+      if (Platform.OS === 'ios') {
+        Purchases.configure({ apiKey: process.env.EXPO_PUBLIC_REVENUECAT_IOS || '' });
+      } else if (Platform.OS === 'android') {
+        //Purchases.configure({ apiKey: process.env.EXPO_PUBLIC_REVENUECAT_ANDROID || '' });
+      }
+      console.log('✅ RevenueCat configured successfully');
+    } catch (error) {
+      console.error('❌ Failed to configure RevenueCat:', error);
+    }
+
     setListingDetailsBottomSheetRef(
       listingDetailsBottomSheetRef as React.RefObject<BottomSheetModal>
     );
@@ -44,6 +59,12 @@ export default function RootLayout() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+
+      console.log('🔄 Auth state changed:', session?.user?.id);
+
+      if (session?.user) {
+       Purchases.logIn(session?.user.id);
+      } 
     });
 
     return () => subscription.unsubscribe();

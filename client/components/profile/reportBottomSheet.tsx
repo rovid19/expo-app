@@ -21,6 +21,7 @@ import {
 } from "react";
 import api from "../../lib/axios";
 import colors from "tailwindcss/colors";
+import { useAppStore } from "../../stores/appStore";
 
 const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
   const [sendingReport, setSendingReport] = useState(false);
@@ -29,6 +30,7 @@ const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
   const [description, setDescription] = useState("");
   const maxLength = 500;
   const descriptionInputRef = useRef<TextInput>(null);
+  const { setHideNavbar } = useAppStore();
 
   const dismissKeyboard = useCallback(() => {
     descriptionInputRef.current?.blur();
@@ -73,6 +75,13 @@ const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
           pressBehavior="close"
         />
       )}
+      onAnimate={(_, toIndex) => {
+        if (toIndex === -1) {
+          setHideNavbar(false);
+        
+        }
+      }}
+
     >
       {showConfirmationMessage && (
         <View className="absolute top-0 left-0 bg-white h-full w-full z-10 items-center justify-center">

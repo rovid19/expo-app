@@ -379,3 +379,35 @@ export const appleLogo = `
 export const star = `
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8.243 7.34l-6.38 .925l-.113 .023a1 1 0 0 0 -.44 1.684l4.622 4.499l-1.09 6.355l-.013 .11a1 1 0 0 0 1.464 .944l5.706 -3l5.693 3l.1 .046a1 1 0 0 0 1.352 -1.1l-1.091 -6.355l4.624 -4.5l.078 -.085a1 1 0 0 0 -.633 -1.62l-6.38 -.926l-2.852 -5.78a1 1 0 0 0 -1.794 0l-2.853 5.78z" /></svg>
 `;
+
+export const checkout = `
+<svg width="32" height="257" viewBox="0 0 32 257" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="9" y="20" width="14" height="67" fill="#719DF4"/>
+<rect width="32" height="32" rx="16" fill="#0F49BD"/>
+<g clip-path="url(#clip0_388_4503)">
+<path d="M10 16.6666C10 16.313 10.1405 15.9738 10.3905 15.7238C10.6406 15.4737 10.9797 15.3333 11.3333 15.3333H18C18.3536 15.3333 18.6928 15.4737 18.9428 15.7238C19.1929 15.9738 19.3333 16.313 19.3333 16.6666V20.6666C19.3333 21.0202 19.1929 21.3593 18.9428 21.6094C18.6928 21.8594 18.3536 21.9999 18 21.9999H11.3333C10.9797 21.9999 10.6406 21.8594 10.3905 21.6094C10.1405 21.3593 10 21.0202 10 20.6666V16.6666Z" stroke="#E6E6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 18.6667C14 18.8435 14.0702 19.013 14.1953 19.1381C14.3203 19.2631 14.4899 19.3333 14.6667 19.3333C14.8435 19.3333 15.013 19.2631 15.1381 19.1381C15.2631 19.013 15.3333 18.8435 15.3333 18.6667C15.3333 18.4899 15.2631 18.3203 15.1381 18.1953C15.013 18.0702 14.8435 18 14.6667 18C14.4899 18 14.3203 18.0702 14.1953 18.1953C14.0702 18.3203 14 18.4899 14 18.6667Z" stroke="#E6E6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.667 15.3333V12.6667C16.667 11.9594 16.9479 11.2811 17.448 10.781C17.9481 10.281 18.6264 10 19.3337 10C20.0409 10 20.7192 10.281 21.2193 10.781C21.7194 11.2811 22.0003 11.9594 22.0003 12.6667V15.3333" stroke="#E6E6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<rect x="9" y="105" width="14" height="67" fill="#719DF4"/>
+<rect y="85" width="32" height="32" rx="16" fill="#0F49BD"/>
+<g clip-path="url(#clip1_388_4503)">
+<path d="M14.667 96.3333C14.667 95.9797 14.8075 95.6406 15.0575 95.3905C15.3076 95.1405 15.6467 95 16.0003 95C16.3539 95 16.6931 95.1405 16.9431 95.3905C17.1932 95.6406 17.3337 95.9797 17.3337 96.3333C18.0993 96.6954 18.7519 97.2589 19.2217 97.9635C19.6915 98.6682 19.9606 99.4874 20.0003 100.333V102.333C20.0505 102.748 20.1973 103.145 20.4289 103.492C20.6605 103.839 20.9704 104.128 21.3337 104.333H10.667C11.0303 104.128 11.3402 103.839 11.5718 103.492C11.8034 103.145 11.9502 102.748 12.0003 102.333V100.333C12.04 99.4874 12.3092 98.6682 12.779 97.9635C13.2487 97.2589 13.9014 96.6954 14.667 96.3333Z" stroke="#E6E6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 104.333V105C14 105.53 14.2107 106.039 14.5858 106.414C14.9609 106.789 15.4696 107 16 107C16.5304 107 17.0391 106.789 17.4142 106.414C17.7893 106.039 18 105.53 18 105V104.333" stroke="#E6E6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22.0004 97.4847C21.5631 96.5335 20.9281 95.6865 20.1377 95" stroke="#E6E6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 97.4847C10.4369 96.5336 11.0714 95.6866 11.8613 95" stroke="#E6E6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<path d="M9 197C9 193.134 12.134 190 16 190C19.866 190 23 193.134 23 197V250C23 253.866 19.866 257 16 257C12.134 257 9 253.866 9 250V197Z" fill="#262626"/>
+<rect y="170" width="32" height="32" rx="16" fill="#1A1A1A"/>
+<path d="M16 178L19.5556 186L24 180.667L22.2222 194H9.77778L8 180.667L12.4444 186L16 178Z" stroke="#E6E6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<defs>
+<clipPath id="clip0_388_4503">
+<rect width="16" height="16" fill="white" transform="translate(8 8)"/>
+</clipPath>
+<clipPath id="clip1_388_4503">
+<rect width="16" height="16" fill="white" transform="translate(8 93)"/>
+</clipPath>
+</defs>
+</svg>
+
+  `;

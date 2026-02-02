@@ -7,6 +7,8 @@ export default function Index() {
   const { startOnboarding, startAuth, startApp } = useOnAppStart();
   const router = useRouter();
 
+  console.log(startApp, startAuth, startOnboarding);
+
   if (startApp) {
     router.replace("/(tabs)/home");
   }

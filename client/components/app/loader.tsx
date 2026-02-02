@@ -17,6 +17,7 @@ interface LoaderProps {
   textOptional?: string;
   dots?: boolean;
   size?: number;
+  isPurchasing?: boolean;
 }
 
 const DOTS = ["", ".", "..", "..."];
@@ -26,6 +27,7 @@ const Loader = ({
   textOptional,
   dots = true,
   size = 64,
+  isPurchasing = false,
 }: LoaderProps) => {
   const t = useSharedValue(0);
   const dot = useSharedValue(0);
@@ -60,7 +62,7 @@ const Loader = ({
   }));
 
   return (
-    <View className="flex-1 justify-center items-center gap-3">
+    <View className={`justify-center items-center gap-3 ${isPurchasing ? "" : "flex-1"}`}>
       <View style={{ width: size, height: size }}>
         <Animated.View style={[{ position: "absolute", inset: 0 }, downStyle]}>
           <SvgXml xml={mascotLoadingDown} width={size} height={size} />

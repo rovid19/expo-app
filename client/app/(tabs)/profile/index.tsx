@@ -7,10 +7,12 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import ReportBottomSheet from "../../../components/profile/reportBottomSheet";
 import Header from "../../../components/app/header";
 import { logo } from "../../../assets/icons/icons";
+import { useAppStore } from "../../../stores/appStore";
 
 export default function Profile() {
   const subscriptionBottomSheetRef = useRef<BottomSheet>(null);
   const reportBottomSheetRef = useRef<BottomSheet>(null);
+  const { setHideNavbar } = useAppStore();
   return (
     <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1 px-6">
       {/* Header */}
@@ -21,10 +23,17 @@ export default function Profile() {
 
       {/* Actions */}
       <ProfileActions
-        onPressSubscription={() =>
+        onPressSubscription={() =>  
+        {
+
           subscriptionBottomSheetRef.current?.snapToIndex(0)
+          setHideNavbar(true);
+
         }
-        onPressReport={() => reportBottomSheetRef.current?.snapToIndex(0)}
+        }
+        onPressReport={() => {reportBottomSheetRef.current?.snapToIndex(0)
+          setHideNavbar(true);
+        }}
       />
 
       <SubscriptionBottomSheet ref={subscriptionBottomSheetRef} />

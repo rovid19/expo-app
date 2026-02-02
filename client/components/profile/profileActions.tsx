@@ -8,6 +8,7 @@ import { logout } from "../../assets/icons/icons";
 import { router } from "expo-router";
 import { supabase } from "../../services/supabase/supabaseClient";
 import { useUserStore } from "../../stores/userStore";
+import Purchases from "react-native-purchases";
 
 interface profileActionsProps {
   onPressSubscription: () => void;
@@ -26,6 +27,7 @@ const profileActions = ({
       router.replace("/");
       setTimeout(() => {
         setUser(null);
+        Purchases.logOut();
       }, 500);
     } catch (error) {
       console.error("Logout error:", error);
