@@ -6,7 +6,7 @@ import * as Linking from "expo-linking";
 import * as AppleAuthentication from "expo-apple-authentication";
 import Loader from "../app/loader";
 import { SvgXml } from "react-native-svg";
-import { appleLogo, googleLogo } from "../../assets/icons/icons";
+import { appleLogo, googleLogo, logo } from "../../assets/icons/icons";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -106,8 +106,8 @@ const Auth = () => {
 
   return (
     <View className="flex-1 bg-dark1 py-8 px-4">
-      <View className="flex-1">
-        <Loader text="" dots={false} size={128} />
+      <View className="flex-1 items-center justify-center">
+        <SvgXml xml={logo} width={128} height={128} color="#83BD0F" />
       </View>
 
       <View className="flex-1 flex flex-col gap-8 px-2">

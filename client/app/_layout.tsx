@@ -32,6 +32,7 @@ export default function RootLayout() {
   });
   const { isModal, closeModal } = useAppStore();
 
+
   useEffect(() => {
     // Configure RevenueCat SDK at app startup
     try {
@@ -46,6 +47,8 @@ export default function RootLayout() {
     } catch (error) {
       console.error('❌ Failed to configure RevenueCat:', error);
     }
+
+  
 
     setListingDetailsBottomSheetRef(
       listingDetailsBottomSheetRef as React.RefObject<BottomSheetModal>

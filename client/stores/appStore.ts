@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { PurchasesPackage } from "react-native-purchases";
 
 interface AppStore {
+  launchOpeningAnimation: boolean;
+  setLaunchOpeningAnimation: (launchOpeningAnimation: boolean) => void;
   selectedPackage: PurchasesPackage | null;
   setSelectedPackage: (selectedPackage: PurchasesPackage | null) => void;
   hideNavbar: boolean;
@@ -28,6 +30,8 @@ interface AppStore {
 }
 
 export const useAppStore = create<AppStore>((set) => ({
+  launchOpeningAnimation: true,
+  setLaunchOpeningAnimation: (launchOpeningAnimation: boolean) => set({ launchOpeningAnimation }),
   selectedPackage: null,
   setSelectedPackage: (selectedPackage: PurchasesPackage | null) => set({ selectedPackage }),
   isModal: {

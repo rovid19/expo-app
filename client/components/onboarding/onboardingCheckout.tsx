@@ -44,7 +44,11 @@ const OnboardingCheckout: React.FC<OnboardingCheckoutProps> = ({
 
   // Initial check
   (async () => {
+  
     const customerInfo = await Purchases.getCustomerInfo();
+    console.log('App User ID:', await Purchases.getAppUserID());
+
+    console.log('customerInfo', customerInfo);
     console.log(
       'Active entitlement IDs:',
       Object.keys(customerInfo.entitlements.active)
@@ -73,7 +77,7 @@ const initiatePurchase = async () => {
   console.log('🚀 Initiating purchase');
   
   try {
-    open(<Loader text="Purchasing..." isPurchasing={true} />);
+    open(<Loader text="Purchasing" isPurchasing={true} dots={false} />);
     await Purchases.purchasePackage(selectedPackage);
    
     
