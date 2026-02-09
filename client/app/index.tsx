@@ -4,6 +4,7 @@ import Onboarding from "../components/onboarding/index";
 import useOnAppStart from "../hooks/useOnAppStart";
 import { useAppStore } from "../stores/appStore";
 import LaunchOpeningAnimation from "../components/app/launchOpeningAnimation";
+import { useEffect } from "react";
 
 export default function Index() {
   const { startOnboarding, startAuth, startApp } = useOnAppStart();
@@ -12,12 +13,14 @@ export default function Index() {
 
   console.log(startApp, startAuth, startOnboarding);
 
+  useEffect(() => {
+    if (!launchOpeningAnimation && startApp) {
+      router.replace("/(tabs)/home");
+    }
+  }, [launchOpeningAnimation, startApp]);
+
   if(launchOpeningAnimation) {
     return <LaunchOpeningAnimation />;
-  }
-
-  if (startApp) {
-    router.replace("/(tabs)/home");
   }
 
   if (startAuth) {

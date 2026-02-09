@@ -1,9 +1,5 @@
 import { View, Text, Pressable } from "react-native";
-import { useState, useEffect, useRef } from "react";
-import { Item } from "../../../globalTypes";
-import { supabase } from "../../../services/supabase/supabaseClient";
-import { useUserStore } from "../../../stores/userStore";
-//import { useItemsStore } from "../../../stores/itemsStore";
+import { useState } from "react";
 import Overview from "../../../components/home/overview";
 import Collection from "../../../components/home/collection";
 import { TouchableOpacity } from "react-native";
@@ -19,19 +15,14 @@ import { useCallback } from "react";
 import Header from "../../../components/app/header";
 import AppSettingsModal from "../../../components/appModals/appSettingsModal";
 import { useAppStore } from "../../../stores/appStore";
-import useOncePerLaunch from "../../../hooks/useOncePerLaunch";
+import useOnceAfterAuth from "../../../hooks/useOncePerLaunch";
 
 export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState("overview");
-  const [userItems, setUserItems] = useState<Item[]>([]);
-  const [triggerRefresh, setTriggerRefresh] = useState(false);
-  //const [isListingDetailsVisible, setIsListingDetailsVisible] = useState(false);
-  const { user, triggerDashboardRefresh } = useUserStore();
-  /*const { setSelectedScannedItem, setContainerIndex, setIsLoading } =
-    useItemsStore();*/
   const { fetchItems, setItemType } = useItems2Store();
   const { setIsModal, name } = useAppStore();
-  const { performAccountSetup, runOncePerLaunch } = useOncePerLaunch();
+  useOnceAfterAuth();
+
   const {
     overviewStyle,
     collectionStyle,
@@ -47,13 +38,9 @@ export default function Dashboard() {
     useCallback(() => {
       setItemType("listed");
       fetchItems();
-    }, [])
+    }, []),
   );
   const tabBarHeight = useBottomTabBarHeight();
-
-  useEffect(() => {
-    runOncePerLaunch();
-  }, []);
 
   return (
     <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1 ">

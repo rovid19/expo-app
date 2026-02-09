@@ -20,9 +20,11 @@ const LaunchOpeningAnimation: React.FC = () => {
 
   const logoOpacity = useSharedValue(1);
   const textOpacity = useSharedValue(0);
+  const textScale = useSharedValue(0);
 
   const [showText, setShowText] = useState(false);
   const [useWhiteLogo, setUseWhiteLogo] = useState(false);
+  const [textWidth, setTextWidth] = useState(0);
 
   const { setLaunchOpeningAnimation } = useAppStore();
 
@@ -34,28 +36,21 @@ const LaunchOpeningAnimation: React.FC = () => {
     setUseWhiteLogo(true);
     setShowText(true);
 
-    // Logo fades back in on accent background
-    logoOpacity.value = withTiming(1, {
-      duration: 200,
-      easing: Easing.out(Easing.ease),
+    logoOpacity.value = withTiming(1, { duration: 1200 });
+
+    textOpacity.value = withTiming(1, { duration: 200 });
+
+    textScale.value = withTiming(1, {
+      duration: 350,
+      easing: Easing.out(Easing.cubic),
     });
 
-    // Text fades in (no slide)
-    textOpacity.value = withTiming(1, {
-      duration: 200,
-      easing: Easing.out(Easing.ease),
-    });
-
-    // End slightly after last fade
-    setTimeout(() => {
-      runOnJS(finish)();
-    }, 350);
+    setTimeout(() => runOnJS(finish)(), 350);
   };
 
   useEffect(() => {
-    // Scale + rotate intro
     scale.value = withSequence(
-      withTiming(1.15, { duration: 500, easing: Easing.out(Easing.ease) }),
+      withTiming(1.15, { duration: 500 }),
       withTiming(1, { duration: 400 })
     );
 
@@ -64,13 +59,11 @@ const LaunchOpeningAnimation: React.FC = () => {
       withTiming(0, { duration: 400 })
     );
 
-    // Fade logo OUT near the end of the intro motion
     logoOpacity.value = withDelay(
       800,
-      withTiming(0, { duration: 200, easing: Easing.out(Easing.ease) })
+      withTiming(0, { duration: 200 })
     );
 
-    // Background to accent, then fade logo/text back in
     bgProgress.value = withDelay(
       750,
       withTiming(1, { duration: 500 }, (ok) => {
@@ -80,7 +73,7 @@ const LaunchOpeningAnimation: React.FC = () => {
   }, []);
 
   const bgStyle = useAnimatedStyle(() => ({
-    backgroundColor: bgProgress.value === 0 ? "#0B0B0B" : "#83BD0F",
+    backgroundColor: bgProgress.value === 0 ? "#0B0B0B" : "#0B0B0B",
   }));
 
   const logoStyle = useAnimatedStyle(() => ({
@@ -88,25 +81,29 @@ const LaunchOpeningAnimation: React.FC = () => {
     transform: [{ scale: scale.value }, { rotate: `${rotate.value}deg` }],
   }));
 
+  // ⭐ Center compensation
   const textStyle = useAnimatedStyle(() => ({
     opacity: textOpacity.value,
+    transform: [
+      {
+        translateX: -(textWidth / 2) * (1 - textScale.value),
+      },
+      { scaleX: textScale.value },
+    ],
   }));
 
   return (
     <Animated.View className="flex-1 justify-center items-center" style={bgStyle}>
-      <View className="flex flex-row items-center justify-center gap-4">
-        <Animated.View style={logoStyle}>
-          <SvgXml
-            xml={useWhiteLogo ? logoWhite : logo}
-            width={96}
-            height={96}
-          />
-        </Animated.View>
+      <View className="flex flex-row items-center justify-center gap-2">
+       {!showText && <Animated.View style={logoStyle}>
+          <SvgXml xml={useWhiteLogo ? logoWhite : logo} width={96} height={96} />
+        </Animated.View>}
 
         {showText && (
           <Animated.Text
+            onLayout={(e) => setTextWidth(e.nativeEvent.layout.width)}
             style={textStyle}
-            className="text-white text-4xl font-bold"
+            className="text-white text-5xl font-bold"
           >
             Dexly
           </Animated.Text>

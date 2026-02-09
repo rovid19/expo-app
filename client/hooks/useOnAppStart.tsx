@@ -14,45 +14,36 @@ const useOnAppStart = () => {
   const [startOnboarding, setStartOnboarding] = useState(false);
   const [initalCheck, setInitalCheck] = useState(false);
 
-  const {onboardingFinished, setIsModal} = useAppStore();
-  const setIsSubscribed = useUserStore((state) => state.setIsSubscribed);
+  const { onboardingFinished } = useAppStore();
   useEffect(() => {
-    
- 
+    /*supabase.auth
+      .signOut()
+      .then(() => {
+        console.log("Signed out");
+      })
+      .catch((error) => {
+        console.log("Error signing out", error);
+      });*/
+
     checkHasLaunched();
   }, [onboardingFinished]);
 
   const checkHasLaunched = async () => {
-    
-    const hasLaunched = await AsyncStorage.getItem("hasLaunched")
+    //const hasLaunched = await AsyncStorage.removeItem("hasLaunched");
+    const hasLaunched = await AsyncStorage.getItem("hasLaunched");
     setHasLaunched(hasLaunched as unknown as boolean);
     setInitalCheck(true);
   };
 
-  const checkIfSubscribed = async () => {
-    console.log("Checking if subscribed");
-    const customerInfo = await Purchases.getCustomerInfo();
-    console.log('customerInfo', customerInfo);
-    console.log('customerInfo.activeSubscriptions', customerInfo.activeSubscriptions.length);
-    return customerInfo.activeSubscriptions.length > 0;
-  };  
-
-  const launchApp = async () => {
-    const isSubscribed = await checkIfSubscribed();
-    console.log('is this user fucking subscribed????!!!', isSubscribed);
-    setIsSubscribed(isSubscribed);
-    setStartApp(true);
-  };
-
   useEffect(() => {
     if (initalCheck) {
-    if (!hasLaunched) {
-      setStartOnboarding(true);
-    } else if (hasLaunched && !user) {
-      setStartAuth(true);
-    } else if (hasLaunched && user) {
-      launchApp();
-    }
+      if (!hasLaunched) {
+        setStartOnboarding(true);
+      } else if (hasLaunched && !user) {
+        setStartAuth(true);
+      } else if (hasLaunched && user) {
+        setStartApp(true);
+      }
     }
   }, [hasLaunched, user]);
 

@@ -19,16 +19,25 @@ const profileActions = ({
   onPressSubscription,
   onPressReport,
 }: profileActionsProps) => {
-  const setUser = useUserStore((state) => state.setUser);
+  const { setUser, setIsSubscribed, setAuthFinished } = useUserStore();
   const handleLogout = async () => {
     try {
+      // 1. Log out of RevenueCat FIRST (before anything else)
+      await Purchases.logOut();
+
+      // 2. Clear subscription state
+      setIsSubscribed(false);
+      setAuthFinished(false);
+
+      // 3. Log out of Supabase
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+
+      // 4. Clear user from store
+      setUser(null);
+
+      // 5. Close modal and navigate
       router.replace("/");
-      setTimeout(() => {
-        setUser(null);
-        Purchases.logOut();
-      }, 500);
     } catch (error) {
       console.error("Logout error:", error);
     }

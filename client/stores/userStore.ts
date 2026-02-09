@@ -1,8 +1,10 @@
 import { create } from "zustand";
 
 interface UserStore {
+  authFinished: boolean;
+  setAuthFinished: (authFinished: boolean) => void;
   isSubscribed: boolean;
-  setIsSubscribed: (isSubscribed: boolean) => void;   
+  setIsSubscribed: (isSubscribed: boolean) => void;
   user: any | null;
   currency: "USD" | "EUR" | null;
   triggerDashboardRefresh: boolean;
@@ -12,6 +14,8 @@ interface UserStore {
 }
 
 export const useUserStore = create<UserStore>((set) => ({
+  authFinished: false,
+  setAuthFinished: (authFinished: boolean) => set({ authFinished }),
   isSubscribed: false,
   setIsSubscribed: (isSubscribed: boolean) => set({ isSubscribed }),
   user: null,
