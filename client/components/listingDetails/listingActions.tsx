@@ -11,7 +11,6 @@ const ListingActions = () => {
       <TouchableOpacity
         className="w-full bg-accent1 flex flex-row items-center justify-center p-4 rounded-3xl gap-2"
         onPress={() => {
-          console.log("opening sale popup");
           open(<SalePopup />);
         }}
       >

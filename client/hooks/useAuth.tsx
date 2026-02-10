@@ -2,6 +2,7 @@ import Purchases from "react-native-purchases";
 import { supabase } from "../services/supabase/supabaseClient";
 import { useUserStore } from "../stores/userStore";
 import { useEffect } from "react";
+import { useOnboardingStore } from "../stores/onboardingStore";
 
 interface UseAuthProps {
   revenueCatConfigured: boolean;
@@ -10,7 +11,7 @@ interface UseAuthProps {
 const useAuth = ({ revenueCatConfigured }: UseAuthProps) => {
   const setUser = useUserStore((state) => state.setUser);
   const { setIsSubscribed, setAuthFinished } = useUserStore();
-
+  const setOnboardingStep = useOnboardingStore((state) => state.setOnboardingStep);
   useEffect(() => {
     if (!revenueCatConfigured) return;
 
@@ -23,16 +24,39 @@ const useAuth = ({ revenueCatConfigured }: UseAuthProps) => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
 
-      console.log("❤️ Auth state changed:", session?.user?.id);
-
       if (session?.user) {
-        handleSubscriptionCheck(session?.user.id);
+        const isOnboarding = useOnboardingStore.getState().isOnboarding;
+        if (isOnboarding) {
+          setOnboardingStep(9);
+        } else {
+          handleSubscriptionCheck(session?.user.id);
+        }
       }
     });
 
     return () => subscription.unsubscribe();
   }, [revenueCatConfigured]);
 
+  const handleSubscriptionCheck = async (userId: string) => {
+    const { customerInfo } = await Purchases.logIn(userId);
+
+    if (Object.keys(customerInfo.entitlements.active).length > 0) {
+      console.log("❤️ User is subscribed");
+      setIsSubscribed(true);
+    } else {
+      console.log("❤️ User is not subscribed");
+      setIsSubscribed(false);
+    }
+
+    setAuthFinished(true);
+  };
+
+  return null;
+};
+
+export default useAuth;
+
+/*
   const handleSubscriptionCheck = async (userId: string) => {
     const { customerInfo, created } = await Purchases.logIn(userId);
     console.log("❤️ Created:", created);
@@ -66,39 +90,4 @@ const useAuth = ({ revenueCatConfigured }: UseAuthProps) => {
 
     setAuthFinished(true);
   };
-
-  return null;
-};
-
-export default useAuth;
-
-/*
-
-
-
-
-
-
-  const handleSubscriptionCheck = async (userId: string) => {
-    const { customerInfo, created } = await Purchases.logIn(userId);
-    console.log("❤️ Created:", created);
-    console.log("❤️ Customer info:", customerInfo);
-
-    console.log(
-      "❤️ Customer info entitlements:",
-      customerInfo.entitlements.active,
-    );
-
-    if (Object.keys(customerInfo.entitlements.active).length > 0) {
-      setIsSubscribed(true);
-    } else {
-      setIsSubscribed(false);
-    }
-
-    setAuthFinished(true);
-  };
-
-
-
-
 */

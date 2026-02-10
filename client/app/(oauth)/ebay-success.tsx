@@ -8,7 +8,6 @@ export default function EbaySuccess() {
   const { closeModal } = useAppStore();
   useEffect(() => {
     closeModal();
-    console.log("ebay success");
     Toast.show({
       type: "success",
       text1: "Ebay connected",

@@ -39,7 +39,7 @@ const isntSubscribed = () => {
     <View className="flex-1 justify-center items-center bg-dark1/50 relative">
       <BlurView intensity={20} tint="dark" className="absolute inset-0" />
 
-      <View className="w-fullflex flex-col justify-center items-center gap-2 bg-dark1 p-8 rounded-3xl">
+      <View className="w-full flex flex-col justify-center items-center gap-2 bg-dark1 p-8 rounded-3xl">
         <SvgXml xml={unsureMascot} width={64} height={64} />
 
         <Text className="text-light1  text-xl font-medium text-center mt-2">

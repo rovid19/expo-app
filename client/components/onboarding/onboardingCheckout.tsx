@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { View, Text, Alert } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { check } from "../../assets/icons/icons";
@@ -9,98 +9,113 @@ import Purchases, { CustomerInfo } from "react-native-purchases";
 import { usePopupStore } from "../../stores/popupStore";
 import Loader from "../app/loader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const ENTITLEMENT_ID = 'Pro';
+import { useOnboardingStore } from "../../stores/onboardingStore";
+import { useUserStore } from "../../stores/userStore";
+const ENTITLEMENT_ID = "Pro";
 
-interface OnboardingCheckoutProps {
-  setOnboardingStep: React.Dispatch<React.SetStateAction<number>>;
-  onboardingStep: number;
-}
+const OnboardingCheckout = () => {
+  const { setOnboardingStep, onboardingStep } = useOnboardingStore();
+  const { setIsModal, selectedPackage } = useAppStore();
+  const { open } = usePopupStore();
+  const { user, setIsSubscribed } = useUserStore();
+  const { setIsOnboarding } = useOnboardingStore();
+  const [buttonAnimation, setButtonAnimation] = useState(false);
 
-const OnboardingCheckout: React.FC<OnboardingCheckoutProps> = ({
-  setOnboardingStep,
-  onboardingStep,
-}) => {
-  const { setOnboardingFinished, setIsModal, selectedPackage } = useAppStore();
-  const {open} = usePopupStore();
+  const handleSubscriptionCheck = async (userId: string) => {
+    const { customerInfo, created } = await Purchases.logIn(userId);
+    console.log("❤️ Created:", created);
+    console.log("❤️ Customer info:", customerInfo);
 
- // 🔥 RevenueCat listener (fires on ALL purchases)
- useEffect(() => {
+    // If user already existed and has no entitlements, restore from store
+    if (
+      !created &&
+      Object.keys(customerInfo.entitlements.active).length === 0
+    ) {
+      console.log(
+        "⚠️ Customer exists but has no entitlements - restoring from store...",
+      );
+      try {
+        const restoredInfo = await Purchases.restorePurchases();
+        console.log("✅ Restored info:", restoredInfo.entitlements.active);
 
-  let isActive = true;
-  
-  const listener = (customerInfo: CustomerInfo) => {
-    if (!isActive) return;
-    const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
-    if (hasPro) {
-      //console.log('✅ ENTITLEMENT ACTIVE - redirecting!');
-      setIsModal({visible: false, content: null, popupContent: null});
-      setOnboardingStep(10);
-      AsyncStorage.setItem("hasLaunched", "true");
-      setOnboardingFinished(true);
+        if (Object.keys(restoredInfo.entitlements.active).length > 0) {
+          setIsSubscribed(true);
+        } else {
+          setIsSubscribed(false);
+        }
+      } catch (error) {
+        console.error("❌ Restore failed:", error);
+        setIsSubscribed(false);
+      }
+    } else {
+      // Normal check
+      setIsSubscribed(Object.keys(customerInfo.entitlements.active).length > 0);
     }
   };
 
-  Purchases.addCustomerInfoUpdateListener(listener);
+  // 🔥 RevenueCat listener (fires on ALL purchases)
+  useEffect(() => {
+    let isActive = true;
 
-  // Initial check
-  (async () => {
-  
-    const customerInfo = await Purchases.getCustomerInfo();
-    console.log('App User ID:', await Purchases.getAppUserID());
-
-    console.log('customerInfo', customerInfo);
-    console.log(
-      'Active entitlement IDs:',
-      Object.keys(customerInfo.entitlements.active)
-    );
-    console.log(
-      'All entitlements:',
-      customerInfo.entitlements.all
-    );
-    const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
-    if (hasPro && isActive) setOnboardingStep(10);
-  })();
-
-  return () => {
-    isActive = false;
-  };
-}, [setOnboardingStep]);
-
-
-const initiatePurchase = async () => {
-
-  if (!selectedPackage) {
-    Alert.alert("Error", "No package selected");
-    return;
-  }
-
-  console.log('🚀 Initiating purchase');
-  
-  try {
-    open(<Loader text="Purchasing" isPurchasing={true} dots={false} />);
-    await Purchases.purchasePackage(selectedPackage);
-   
-    
-    // Backup poll
-    setTimeout(async () => {
-      try {
-        const customerInfo = await Purchases.getCustomerInfo();
-        const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
-        //console.log('⏱️ Backup poll:', hasPro);
-        if (hasPro) {
-          //console.log('✅ Backup redirect!');
-          setOnboardingStep(10);
-        }
-      } catch (error) {
-        console.error('Backup poll failed:', error);
+    const listener = (customerInfo: CustomerInfo) => {
+      if (!isActive) return;
+      const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
+      if (hasPro) {
+        setButtonAnimation(false);
+        handleSubscriptionCheck(user?.id);
+        AsyncStorage.setItem("hasLaunched", "true");
+        setIsOnboarding(false);
       }
-    }, 2500);
-    
-  } catch (error) {
-    console.error('❌ Purchase start failed:', error);
+    };
 
-  }
-}
+    Purchases.addCustomerInfoUpdateListener(listener);
+
+    // Initial check
+    (async () => {
+      const customerInfo = await Purchases.getCustomerInfo();
+      console.log("App User ID:", await Purchases.getAppUserID());
+
+      console.log("customerInfo", customerInfo);
+
+      console.log("All entitlements:", customerInfo.entitlements.all);
+      const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
+      if (hasPro && isActive) setIsOnboarding(false);
+    })();
+
+    return () => {
+      isActive = false;
+    };
+  }, [setOnboardingStep]);
+
+  const initiatePurchase = async () => {
+    if (!selectedPackage) {
+      Alert.alert("Error", "No package selected");
+      return;
+    }
+    setButtonAnimation(true);
+    console.log("🚀 Initiating purchase");
+
+    try {
+      await Purchases.purchasePackage(selectedPackage);
+
+      //open(<Loader text="Purchasing" isPurchasing={true} dots={false} />);
+
+      // Backup poll
+      setTimeout(async () => {
+        try {
+          const customerInfo = await Purchases.getCustomerInfo();
+          const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
+          if (hasPro) {
+            setOnboardingStep(10);
+          }
+        } catch (error) {
+          console.error("Backup poll failed:", error);
+        }
+      }, 2500);
+    } catch (error) {
+      console.error("❌ Purchase start failed:", error);
+    }
+  };
   return (
     <View className="flex-1 items-center flex flex-col gap-8 pt-28">
       <View className="flex flex-col gap-2 items-center justify-center">
@@ -120,13 +135,16 @@ const initiatePurchase = async () => {
       <View className="w-full flex flex-col gap-2 items-center justify-center pb-12">
         <View className="w-full flex flex-row gap-2 items-center justify-center">
           <SvgXml xml={check} width={24} height={24} color="#00FF00" />
-          <Text className="text-light2 font-bold text-xl">No Payment Due Now</Text>
+          <Text className="text-light2 font-bold text-xl">
+            No Payment Due Now
+          </Text>
         </View>
 
         <Button
-          title={onboardingStep === 8 ? "Try for $0.00" : "Start My 3-Day Free Trial"}
+          title={
+            onboardingStep === 8 ? "Try for $0.00" : "Start My 3-Day Free Trial"
+          }
           onPress={() => {
-            console.log("onboardingStep", onboardingStep);
             if (onboardingStep === 8) {
               setOnboardingStep(onboardingStep + 1);
             } else {
@@ -138,6 +156,8 @@ const initiatePurchase = async () => {
           backgroundColor="bg-accent1"
           textColor="text-dark1"
           padding={6}
+          animation={buttonAnimation}
+          animationText="Purchasing..."
         />
 
         <Text className="text-light3 font-bold text-base">

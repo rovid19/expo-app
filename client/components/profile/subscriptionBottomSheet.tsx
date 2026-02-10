@@ -11,13 +11,11 @@ const SubscriptionBottomSheet = forwardRef<BottomSheet>((_, ref) => {
   const snapPoints = useMemo(() => ["85%"], []);
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo | null>(null);
   const { setHideNavbar } = useAppStore();
-  
 
   const activeProductId = customerInfo?.activeSubscriptions?.[0];
-const sub = activeProductId
-  ? customerInfo?.subscriptionsByProductIdentifier?.[activeProductId]
-  : null;
-
+  const sub = activeProductId
+    ? customerInfo?.subscriptionsByProductIdentifier?.[activeProductId]
+    : null;
 
   const getCustomerInfo = async () => {
     const customerInfo = await Purchases.getCustomerInfo();
@@ -38,7 +36,6 @@ const sub = activeProductId
       minute: "2-digit",
     });
   };
-  
 
   console.log(customerInfo);
 
@@ -66,45 +63,39 @@ const sub = activeProductId
       onAnimate={(_, toIndex) => {
         if (toIndex === -1) {
           setHideNavbar(false);
-     
         }
       }}
     >
-      <BottomSheetView className="flex-1 px-4">
+      <BottomSheetView className="flex-1 px-6">
         {/* Header */}
 
         {/* Content */}
         <View className="flex-1 gap-4 pt-4">
-  <Text className="text-light2 text-3xl font-bold">
-    Subscription Details
-  </Text>
+          <View className="bg-dark2 rounded-2xl p-4 gap-6">
+            <View className="flex-row justify-between">
+              <Text className="text-light3 font-sans text-lg">Plan</Text>
+              <Text className="text-light2 font-bold text-lg">
+                {activeProductId ?? "—"}
+              </Text>
+            </View>
 
-  <View className="bg-dark2 rounded-2xl p-4 gap-6 mt-1">
-    <View className="flex-row justify-between">
-      <Text className="text-light3 font-sans text-lg">Plan</Text>
-      <Text className="text-light2 font-bold text-lg">
-        {activeProductId ?? "—"}
-      </Text>
-    </View>
+            <View className="flex-row justify-between">
+              <Text className="text-light3 font-sans text-lg">Started</Text>
+              <Text className="text-light2 font-sans text-base">
+                {formatDate(sub?.purchaseDate)}
+              </Text>
+            </View>
 
-    <View className="flex-row justify-between">
-      <Text className="text-light3 font-sans text-lg">Started</Text>
-      <Text className="text-light2 font-sans text-base">
-        {formatDate(sub?.purchaseDate)}
-      </Text>
-    </View>
-
-    <View className="flex-row justify-between">
-      <Text className="text-light3 font-sans text-lg">Renews / Ends</Text>
-      <Text className="text-light2 font-sans text-base">
-        {formatDate(sub?.expiresDate)}
-      </Text>
-    </View>
-  </View>
-</View>
-
-
-    
+            <View className="flex-row justify-between">
+              <Text className="text-light3 font-sans text-lg">
+                Renews / Ends
+              </Text>
+              <Text className="text-light2 font-sans text-base">
+                {formatDate(sub?.expiresDate)}
+              </Text>
+            </View>
+          </View>
+        </View>
       </BottomSheetView>
     </BottomSheet>
   );

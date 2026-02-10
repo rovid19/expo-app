@@ -10,8 +10,6 @@ const overview = () => {
   const { items, isLoading } = useItems2Store();
   const { currencySymbol } = useAppStore();
 
-  console.log("currencySymbo2222l", currencySymbol);
-
   const totalProfit =
     items.reduce((acc, item) => {
       if (item.is_sold) {

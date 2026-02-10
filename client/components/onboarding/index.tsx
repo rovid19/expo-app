@@ -10,18 +10,27 @@ import OnboardingRating from "./onboardingRating";
 import * as StoreReview from "expo-store-review";
 import OnboardingCheckout from "./onboardingCheckout";
 import Auth from "../auth/auth";
+import { useOnboardingStore } from "../../stores/onboardingStore";
 
 const index = () => {
-  const [onboardingStep, setOnboardingStep] = useState<number>(0);
   const [answerSelected, setAnswerSelected] = useState<number[]>([]);
   const [answers, setAnswers] = useState<string[]>([]);
+  const { setOnboardingStep, setIsOnboarding, onboardingStep, isOnboarding } =
+    useOnboardingStore();
 
   const disableContinueButton =
     answerSelected.length < onboardingStep &&
     onboardingStep !== 4 &&
-    onboardingStep < 5;
+    onboardingStep < 6;
 
-  console.log(onboardingStep);
+  useEffect(() => {
+    setIsOnboarding(true);
+  }, []);
+
+  useEffect(() => {
+    console.log("is Onboarding in index", isOnboarding);
+  }, [isOnboarding]);
+
   return (
     <View className="flex-1 bg-dark1 px-4 flex flex-col gap-8">
       {/*Header*/}
@@ -29,13 +38,9 @@ const index = () => {
         <View className="flex flex-row items-center justify-center gap-4 pt-20 ">
           <TouchableOpacity
             onPress={() =>
-              setOnboardingStep((prev) => {
-                if (prev) {
-                  return prev - 1;
-                } else {
-                  return prev;
-                }
-              })
+              setOnboardingStep(
+                onboardingStep > 0 ? onboardingStep - 1 : onboardingStep,
+              )
             }
             className="py-4 flex items-center justify-center"
           >
@@ -71,6 +76,8 @@ const index = () => {
 
       {onboardingStep === 7 && <OnboardingRating />}
 
+      {onboardingStep === 8 && <Auth />}
+
       {/*Action Buttons*/}
       {onboardingStep > 0 && onboardingStep < 8 && (
         <View className="pb-12 w-full">
@@ -103,19 +110,13 @@ const index = () => {
         </View>
       )}
 
-      {onboardingStep > 7 && onboardingStep < 10 && (
+      {onboardingStep > 8 && onboardingStep < 10 && (
         <>
-          <OnboardingCheckout
-            setOnboardingStep={setOnboardingStep}
-            onboardingStep={onboardingStep}
-
-          />
+          <OnboardingCheckout />
         </>
       )}
 
-      {onboardingStep === 10 && (
-       <Auth />
-      )}
+      {onboardingStep === 10 && <Auth />}
     </View>
   );
 };

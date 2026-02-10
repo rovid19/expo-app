@@ -32,8 +32,6 @@ const EditListing = () => {
       return;
     }
 
-    console.log(item);
-
     open(
       <ConfirmationPopup
         text="Are you sure you want to leave this page? You have unsaved changes."
@@ -43,13 +41,9 @@ const EditListing = () => {
           saveItem(item);
           closeModal();
         }}
-      />
+      />,
     );
   };
-
-  useEffect(() => {
-    console.log(changesMade);
-  }, [changesMade]);
 
   return (
     <View className="flex-1 relative pt-12 bg-dark1 px-6 pt-20 pb-8">

@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useEffect } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import { supabase } from "../../services/supabase/supabaseClient";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import * as AppleAuthentication from "expo-apple-authentication";
-import Loader from "../app/loader";
 import { SvgXml } from "react-native-svg";
 import { appleLogo, googleLogo, logo } from "../../assets/icons/icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useOnboardingStore } from "../../stores/onboardingStore";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const Auth = () => {
+  const { setIsOnboarding, isOnboarding } = useOnboardingStore();
   useEffect(() => {
     const handleDeepLink = async (event: { url: string }) => {
       const url = event.url;
@@ -63,7 +65,7 @@ const Auth = () => {
       if (data?.url) {
         const result = await WebBrowser.openAuthSessionAsync(
           data.url,
-          redirectUrl
+          redirectUrl,
         );
 
         if (result.type === "success" && result.url) {
@@ -97,8 +99,6 @@ const Auth = () => {
         provider: "apple",
         token: credential.identityToken,
       });
-      console.log(data);
-      console.log(error);
     } catch (err) {
       console.error("Apple sign-in error:", err);
     }
@@ -106,6 +106,16 @@ const Auth = () => {
 
   return (
     <View className="flex-1 bg-dark1 py-8 px-4">
+      <View className="flex flex-row items-center justify-center pt-8 ">
+        <TouchableOpacity
+          onPress={async () => {
+            await AsyncStorage.removeItem("hasLaunched");
+            setIsOnboarding(true);
+          }}
+        >
+          <Text className="text-light3 text-sm">Restore</Text>
+        </TouchableOpacity>
+      </View>
       <View className="flex-1 items-center justify-center">
         <SvgXml xml={logo} width={128} height={128} color="#83BD0F" />
       </View>

@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAppStore } from "../stores/appStore";
 import Purchases from "react-native-purchases";
 import { supabase } from "../services/supabase/supabaseClient";
+import { useOnboardingStore } from "../stores/onboardingStore";
 
 const useOnAppStart = () => {
   const user = useUserStore((state) => state.user);
@@ -13,8 +14,8 @@ const useOnAppStart = () => {
   const [startApp, setStartApp] = useState(false);
   const [startOnboarding, setStartOnboarding] = useState(false);
   const [initalCheck, setInitalCheck] = useState(false);
+  const { isOnboarding } = useOnboardingStore();
 
-  const { onboardingFinished } = useAppStore();
   useEffect(() => {
     /*supabase.auth
       .signOut()
@@ -26,7 +27,7 @@ const useOnAppStart = () => {
       });*/
 
     checkHasLaunched();
-  }, [onboardingFinished]);
+  }, [isOnboarding]);
 
   const checkHasLaunched = async () => {
     //const hasLaunched = await AsyncStorage.removeItem("hasLaunched");
@@ -39,13 +40,19 @@ const useOnAppStart = () => {
     if (initalCheck) {
       if (!hasLaunched) {
         setStartOnboarding(true);
+        setStartAuth(false);
+        setStartApp(false);
       } else if (hasLaunched && !user) {
         setStartAuth(true);
+        setStartOnboarding(false);
+        setStartApp(false);
       } else if (hasLaunched && user) {
         setStartApp(true);
+        setStartOnboarding(false);
+        setStartAuth(false);
       }
     }
-  }, [hasLaunched, user]);
+  }, [hasLaunched, user, initalCheck]);
 
   return {
     startOnboarding,

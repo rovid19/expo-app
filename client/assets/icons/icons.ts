@@ -130,8 +130,6 @@ export const logoWhite = `
 </svg>
 `;
 
-
-
 export const wavingHand = `
 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M13.2502 30.8105C13.2262 30.8105 13.2001 30.8062 13.1739 30.7996C10.5497 29.9997 7.70765 27.1315 7.09085 24.662C7.05595 24.5226 7.14095 24.3831 7.27825 24.3482C7.41775 24.3133 7.55725 24.3983 7.59215 24.5356C8.161 26.8132 10.8941 29.5616 13.3243 30.3049C13.4616 30.3463 13.5379 30.4901 13.4965 30.6274C13.4638 30.7386 13.3613 30.8105 13.2502 30.8105Z" fill="#975500"/>
@@ -421,4 +419,8 @@ export const checkout = `
 </defs>
 </svg>
 
+  `;
+
+export const emptyIcon = `
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 3l18 18" /><path d="M7 3h7l5 5v7m0 4a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-14" /></svg>
   `;

@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { PurchasesPackage } from "react-native-purchases";
 
 interface AppStore {
+  triggerRefresh: boolean;
+  setTriggerRefresh: (triggerRefresh: boolean) => void;
   launchOpeningAnimation: boolean;
   setLaunchOpeningAnimation: (launchOpeningAnimation: boolean) => void;
   selectedPackage: PurchasesPackage | null;
@@ -25,15 +27,17 @@ interface AppStore {
   setCurrencySymbol: (currencySymbol: string) => void;
   name: string;
   setName: (name: string) => void;
-  onboardingFinished: boolean;
-  setOnboardingFinished: (onboardingFinished: boolean) => void;
 }
 
 export const useAppStore = create<AppStore>((set) => ({
+  triggerRefresh: false,
+  setTriggerRefresh: (triggerRefresh: boolean) => set({ triggerRefresh }),
   launchOpeningAnimation: true,
-  setLaunchOpeningAnimation: (launchOpeningAnimation: boolean) => set({ launchOpeningAnimation }),
+  setLaunchOpeningAnimation: (launchOpeningAnimation: boolean) =>
+    set({ launchOpeningAnimation }),
   selectedPackage: null,
-  setSelectedPackage: (selectedPackage: PurchasesPackage | null) => set({ selectedPackage }),
+  setSelectedPackage: (selectedPackage: PurchasesPackage | null) =>
+    set({ selectedPackage }),
   isModal: {
     visible: false,
     content: null,
@@ -70,6 +74,4 @@ export const useAppStore = create<AppStore>((set) => ({
   setCurrencySymbol: (currencySymbol: string) => set({ currencySymbol }),
   name: "John Doe",
   setName: (name: string) => set({ name }),
-  onboardingFinished: false,
-  setOnboardingFinished: (onboardingFinished: boolean) => set({ onboardingFinished }),
 }));

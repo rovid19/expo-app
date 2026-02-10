@@ -43,10 +43,10 @@ export class AppService {
     return data !== null;
   }
 
-  static async createUserExtra(userId: string) {
+  static async createUserExtra(userId: string, name: string, currency: string) {
     const { data, error } = await supabase
       .from("user_extra")
-      .insert({ owner_id: userId, currency: "USD" });
+      .insert({ owner_id: userId, name, currency });
     if (error) {
       console.error("Error creating user extra:", error);
     }

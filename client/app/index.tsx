@@ -11,15 +11,13 @@ export default function Index() {
   const { launchOpeningAnimation } = useAppStore();
   const router = useRouter();
 
-  console.log(startApp, startAuth, startOnboarding);
-
   useEffect(() => {
     if (!launchOpeningAnimation && startApp) {
       router.replace("/(tabs)/home");
     }
   }, [launchOpeningAnimation, startApp]);
 
-  if(launchOpeningAnimation) {
+  if (launchOpeningAnimation) {
     return <LaunchOpeningAnimation />;
   }
 

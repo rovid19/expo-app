@@ -23,14 +23,12 @@ const SalePopup = () => {
     setIsLoading(true);
 
     const checkEbayConnection = await api.get(
-      `/ebay/has-ebay-connection?userId=${user?.id}`
+      `/ebay/has-ebay-connection?userId=${user?.id}`,
     );
 
     if (checkEbayConnection.data.hasEbayConnection) {
       await autoListOnEbay();
-      console.log("user has ebay connection");
     } else {
-      console.log("user does not have ebay connection");
       const response = await api.get(`/ebay/oauth-start?userId=${user?.id}`);
       Linking.openURL(response.data.authUrl);
     }
@@ -76,7 +74,6 @@ const SalePopup = () => {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                console.log("selling on facebook");
                 setIsModal({
                   visible: true,
                   content: (

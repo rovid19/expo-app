@@ -1,11 +1,14 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Pressable } from "react-native";
+import { useOnboardingStore } from "../../stores/onboardingStore";
 
 interface WelcomeProps {
   setOnboardingStep: (step: number) => void;
 }
 
 const Welcome = ({ setOnboardingStep }: WelcomeProps) => {
+  const { setIsOnboarding } = useOnboardingStore();
   return (
     <View className="flex-1 items-center justify-center p-4 gap-8">
       <View className="flex-1 items-center justify-center"></View>
@@ -24,9 +27,20 @@ const Welcome = ({ setOnboardingStep }: WelcomeProps) => {
             Get Started
           </Text>
         </TouchableOpacity>
-        <Text className="text-center text-sm text-light3">
-          Already have an account? <Text className="font-bold">Sign In</Text>
-        </Text>
+        <View className="flex flex-row items-center justify-center gap-1">
+          <Text className="text-center text-sm text-light3">
+            Already have an account?{" "}
+          </Text>
+          <Pressable
+            onPress={async () => {
+              await AsyncStorage.setItem("hasLaunched", "true");
+              setIsOnboarding(false);
+            }}
+            className="font-bold items-center justify-center"
+          >
+            <Text className="font-bold text-light3 text-sm">Sign In</Text>
+          </Pressable>
+        </View>
       </View>
     </View>
   );

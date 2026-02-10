@@ -26,8 +26,6 @@ const SimilarListings = ({
   const [isLoading, setIsLoading] = useState(false);
   const item = useItems2Store().findSelectedItem();
 
-  console.log("item", item);
-
   useEffect(() => {
     getSimilarListingData();
   }, []);
@@ -38,7 +36,7 @@ const SimilarListings = ({
       `${process.env.EXPO_PUBLIC_API_URL}/ebay/get-similar-listings`,
       {
         itemName: item?.ebay_search_query,
-      }
+      },
     );
 
     setSimilarListings(response.data.items ?? []);
