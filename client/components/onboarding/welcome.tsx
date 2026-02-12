@@ -1,7 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React from "react";
-import { View, Text, TouchableOpacity, Pressable } from "react-native";
+import React, { useEffect, useRef } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 import { useOnboardingStore } from "../../stores/onboardingStore";
+import { ResizeMode, Video } from "expo-av";
 
 interface WelcomeProps {
   setOnboardingStep: (step: number) => void;
@@ -9,9 +16,30 @@ interface WelcomeProps {
 
 const Welcome = ({ setOnboardingStep }: WelcomeProps) => {
   const { setIsOnboarding } = useOnboardingStore();
+  const videoRef = useRef<Video>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      videoRef.current?.playAsync().catch(() => {});
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <View className="flex-1 items-center justify-center p-4 gap-8">
-      <View className="flex-1 items-center justify-center"></View>
+      <View className="flex-1 self-stretch pt-20 justify-center items-center flex">
+        <Video
+          ref={videoRef}
+          source={require("../../assets/Test.mp4")}
+          style={{ width: "100%", height: "100%", borderRadius: 20 }}
+          resizeMode={ResizeMode.CONTAIN}
+          shouldPlay
+          isLooping
+          isMuted
+          onLoad={() => videoRef.current?.playAsync().catch(() => {})}
+          progressUpdateIntervalMillis={16}
+        />
+      </View>
 
       <View className="w-full items-center justify-center px-2 flex-col gap-4 pb-12">
         <View className="flex flex-col items-center justify-center">

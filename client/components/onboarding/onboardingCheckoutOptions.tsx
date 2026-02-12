@@ -35,6 +35,12 @@ const onboardingCheckoutOptions = () => {
   const selectedYearly = selectedOption === "yearly";
   const selectedMonthly = selectedOption === "monthly";
 
+  const getThreeDaysFromNow = (): Date => {
+    const date = new Date();
+    date.setDate(date.getDate() + 3);
+    return date;
+  };
+
   return (
     <View className=" flex flex-col gap-10 h-full w-full px-4 justify-center items-center">
       <View className="flex-row w-full items-center justify-center  ">
@@ -50,16 +56,26 @@ const onboardingCheckoutOptions = () => {
           </View>
 
           <View className="flex flex-col ">
-            <Text className="text-light2 font-medium text-xl">Today</Text>
+            <Text className="text-light2 font-medium text-xl">
+              In 2 Days - Reminder
+            </Text>
             <Text className="text-light3 font-sans text-lg">
-              Unlock all the app’s features like AI item scanning and more
+              We'll send you a reminder that your trial is ending soon.{" "}
             </Text>
           </View>
 
           <View className="flex flex-col ">
-            <Text className="text-light2 font-medium text-xl">Today</Text>
+            <Text className="text-light2 font-medium text-xl">
+              In 3 Days - Billing Starts
+            </Text>
             <Text className="text-light3 font-sans text-lg">
-              Unlock all the app’s features like AI item scanning and more
+              You'll be charged{" "}
+              {getThreeDaysFromNow().toLocaleDateString("hr-HR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}{" "}
+              unless you cancel anyime before.
             </Text>
           </View>
         </View>

@@ -8,9 +8,9 @@ import { useItems2Store } from "../../stores/items2Store";
 import { useAppStore } from "../../stores/appStore";
 const ListingInfo = () => {
   const { selectedItemId, items, findSelectedItem } = useItems2Store();
+  const { currencySymbol } = useAppStore();
   const item = findSelectedItem();
   if (!item) return null;
-  const { currencySymbol } = useAppStore();
   return (
     <View className=" rounded-3xl gap-2 flex-1">
       <ListingHeader />

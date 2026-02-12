@@ -32,6 +32,20 @@ export const scanImage = async (req: Request, res: Response) => {
 
     let scannedItem = await new ScanItem().detectItem(fileObj, "euro");
 
+    /*let scannedItem = {
+      detected_item: "Macbook Air m2 8gb 256gb",
+      details: "Macbook air m2 in excellent condition",
+      estimated_resale_price: 100,
+      price: 100,
+      confidence: 1,
+      image: [photoUri],
+      category: "electronics",
+      ebay_search_query: "Macbook Air m2 8gb 256gb",
+      size: "",
+      shoe_size: 0,
+      id: Math.random().toString(36).substr(2, 9),
+    };*/
+
     // inject image into scannedItem
     //scannedItem.image = base64Image;
     scannedItem.size = "";
@@ -48,6 +62,10 @@ export const scanImage = async (req: Request, res: Response) => {
 
     console.log("scannedItem", scannedItem);
 
+    /* setTimeout(() => {
+      res.status(200).json({ scannedItem });
+    }, 3500);*/
+
     res.status(200).json({ scannedItem });
   });
 };
@@ -55,7 +73,7 @@ export const scanImage = async (req: Request, res: Response) => {
 const findRealListingPrice = async (itemName: string) => {
   const response = await axios.post(
     "http://localhost:3000/api/ebay/get-similar-listings",
-    { itemName }
+    { itemName },
   );
 
   const listings = response.data.items ?? [];

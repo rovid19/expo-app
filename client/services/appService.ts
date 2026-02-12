@@ -52,4 +52,14 @@ export class AppService {
     }
     return data;
   }
+
+  static async createOnboardingData(userId: string, answers: string[]) {
+    const { data, error } = await supabase
+      .from("onboarding_data")
+      .insert({ owner_id: userId, answers });
+    if (error) {
+      console.error("Error creating onboarding data:", error);
+    }
+    return data;
+  }
 }

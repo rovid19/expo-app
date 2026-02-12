@@ -10,17 +10,22 @@ import axios from "axios";
 import { useItems2Store } from "../../stores/items2Store";
 import { useState } from "react";
 import Loader from "../app/loader";
+import toast from "react-native-toast-message";
+import { useRouter } from "expo-router";
+import { useListingDetailsStore } from "../../stores/listingDetailsStore";
 
 const SalePopup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { setIsModal, closeModal } = useAppStore();
+  const { closeListingDetails } = useListingDetailsStore();
   const { user } = useUserStore();
+  const router = useRouter();
   const { isModal } = useAppStore();
   const { findSelectedItem } = useItems2Store();
   const item = findSelectedItem();
   if (!item) return;
   const handleSellOnEbay = async () => {
-    setIsLoading(true);
+    /*setIsLoading(true);
 
     const checkEbayConnection = await api.get(
       `/ebay/has-ebay-connection?userId=${user?.id}`,
@@ -62,6 +67,29 @@ const SalePopup = () => {
       setIsLoading(false);
       closeModal();
     }
+      */
+
+    setIsModal({
+      visible: true,
+      content: <Loader text="Listing on ebay..." test={true} />,
+      popupContent: null,
+    });
+
+    setTimeout(() => {
+      setIsModal({
+        visible: false,
+        content: null,
+        popupContent: null,
+      });
+      closeListingDetails();
+      router.replace("/(tabs)/home");
+
+      toast.show({
+        type: "success",
+        text1: "Item successfully listed on ebay",
+        position: "top",
+      });
+    }, 2500);
   };
 
   return (

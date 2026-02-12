@@ -11,9 +11,14 @@ import Loader from "../app/loader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useOnboardingStore } from "../../stores/onboardingStore";
 import { useUserStore } from "../../stores/userStore";
+import { AppService } from "../../services/appService";
 const ENTITLEMENT_ID = "Pro";
 
-const OnboardingCheckout = () => {
+interface OnboardingCheckoutProps {
+  onboardingAnswers: string[];
+}
+
+const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
   const { setOnboardingStep, onboardingStep } = useOnboardingStore();
   const { setIsModal, selectedPackage } = useAppStore();
   const { open } = usePopupStore();
@@ -53,6 +58,11 @@ const OnboardingCheckout = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("onboardingStep", onboardingStep);
+    console.log("selectedPackage", selectedPackage?.packageType);
+  }, [selectedPackage]);
+
   // 🔥 RevenueCat listener (fires on ALL purchases)
   useEffect(() => {
     let isActive = true;
@@ -65,6 +75,7 @@ const OnboardingCheckout = () => {
         handleSubscriptionCheck(user?.id);
         AsyncStorage.setItem("hasLaunched", "true");
         setIsOnboarding(false);
+        AppService.createOnboardingData(user?.id, onboardingAnswers);
       }
     };
 
@@ -161,9 +172,9 @@ const OnboardingCheckout = () => {
         />
 
         <Text className="text-light3 font-bold text-base">
-          {onboardingStep === 8
-            ? "Just $34,99 per year (2,91 $/mo)"
-            : "3 days free, then $34,99 per year (2,91 $/mo)"}
+          {onboardingStep === 9 && selectedPackage?.packageType === "ANNUAL"
+            ? "3 days free, then $34,99 per year (2,91 $/mo)"
+            : "3 days free, then $9,99 per month"}
         </Text>
       </View>
     </View>

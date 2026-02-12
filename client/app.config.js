@@ -11,7 +11,6 @@ module.exports = {
     runtimeVersion: {
       policy: "appVersion",
     },
-    
 
     extra: {
       eas: {
@@ -66,6 +65,6 @@ module.exports = {
     web: {
       favicon: "./assets/favicon.png",
     },
-    plugins: ["expo-router"],
+    plugins: ["expo-router", "expo-av"],
   },
 };

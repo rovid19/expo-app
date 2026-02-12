@@ -125,7 +125,7 @@ const SimilarListings = ({
                 </View>
               );
             })}
-          </ScrollView>{" "}
+          </ScrollView>
         </>
       ) : (
         <View className="flex-1 justify-center items-center bg-dark2 rounded-3xl p-4">

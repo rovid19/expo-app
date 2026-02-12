@@ -11,13 +11,14 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { mascotLoadingDown, mascotLoadingUp } from "../../assets/icons/icons";
+import { BlurView } from "expo-blur";
 
 interface LoaderProps {
   text: string;
   textOptional?: string;
   dots?: boolean;
   size?: number;
-  isPurchasing?: boolean;
+  test?: boolean;
 }
 
 const DOTS = ["", ".", "..", "..."];
@@ -27,7 +28,7 @@ const Loader = ({
   textOptional,
   dots = true,
   size = 64,
-  isPurchasing = false,
+  test = false,
 }: LoaderProps) => {
   const t = useSharedValue(0);
   const dot = useSharedValue(0);
@@ -40,10 +41,10 @@ const Loader = ({
           dot.value = (dot.value + 1) % DOTS.length;
           runOnJS(setDotIndex)(dot.value);
         }),
-        withTiming(0, { duration: 300 })
+        withTiming(0, { duration: 300 }),
       ),
       -1,
-      false
+      false,
     );
   }, []);
 
@@ -62,7 +63,10 @@ const Loader = ({
   }));
 
   return (
-    <View className={`justify-center items-center gap-3 ${isPurchasing ? "" : "flex-1"}`}>
+    <View
+      className={`justify-center items-center gap-3 flex-1 ${test && "bg-dark1/80 relative"}`}
+    >
+      <BlurView intensity={50} tint="dark" className="absolute inset-0" />
       <View style={{ width: size, height: size }}>
         <Animated.View style={[{ position: "absolute", inset: 0 }, downStyle]}>
           <SvgXml xml={mascotLoadingDown} width={size} height={size} />

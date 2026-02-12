@@ -112,7 +112,7 @@ const index = () => {
 
       {onboardingStep > 8 && onboardingStep < 10 && (
         <>
-          <OnboardingCheckout />
+          <OnboardingCheckout onboardingAnswers={answers} />
         </>
       )}
 
