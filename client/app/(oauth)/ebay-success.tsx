@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import Toast from "react-native-toast-message";
-import * as Linking from "expo-linking";
 import { router } from "expo-router";
 import { useAppStore } from "../../stores/appStore";
 

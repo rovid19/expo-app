@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { AppService } from "../services/appService";
 import { useUserStore } from "../stores/userStore";
 import { useAppStore } from "../stores/appStore";

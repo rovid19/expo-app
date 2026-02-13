@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from "react-native";
 import SelectDropdown from "react-native-select-dropdown";
 import Button from "../app/button";

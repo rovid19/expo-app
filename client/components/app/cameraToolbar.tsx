@@ -12,8 +12,7 @@ import {
 } from "../../assets/icons/icons";
 import { BlurView } from "expo-blur";
 import * as ExpoRouter from "expo-router";
-import useCameraDevicesHook from "../../hooks/useCameraDevicesHook";
-import { useListingDetailsStore } from "../../stores/listingDetailsStore";
+import useCameraDevicesHook from "../../hooks/scan/useCameraDevicesHook";
 import { useAppStore } from "../../stores/appStore";
 import EditListing from "../listingDetails/modals/editListing";
 interface CameraToolbarProps {

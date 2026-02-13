@@ -16,22 +16,19 @@ export default function Profile() {
   return (
     <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1 px-6">
       {/* Header */}
-      <Header title="PROFILE" svg={logo} />
+      <Header title="PROFILE" />
 
       {/* Profile */}
       <ProfileCard />
 
       {/* Actions */}
       <ProfileActions
-        onPressSubscription={() =>  
-        {
-
-          subscriptionBottomSheetRef.current?.snapToIndex(0)
+        onPressSubscription={() => {
+          subscriptionBottomSheetRef.current?.snapToIndex(0);
           setHideNavbar(true);
-
-        }
-        }
-        onPressReport={() => {reportBottomSheetRef.current?.snapToIndex(0)
+        }}
+        onPressReport={() => {
+          reportBottomSheetRef.current?.snapToIndex(0);
           setHideNavbar(true);
         }}
       />

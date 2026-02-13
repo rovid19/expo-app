@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View, Image } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import Welcome from "./welcome";
 import OnboardingQuestions from "./onboardingQuestions";
 import { SvgXml } from "react-native-svg";

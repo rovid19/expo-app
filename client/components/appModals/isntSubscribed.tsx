@@ -1,4 +1,3 @@
-import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { BlurView } from "expo-blur";
 import { unsureMascot } from "../../assets/icons/icons";

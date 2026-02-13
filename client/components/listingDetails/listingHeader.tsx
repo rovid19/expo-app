@@ -1,12 +1,9 @@
-import React from "react";
 import { View } from "react-native";
 import { Text } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { editIcon, leftArrow } from "../../assets/icons/icons";
-import { useListingDetailsStore } from "../../stores/listingDetailsStore";
+import { editIcon } from "../../assets/icons/icons";
 import { useItems2Store } from "../../stores/items2Store";
-import { usePopupStore } from "../../stores/popupStore";
 import EditListing from "./modals/editListing";
 import { useAppStore } from "../../stores/appStore";
 

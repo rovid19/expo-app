@@ -1,4 +1,4 @@
-import React, { use, useEffect } from "react";
+import { useEffect } from "react";
 import { View, Text, TouchableOpacity, Keyboard } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { unsureMascot } from "../../assets/icons/icons";

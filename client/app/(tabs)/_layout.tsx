@@ -8,8 +8,7 @@ import {
   userFilled,
   userOutline,
 } from "../../assets/icons/icons";
-import TabBar from "../../components/app/tabBar";
-import { useAppStore } from "../../stores/appStore";
+import TabBar from "../../components/app/tabbar/tabBar";
 
 export default function TabLayout() {
   return (

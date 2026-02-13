@@ -49,7 +49,7 @@ export default function Dashboard() {
         style={{ paddingBottom: tabBarHeight + 2 }}
       >
         <View className="w-full flex flex-col gap-4">
-          <Header title="HOME" svg={logo} />
+          <Header title="HOME" />
           <View className="flex flex-col ">
             <Text className="text-5xl font-bold font-bold text-light2">
               Hello,

@@ -1,12 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Pressable,
-  StyleSheet,
-} from "react-native";
+import { useEffect, useRef } from "react";
+import { View, Text, TouchableOpacity, Pressable } from "react-native";
 import { useOnboardingStore } from "../../stores/onboardingStore";
 import { ResizeMode, Video } from "expo-av";
 
@@ -30,7 +24,7 @@ const Welcome = ({ setOnboardingStep }: WelcomeProps) => {
       <View className="flex-1 self-stretch pt-20 justify-center items-center flex">
         <Video
           ref={videoRef}
-          source={require("../../assets/Test.mp4")}
+          source={require("../../assets/AppVideo.mp4")}
           style={{ width: "100%", height: "100%", borderRadius: 20 }}
           resizeMode={ResizeMode.CONTAIN}
           shouldPlay

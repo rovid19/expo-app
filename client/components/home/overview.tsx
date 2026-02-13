@@ -1,4 +1,3 @@
-import React from "react";
 import { View, Text } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { coinIcon, inventoryIcon, walletIcon } from "../../assets/icons/icons";

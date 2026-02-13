@@ -1,5 +1,4 @@
 import { BlurView } from "expo-blur";
-import React, { useState } from "react";
 import { View, Text, Pressable } from "react-native";
 import { useAppStore } from "../../stores/appStore";
 import { AppService } from "../../services/appService";
@@ -10,13 +9,8 @@ import { StyleSheet } from "react-native";
 const currencies = ["USD", "EUR"];
 
 const AppSettingsModal = () => {
-  const {
-    setIsModal,
-    currency,
-    setCurrency,
-    setTriggerRefresh,
-    triggerRefresh,
-  } = useAppStore();
+  const { setIsModal, currency, setTriggerRefresh, triggerRefresh } =
+    useAppStore();
   const { user } = useUserStore();
 
   const handleCurrencyChange = async (currency: string) => {

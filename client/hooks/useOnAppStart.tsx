@@ -17,20 +17,10 @@ const useOnAppStart = () => {
   const { isOnboarding } = useOnboardingStore();
 
   useEffect(() => {
-    /*supabase.auth
-      .signOut()
-      .then(() => {
-        console.log("Signed out");
-      })
-      .catch((error) => {
-        console.log("Error signing out", error);
-      });*/
-
     checkHasLaunched();
   }, [isOnboarding]);
 
   const checkHasLaunched = async () => {
-    //const hasLaunched = await AsyncStorage.removeItem("hasLaunched");
     const hasLaunched = await AsyncStorage.getItem("hasLaunched");
     setHasLaunched(hasLaunched as unknown as boolean);
     setInitalCheck(true);

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, Alert } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { check } from "../../assets/icons/icons";
@@ -6,8 +6,6 @@ import Button from "../app/button";
 import OnboardingCheckoutOptions from "./onboardingCheckoutOptions";
 import { useAppStore } from "../../stores/appStore";
 import Purchases, { CustomerInfo } from "react-native-purchases";
-import { usePopupStore } from "../../stores/popupStore";
-import Loader from "../app/loader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useOnboardingStore } from "../../stores/onboardingStore";
 import { useUserStore } from "../../stores/userStore";
@@ -20,8 +18,7 @@ interface OnboardingCheckoutProps {
 
 const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
   const { setOnboardingStep, onboardingStep } = useOnboardingStore();
-  const { setIsModal, selectedPackage } = useAppStore();
-  const { open } = usePopupStore();
+  const { selectedPackage } = useAppStore();
   const { user, setIsSubscribed } = useUserStore();
   const { setIsOnboarding } = useOnboardingStore();
   const [buttonAnimation, setButtonAnimation] = useState(false);
@@ -108,8 +105,6 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
 
     try {
       await Purchases.purchasePackage(selectedPackage);
-
-      //open(<Loader text="Purchasing" isPurchasing={true} dots={false} />);
 
       // Backup poll
       setTimeout(async () => {

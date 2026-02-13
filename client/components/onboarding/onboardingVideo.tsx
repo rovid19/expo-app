@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Text, View } from "react-native";
 import { Video, ResizeMode } from "expo-av";
 
@@ -24,7 +24,7 @@ const onboardingVideo = () => {
       <View className="flex-1 w-full">
         <Video
           ref={videoRef}
-          source={require("../../assets/Test.mp4")}
+          source={require("../../assets/AppVideo.mp4")}
           style={{ width: "100%", height: "100%", borderRadius: 20 }}
           resizeMode={ResizeMode.CONTAIN}
           shouldPlay

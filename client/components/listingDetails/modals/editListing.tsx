@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   TouchableOpacity,
   View,
@@ -11,7 +11,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { leftArrow, plusOutline } from "../../../assets/icons/icons";
 import { SvgXml } from "react-native-svg";
 import { useItems2Store } from "../../../stores/items2Store";
-import { useListingDetailsStore } from "../../../stores/listingDetailsStore";
 import { usePopupStore } from "../../../stores/popupStore";
 import ConfirmationPopup from "../../popup/confirmationPopup";
 import { useAppStore } from "../../../stores/appStore";
@@ -19,9 +18,8 @@ import AddAdditionalImages from "../../scan/addAdditionalImages";
 
 const EditListing = () => {
   const [changesMade, setChangesMade] = useState(false);
-
   const { open } = usePopupStore();
-  const { findSelectedItem, saveItem, itemType } = useItems2Store();
+  const { findSelectedItem, saveItem } = useItems2Store();
   const item = findSelectedItem();
   const { closeModal, setIsModal } = useAppStore();
   if (!item) return null;

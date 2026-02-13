@@ -3,11 +3,11 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import AdditionalImageContainer from "./additionalImageContainer";
 import CameraToolbar from "../app/cameraToolbar";
 import { Camera, useCameraPermission } from "react-native-vision-camera";
-import useCameraDevicesHook from "../../hooks/useCameraDevicesHook";
+import useCameraDevicesHook from "../../hooks/scan/useCameraDevicesHook";
 import * as MediaLibrary from "expo-media-library";
 import { useItems2Store } from "../../stores/items2Store";
 import { BlurView } from "expo-blur";
-import useCapturePhoto from "../../hooks/useCapturePhoto";
+import useCapturePhoto from "../../hooks/scan/useCapturePhoto";
 
 const AddAdditionalImages = () => {
   const { hasPermission, requestPermission } = useCameraPermission();

@@ -1,7 +1,6 @@
 import { useUserStore } from "../../stores/userStore";
-import { View, Image, Text, TouchableOpacity } from "react-native";
+import { View, Image, Text } from "react-native";
 import { SvgXml } from "react-native-svg";
-import { defaultAvatar } from "../../assets/icons/icons";
 import { logo } from "../../assets/icons/icons";
 
 const profileCard = () => {

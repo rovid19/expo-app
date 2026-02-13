@@ -1,13 +1,13 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import React from "react";
 import { SvgXml } from "react-native-svg";
-import { check, saveIcon, thrash } from "../../assets/icons/icons";
+import { saveIcon, thrash } from "../../assets/icons/icons";
 import { usePopupStore } from "../../stores/popupStore";
 import ConfirmationPopup from "./confirmationPopup";
 import { useItems2Store } from "../../stores/items2Store";
 import { useListingDetailsStore } from "../../stores/listingDetailsStore";
 import { useAppStore } from "../../stores/appStore";
 import toast from "react-native-toast-message";
+
 const actionPopup = () => {
   const { requiresConfirmation, setRequiresConfirmation } = usePopupStore();
   const {

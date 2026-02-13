@@ -13,6 +13,7 @@ import Loader from "../app/loader";
 import toast from "react-native-toast-message";
 import { useRouter } from "expo-router";
 import { useListingDetailsStore } from "../../stores/listingDetailsStore";
+import { BlurView } from "expo-blur";
 
 const SalePopup = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -68,8 +69,7 @@ const SalePopup = () => {
       closeModal();
     }
       */
-
-    setIsModal({
+    /* setIsModal({
       visible: true,
       content: <Loader text="Listing on ebay..." test={true} />,
       popupContent: null,
@@ -89,7 +89,7 @@ const SalePopup = () => {
         text1: "Item successfully listed on ebay",
         position: "top",
       });
-    }, 2500);
+    }, 2500);*/
   };
 
   return (
@@ -122,15 +122,22 @@ const SalePopup = () => {
                 Sell on facebook
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleSellOnEbay}
-              className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2"
-            >
-              <SvgXml xml={ebayIcon} width={24} height={24} color="#E6E6E6" />
-              <Text className="text-light2 text-lg font-sans">
-                Sell on ebay
-              </Text>
-            </TouchableOpacity>
+            <View className="w-full relative">
+              <View className="absolute -top-2 -right-2 bg-dark3 px-3 py-1 rounded-full z-10">
+                <Text className="text-light2 text-xs font-sans font-bold">
+                  Coming soon
+                </Text>
+              </View>
+              <TouchableOpacity
+                disabled
+                className="w-full flex flex-row items-center justify-center p-4 rounded-3xl gap-2 bg-dark2 opacity-50"
+              >
+                <SvgXml xml={ebayIcon} width={24} height={24} color="#E6E6E6" />
+                <Text className="text-light2 text-lg font-sans">
+                  Sell on ebay
+                </Text>
+              </TouchableOpacity>
+            </View>
           </>
         ) : (
           <Loader text="Listing on ebay..." />

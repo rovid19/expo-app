@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { View, Text, Image, Animated, Easing } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { star } from "../../assets/icons/icons";

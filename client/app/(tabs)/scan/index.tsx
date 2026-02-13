@@ -7,8 +7,8 @@ import CameraToolbar from "../../../components/app/cameraToolbar";
 import SvgScanOverlay from "../../../components/scan/svgScanOverlay";
 import { useItems2Store } from "../../../stores/items2Store";
 import { useFocusEffect } from "@react-navigation/native";
-import useCapturePhoto from "../../../hooks/useCapturePhoto";
-import useCameraDevicesHook from "../../../hooks/useCameraDevicesHook";
+import useCapturePhoto from "../../../hooks/scan/useCapturePhoto";
+import useCameraDevicesHook from "../../../hooks/scan/useCameraDevicesHook";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function Scan() {
@@ -31,7 +31,7 @@ export default function Scan() {
     useCallback(() => {
       setItemType("scanned");
       return () => setItemType("listed");
-    }, [])
+    }, []),
   );
 
   useEffect(() => {

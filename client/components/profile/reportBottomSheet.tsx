@@ -78,10 +78,8 @@ const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
       onAnimate={(_, toIndex) => {
         if (toIndex === -1) {
           setHideNavbar(false);
-        
         }
       }}
-
     >
       {showConfirmationMessage && (
         <View className="absolute top-0 left-0 bg-white h-full w-full z-10 items-center justify-center">
@@ -155,7 +153,7 @@ const ReportBottomSheet = forwardRef<BottomSheet>((_, ref) => {
                 await handleSendReport();
               } else {
                 Alert.alert(
-                  "Please enter a description of at least 5 characters"
+                  "Please enter a description of at least 5 characters",
                 );
               }
             }}

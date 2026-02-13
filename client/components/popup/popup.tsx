@@ -36,23 +36,3 @@ export default function GlobalPopup({ content }: GlobalPopupProps) {
     </View>
   );
 }
-
-/*
- <Pressable
-        onPress={close}
-        className="w-full h-full justify-center items-center bg-black/50"
-      >
-        <BlurView
-          intensity={20}
-          tint="dark"
-          className="h-full w-full  absolute top-0 left-0 right-0 bottom-0 rounded-3xl z-0"
-        />
-        <Pressable
-          onPress={() => {}}
-          className={"w-[90%] p-8 bg-dark1 rounded-3xl  border border-dark2/50"}
-        >
-          {content}
-        </Pressable>
-      </Pressable>
-
-      */

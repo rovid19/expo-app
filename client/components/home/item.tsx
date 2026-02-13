@@ -1,4 +1,3 @@
-import React, { useRef } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { SvgXml } from "react-native-svg";
 import { rightArrow } from "../../assets/icons/icons";
@@ -80,7 +79,6 @@ const item = ({ item }: HeaderProps) => {
           onPress={() => {
             setHideNavbar(true);
             openListingDetails();
-            //setIsModal({ visible: true, content: <EditListing /> });
             setSelectedItemId(item.id);
           }}
         >

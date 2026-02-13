@@ -1,13 +1,11 @@
-import React from "react";
-
 import { View } from "react-native";
 import { Text } from "react-native";
-import { TextInput } from "react-native";
 import ListingHeader from "./listingHeader";
 import { useItems2Store } from "../../stores/items2Store";
 import { useAppStore } from "../../stores/appStore";
+
 const ListingInfo = () => {
-  const { selectedItemId, items, findSelectedItem } = useItems2Store();
+  const { findSelectedItem } = useItems2Store();
   const { currencySymbol } = useAppStore();
   const item = findSelectedItem();
   if (!item) return null;
@@ -31,17 +29,6 @@ const ListingInfo = () => {
             {currencySymbol}
             {item.buying_price ? item.buying_price : 0}
           </Text>
-          {/*<View className="flex flex-row items-center gap-2 bg-dark2 rounded-3xl p-2">
-            <View>
-              <Text className="text-light3 font-sans text-3xl ">$</Text>
-            </View>
-            <View className="flex-1">
-              <TextInput
-                placeholder="200"
-                className="text-light2 font-sans text-3xl"
-              />
-            </View>
-          </View>*/}
         </View>
         {/* Net profit */}
         <View className="flex-1 flex-col gap-2 rounded-r-3xl p-4 justify-center bg-dark2 ">
@@ -52,9 +39,6 @@ const ListingInfo = () => {
               ? item.selling_price - item.buying_price
               : 0}
           </Text>
-          {/*<View className="flex flex-row items-center gap-2  rounded-3xl p-2">
-         
-          </View>*/}
         </View>
       </View>
     </View>
