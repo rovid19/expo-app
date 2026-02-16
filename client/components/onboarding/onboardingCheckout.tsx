@@ -19,12 +19,15 @@ interface OnboardingCheckoutProps {
 const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
   const { setOnboardingStep, onboardingStep } = useOnboardingStore();
   const { selectedPackage } = useAppStore();
-  const { user, setIsSubscribed } = useUserStore();
+  const { user, setIsSubscribed, setAuthFinished } = useUserStore();
   const { setIsOnboarding } = useOnboardingStore();
   const [buttonAnimation, setButtonAnimation] = useState(false);
 
   const handleSubscriptionCheck = async (userId: string) => {
     const { customerInfo, created } = await Purchases.logIn(userId);
+
+    console.log("customerInfo", customerInfo);
+    console.log("created", created);
 
     // If user already existed and has no entitlements, restore from store
     if (
@@ -53,17 +56,29 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
   useEffect(() => {
     let isActive = true;
 
-    const listener = (customerInfo: CustomerInfo) => {
-      if (!isActive) return;
-      const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
-      if (hasPro) {
-        setButtonAnimation(false);
-        handleSubscriptionCheck(user?.id);
-        AsyncStorage.setItem("hasLaunched", "true");
-        setIsOnboarding(false);
-        AppService.createOnboardingData(user?.id, onboardingAnswers);
-      }
-    };
+  const listener = async (customerInfo: CustomerInfo) => {
+    if (!isActive) return;
+    console.log("customerInfo listener", customerInfo);
+    const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
+    console.log("hasPro", hasPro);
+    if (hasPro) {
+      setButtonAnimation(false);
+      await handleSubscriptionCheck(user?.id);
+      await AsyncStorage.setItem("hasLaunched", "true");
+      
+      // Set these to trigger the useOncePerLaunch effect
+      setAuthFinished(true);
+      setIsSubscribed(true);
+      
+      // Save onboarding answers separately
+      await AppService.createOnboardingData(user?.id, onboardingAnswers);
+      
+      // Wait a bit to ensure performAccountSetup has time to check and show modal
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      setIsOnboarding(false);
+    }
+  };
 
     Purchases.addCustomerInfoUpdateListener(listener);
 

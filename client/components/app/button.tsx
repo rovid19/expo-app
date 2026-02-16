@@ -37,7 +37,7 @@ const Button = ({
   animation,
   animationText,
   iconColor,
-  bold = false,
+  bold = true,
 }: ButtonProps) => {
   const loadingAnim = React.useRef(new Animated.Value(0)).current;
   const loadingLoopRef = React.useRef<Animated.CompositeAnimation | null>(null);

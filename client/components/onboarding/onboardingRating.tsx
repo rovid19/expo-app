@@ -77,8 +77,9 @@ const OnboardingRating = () => {
       <View className="items-center gap-2">
         <Image
           source={require("../../assets/DarkAppIcon.png")}
-          className="w-[64px] h-[64px]"
+          className="w-[64px] h-[64px] rounded-xl"
         />
+
         <Text className="text-light2 font-bold text-xl">Dexly</Text>
       </View>
 

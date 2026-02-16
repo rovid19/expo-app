@@ -23,6 +23,7 @@ const useOnceAfterAuth = () => {
       if (isSubscribed) {
         performAccountSetup();
       } else {
+        console.log("modalruns");
         setIsModal({
           visible: true,
           content: <IsntSubscribed />,
@@ -30,7 +31,7 @@ const useOnceAfterAuth = () => {
         });
       }
     }
-  }, [authFinished, triggerRefresh]);
+  }, [authFinished, isSubscribed, triggerRefresh]);
 
   // ACCOUNT SETUP
   const currencySetup = (currency: string) => {
@@ -47,17 +48,20 @@ const useOnceAfterAuth = () => {
   };
 
   const performAccountSetup = async () => {
-    console.log("performAccountSetup");
+    console.log("performAccountSetup START");
     const userExtraExists = await AppService.checkIfUserExtraExists(user?.id);
+    console.log("userExtraExists check result:", userExtraExists);
     if (!userExtraExists) {
-      console.log("userExtraExists");
+      console.log("user extra doesn't exist");
       setIsModal({
         visible: true,
         content: <InitialUserSetup />,
         popupContent: null,
       });
     } else {
+      console.log("user extra exists - loading data");
       const data = await AppService.getUserExtra(user?.id);
+      console.log("loaded user extra data:", data);
       if (data) {
         currencySetup(data.currency);
         setName(data.name);
