@@ -11,6 +11,7 @@ import Purchases from "react-native-purchases";
 import { usePopupStore } from "../../stores/popupStore";
 import { useAppStore } from "../../stores/appStore";
 import ConfirmationPopup from "../popup/confirmationPopup";
+import api from "../../lib/axios";
 
 interface profileActionsProps {
   onPressSubscription: () => void;
@@ -65,7 +66,7 @@ const profileActions = ({
 
   const handleDeleteAccount = async () => {
     try {
-      await supabase.auth.admin.deleteUser(user?.id as string);
+      await api.delete(`/profile/delete-account?userId=${user?.id}`);
       setUser(null);
       setIsSubscribed(false);
       setAuthFinished(false);

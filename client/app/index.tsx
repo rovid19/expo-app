@@ -17,9 +17,9 @@ export default function Index() {
     }
   }, [launchOpeningAnimation, startApp]);
 
-  if (launchOpeningAnimation) {
+  /*if (launchOpeningAnimation) {
     return <LaunchOpeningAnimation />;
-  }
+  }*/
 
   if (startAuth) {
     return <Auth />;

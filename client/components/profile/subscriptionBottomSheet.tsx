@@ -37,8 +37,6 @@ const SubscriptionBottomSheet = forwardRef<BottomSheet>((_, ref) => {
     });
   };
 
-  console.log(customerInfo);
-
   return (
     <BottomSheet
       ref={ref}

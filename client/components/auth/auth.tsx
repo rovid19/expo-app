@@ -1,18 +1,29 @@
-import { useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { supabase } from "../../services/supabase/supabaseClient";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
-import * as AppleAuthentication from "expo-apple-authentication";
 import { SvgXml } from "react-native-svg";
-import { appleLogo, googleLogo, logo } from "../../assets/icons/icons";
+import { leftArrow, logo } from "../../assets/icons/icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useOnboardingStore } from "../../stores/onboardingStore";
+import ContinueWithGoogle from "./continueWithGoogle";
+import ContinueWithApple from "./continueWithApple";
+import ContinueWithEmail from "./continueWithEmail";
+import AuthFooter from "./authFooter";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const Auth = () => {
   const { setIsOnboarding, isOnboarding } = useOnboardingStore();
+  const [continueWithEmail, setContinueWithEmail] = useState(false);
+
   useEffect(() => {
     const handleDeepLink = async (event: { url: string }) => {
       const url = event.url;
@@ -26,8 +37,6 @@ const Auth = () => {
 
           if (error) {
             console.error("Error exchanging code for session:", error);
-          } else {
-            console.log("Session established successfully");
           }
         }
       }
@@ -46,155 +55,89 @@ const Auth = () => {
     };
   }, []);
 
-  const signInWithGoogle = async () => {
-    try {
-      const redirectUrl = Linking.createURL("auth/callback");
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: redirectUrl,
-          queryParams: {
-            prompt: "select_account",
-          },
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        const result = await WebBrowser.openAuthSessionAsync(
-          data.url,
-          redirectUrl,
-        );
-
-        if (result.type === "success" && result.url) {
-          const urlObj = new URL(result.url);
-          const code = urlObj.searchParams.get("code");
-
-          if (code) {
-            await supabase.auth.exchangeCodeForSession(code);
-          }
-        }
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const signInWithApple = async () => {
-    try {
-      const credential = await AppleAuthentication.signInAsync({
-        requestedScopes: [
-          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
-          AppleAuthentication.AppleAuthenticationScope.EMAIL,
-        ],
-      });
-
-      if (!credential.identityToken) {
-        throw new Error("No identity token from Apple");
-      }
-
-      const { data, error } = await supabase.auth.signInWithIdToken({
-        provider: "apple",
-        token: credential.identityToken,
-      });
-    } catch (err) {
-      console.error("Apple sign-in error:", err);
-    }
-  };
-
   return (
-    <View className="flex-1 bg-dark1 py-8 px-4">
-      <View className="flex flex-row items-center justify-center pt-8 ">
-        <TouchableOpacity
-          onPress={async () => {
-            await AsyncStorage.removeItem("hasLaunched");
-            setIsOnboarding(true);
-          }}
+    <KeyboardAvoidingView
+      className="flex-1 bg-dark1"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+    >
+      <View className="flex-1 py-8 px-4">
+        <View
+          className={`flex flex-row items-center ${continueWithEmail ? "justify-between" : "justify-center"} pt-8`}
         >
-          <Text className="text-light3 text-sm">Restore</Text>
-        </TouchableOpacity>
-      </View>
-      <View className="flex-1 items-center justify-center">
-        <SvgXml xml={logo} width={128} height={128} color="#83BD0F" />
-      </View>
-
-      <View className="flex-1 flex flex-col gap-8 px-2">
-        <View className="flex flex-col gap-1 items-center justify-center">
-          <Text className="text-5xl font-bold text-white">Welcome</Text>
-          <Text className="text-lg text-light3 font-sans">
-            Your journey starts from here
-          </Text>
-        </View>
-
-        <View className="flex flex-col gap-4 w-full">
+          {continueWithEmail && (
+            <TouchableOpacity
+              onPress={() => {
+                setContinueWithEmail(false);
+              }}
+              activeOpacity={0.8}
+            >
+              <SvgXml xml={leftArrow} width={24} height={24} color="#E6E6E6" />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
-            onPress={signInWithGoogle}
-            activeOpacity={0.8}
-            className="w-full p-6 rounded-3xl bg-dark2 justify-center items-center flex flex-row gap-2"
+            onPress={async () => {
+              await AsyncStorage.removeItem("hasLaunched");
+              setIsOnboarding(true);
+            }}
           >
-            <SvgXml xml={googleLogo} width={20} height={20} color="#E94335" />
-            <Text className="text-lg font-sans text-light1">
-              Continue with Google
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={signInWithApple}
-            activeOpacity={0.8}
-            className="w-full p-6 rounded-3xl bg-dark2 justify-center items-center flex flex-row gap-2"
-          >
-            <SvgXml xml={appleLogo} width={24} height={24} color="#000000" />
-            <Text className="text-lg font-sans text-light1">
-              Continue with Apple
-            </Text>
+            <Text className="text-light3 text-sm">Restore</Text>
           </TouchableOpacity>
         </View>
+        {!continueWithEmail && (
+          <View className="flex-1 items-center justify-center ">
+            <SvgXml xml={logo} width={128} height={128} color="#83BD0F" />
+          </View>
+        )}
 
-        <View className="flex flex-row gap-2 items-center justify-center">
-          <Text className="text-sm font-sans text-light3 text-center">
-            By pressing on “Continue with...” you agree to our{" "}
-            <Text className="font-bold text-light3">Terms of Service</Text> and{" "}
-            <Text className="font-bold text-light3">Privacy Policy</Text>
-          </Text>
-        </View>
+        {!continueWithEmail ? (
+          <View className=" flex flex-col gap-8 px-2">
+            <View className="flex flex-col gap-1 items-center justify-center">
+              <Text className="text-5xl font-bold text-white">Welcome</Text>
+              <Text className="text-lg text-light3 font-sans">
+                Your journey starts from here
+              </Text>
+            </View>
+
+            <View className="flex flex-col gap-4 w-full">
+              <ContinueWithGoogle />
+              <ContinueWithApple />
+
+              <View className="h-8 w-full flex flex-row gap-2 py-2 px-2">
+                <View className="h-full w-[45%] rounded-l-full flex items-center justify-center py-1">
+                  <View className="h-full w-full bg-dark2/30 rounded-l-full"></View>
+                </View>
+                <View className="flex-1 flex items-center justify-center">
+                  <Text className="text-sm font-sans text-light3 text-center ">
+                    OR
+                  </Text>
+                </View>
+
+                <View className="h-full w-[45%] rounded-r-full flex items-center justify-center py-1">
+                  <View className="h-full w-full bg-dark2/30 rounded-r-full"></View>
+                </View>
+              </View>
+
+              <TouchableOpacity
+                onPress={() => setContinueWithEmail(true)}
+                activeOpacity={0.8}
+                className="w-full p-4 rounded-3xl bg-dark2 justify-center items-center flex flex-row gap-2"
+              >
+                <Text className="text-lg font-sans text-light1">
+                  Continue with Email
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <AuthFooter />
+            <View className="h-10 w-full"></View>
+          </View>
+        ) : (
+          <ContinueWithEmail setContinueWithEmail={setContinueWithEmail} />
+        )}
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 export default Auth;
-
-/*
-  <View className="flex-1 justify-center items-center px-8">
-        <Text className="text-3xl font-bold text-black mb-2">Welcome</Text>
-
-        <Text className="text-base text-gray-500 mb-12">
-          Sign in to continue
-        </Text>
-
-        <View className="w-full gap-4">
-          <TouchableOpacity
-            onPress={signInWithGoogle}
-            activeOpacity={0.8}
-            className="w-full h-14 rounded-xl border border-gray-200 bg-white justify-center items-center"
-          >
-            <Text className="text-base font-semibold text-black">
-              Continue with Google
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={signInWithApple}
-            activeOpacity={0.8}
-            className="w-full h-14 rounded-xl bg-black justify-center items-center"
-          >
-            <Text className="text-base font-semibold text-white">
-              Continue with Apple
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      */

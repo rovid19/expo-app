@@ -19,6 +19,7 @@ import { useAppStore } from "../stores/appStore";
 import useAuth from "../hooks/useAuth";
 import Purchases from "react-native-purchases";
 import { LOG_LEVEL } from "react-native-purchases";
+import { ErrorBoundary } from "../components/app/ErrorBoundary";
 
 export default function RootLayout() {
   const [revenueCatConfigured, setRevenueCatConfigured] = useState(false);
@@ -61,21 +62,23 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Stack screenOptions={{ headerShown: false }} />
-      <Modal
-        visible={isModal?.visible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => closeModal()}
-      >
-        {isModal?.content}
-        {isModal?.popupContent && (
-          <GlobalPopup content={isModal.popupContent} />
-        )}
-      </Modal>
-      <ListingDetailsBottomSheet ref={listingDetailsBottomSheetRef} />
-      <Toast config={toastConfig} />
-    </GestureHandlerRootView>
+    <ErrorBoundary>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Stack screenOptions={{ headerShown: false }} />
+        <Modal
+          visible={isModal?.visible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => closeModal()}
+        >
+          {isModal?.content}
+          {isModal?.popupContent && (
+            <GlobalPopup content={isModal.popupContent} />
+          )}
+        </Modal>
+        <ListingDetailsBottomSheet ref={listingDetailsBottomSheetRef} />
+        <Toast config={toastConfig} />
+      </GestureHandlerRootView>
+    </ErrorBoundary>
   );
 }

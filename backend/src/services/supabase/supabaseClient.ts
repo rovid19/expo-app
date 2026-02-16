@@ -3,6 +3,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseAnonKey = process.env.SUPABASE_SERVICE_ROLE!;
+const supabaseAdmin = process.env.SUPABASE_SERVICE_ROLE!;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {});
+export const supabase = createClient(supabaseUrl, supabaseAdmin, {});

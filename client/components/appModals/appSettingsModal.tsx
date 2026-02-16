@@ -14,7 +14,6 @@ const AppSettingsModal = () => {
   const { user } = useUserStore();
 
   const handleCurrencyChange = async (currency: string) => {
-    console.log("changing currency to", currency);
     await AppService.updateUserExtra(user?.id as string, { currency });
     setTriggerRefresh(!triggerRefresh);
   };

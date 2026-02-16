@@ -1,12 +1,9 @@
 import express from "express";
-import {
-  hasEbayConnection,
-  sendReport,
-} from "../controllers/profileController";
+import { sendReport, deleteAccount } from "../controllers/profileController";
 
 const router = express.Router();
 
 router.post("/send-report", sendReport);
-router.get("/has-ebay-connection", hasEbayConnection);
+router.delete("/delete-account", deleteAccount);
 
 export default router;

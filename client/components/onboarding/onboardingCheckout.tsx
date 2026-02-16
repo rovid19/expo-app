@@ -25,20 +25,14 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
 
   const handleSubscriptionCheck = async (userId: string) => {
     const { customerInfo, created } = await Purchases.logIn(userId);
-    console.log("❤️ Created:", created);
-    console.log("❤️ Customer info:", customerInfo);
 
     // If user already existed and has no entitlements, restore from store
     if (
       !created &&
       Object.keys(customerInfo.entitlements.active).length === 0
     ) {
-      console.log(
-        "⚠️ Customer exists but has no entitlements - restoring from store...",
-      );
       try {
         const restoredInfo = await Purchases.restorePurchases();
-        console.log("✅ Restored info:", restoredInfo.entitlements.active);
 
         if (Object.keys(restoredInfo.entitlements.active).length > 0) {
           setIsSubscribed(true);
@@ -54,11 +48,6 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
       setIsSubscribed(Object.keys(customerInfo.entitlements.active).length > 0);
     }
   };
-
-  useEffect(() => {
-    console.log("onboardingStep", onboardingStep);
-    console.log("selectedPackage", selectedPackage?.packageType);
-  }, [selectedPackage]);
 
   // 🔥 RevenueCat listener (fires on ALL purchases)
   useEffect(() => {
@@ -81,11 +70,6 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
     // Initial check
     (async () => {
       const customerInfo = await Purchases.getCustomerInfo();
-      console.log("App User ID:", await Purchases.getAppUserID());
-
-      console.log("customerInfo", customerInfo);
-
-      console.log("All entitlements:", customerInfo.entitlements.all);
       const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
       if (hasPro && isActive) setIsOnboarding(false);
     })();
@@ -101,7 +85,6 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
       return;
     }
     setButtonAnimation(true);
-    console.log("🚀 Initiating purchase");
 
     try {
       await Purchases.purchasePackage(selectedPackage);

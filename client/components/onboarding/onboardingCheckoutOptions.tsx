@@ -8,16 +8,12 @@ import { useAppStore } from "../../stores/appStore";
 const onboardingCheckoutOptions = () => {
   const [selectedOption, setSelectedOption] = useState<string>("yearly");
   const { currentOffering } = useSubscription();
-  const { setSelectedPackage, selectedPackage } = useAppStore();
+  const { setSelectedPackage } = useAppStore();
 
   useEffect(() => {
     if (!currentOffering) return;
     selectPackage("yearly");
   }, [currentOffering]);
-
-  useEffect(() => {
-    console.log("selectedPackage", selectedPackage);
-  }, [selectedPackage]);
 
   const selectPackage = (type: "monthly" | "yearly") => {
     if (!currentOffering) return null;

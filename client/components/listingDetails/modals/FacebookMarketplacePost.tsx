@@ -22,37 +22,37 @@ const FacebookMarketplacePost = ({ onClose }: FacebookMarketplacePostProps) => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-950">
+    <SafeAreaView className="flex-1 bg-dark1">
       {/* HEADER */}
-      <View className="h-[52px] flex-row items-center justify-between px-4 border-b border-slate-800 bg-slate-950">
+      <View className="h-[52px] flex-row items-center justify-between px-4 border-b border-dark2 bg-dark1">
         <Text className="text-base font-semibold text-slate-50">
           Facebook Marketplace
         </Text>
 
         <TouchableOpacity
           onPress={onClose}
-          className="w-8 h-8 rounded-full bg-slate-800 items-center justify-center"
+          className="w-8 h-8 rounded-full bg-dark2 items-center justify-center"
         >
-          <Text className="text-lg font-semibold text-slate-400">✕</Text>
+          <Text className="text-lg font-semibold text-light2">✕</Text>
         </TouchableOpacity>
       </View>
 
       {/* COPY UI */}
-      <View className="px-3 py-3 border-b border-slate-800 bg-slate-950">
+      <View className="px-3 py-3 border-b border-dark2 bg-dark1">
         <TouchableOpacity
           onPress={copyTitle}
           className="flex-row items-center justify-between py-2"
         >
           <View>
-            <Text className="text-xs text-slate-400">Title</Text>
+            <Text className="text-xs text-light3">Title</Text>
             <Text
               numberOfLines={1}
-              className="text-sm text-slate-50 max-w-[240px]"
+              className="text-sm text-light2 max-w-[240px]"
             >
               {listing.detected_item}
             </Text>
           </View>
-          <Text className="text-lime-400 font-semibold">Copy</Text>
+          <Text className="text-accent1 font-semibold">Copy</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -60,15 +60,15 @@ const FacebookMarketplacePost = ({ onClose }: FacebookMarketplacePostProps) => {
           className="flex-row items-center justify-between py-2"
         >
           <View>
-            <Text className="text-xs text-slate-400">Price</Text>
-            <Text className="text-sm text-slate-50">
+            <Text className="text-xs text-light3">Price</Text>
+            <Text className="text-sm text-light2">
               {listing.estimated_resale_price}
             </Text>
           </View>
-          <Text className="text-lime-400 font-semibold">Copy</Text>
+          <Text className="text-accent1 font-semibold">Copy</Text>
         </TouchableOpacity>
 
-        <Text className="mt-2 text-xs text-slate-400/80">
+        <Text className="mt-2 text-xs text-light3">
           Tap a field in Facebook → Paste
         </Text>
       </View>

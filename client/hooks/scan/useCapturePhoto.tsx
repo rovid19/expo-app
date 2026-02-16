@@ -4,6 +4,7 @@ import { Camera } from "react-native-vision-camera";
 import { useItems2Store } from "../../stores/items2Store";
 import * as MediaLibrary from "expo-media-library";
 import { ItemsService } from "../../services/supabase/itemsServices";
+import Toast from "react-native-toast-message";
 
 interface useCapturePhotoProps {
   cameraRef: React.RefObject<Camera | null>;
@@ -53,11 +54,19 @@ const useCapturePhoto = ({ cameraRef, setStartAni }: useCapturePhotoProps) => {
       } as any);
       form.append("photoUri", destUri);
 
-      const data = await ItemsService.scanItem(form);
-
-      if (data) {
-        console.log("scanned item", data);
-        addScannedItem(data);
+      try {
+        const data = await ItemsService.scanItem(form);
+        if (data) {
+          addScannedItem(data);
+        }
+      } catch (error) {
+        console.error("Error scanning item:", error);
+        Toast.show({
+          type: "error",
+          text1: "Error scanning item",
+          text2: "Please try again",
+        });
+        setStartAni(false);
       }
 
       setStartAni(false);

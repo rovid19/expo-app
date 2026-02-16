@@ -28,23 +28,20 @@ export const sendReport = async (req: Request, res: Response) => {
   }
 };
 
-export const hasEbayConnection = async (
-  req: Request,
-  res: Response
-): Promise<boolean> => {
-  const { userId } = req.query;
+export const deleteAccount = async (req: Request, res: Response) => {
+  const userId = req.query.userId as string;
 
-  const { data, error } = await supabase
-    .from("ebay_accounts")
-    .select("id")
-    .eq("owner_id", userId)
-    .eq("revoked", false)
-    .maybeSingle();
+  console.log("Delete account requested for:", userId);
 
-  if (error) {
-    console.error("Error checking eBay connection:", error);
-    return false;
+  if (!userId) {
+    return res.status(400).json({ message: "User ID is required" });
   }
 
-  return Boolean(data);
+  try {
+    await supabase.auth.admin.deleteUser(userId);
+    res.status(200).json({ message: "Account deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete account" });
+  }
 };

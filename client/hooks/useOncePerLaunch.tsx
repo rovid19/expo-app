@@ -18,6 +18,8 @@ const useOnceAfterAuth = () => {
 
   useEffect(() => {
     if (authFinished) {
+      console.log("authFinished");
+      console.log(isSubscribed);
       if (isSubscribed) {
         performAccountSetup();
       } else {
@@ -45,19 +47,18 @@ const useOnceAfterAuth = () => {
   };
 
   const performAccountSetup = async () => {
-    console.log("performing account setup");
+    console.log("performAccountSetup");
     const userExtraExists = await AppService.checkIfUserExtraExists(user?.id);
     if (!userExtraExists) {
+      console.log("userExtraExists");
       setIsModal({
         visible: true,
         content: <InitialUserSetup />,
         popupContent: null,
       });
     } else {
-      console.log("getting user extra");
       const data = await AppService.getUserExtra(user?.id);
       if (data) {
-        console.log("data", data);
         currencySetup(data.currency);
         setName(data.name);
       }

@@ -1,5 +1,5 @@
 // components/GlobalPopup.tsx
-import { Modal, View, Pressable } from "react-native";
+import { View, Pressable } from "react-native";
 import { usePopupStore } from "../../stores/popupStore";
 import { BlurView } from "expo-blur";
 import { useAppStore } from "../../stores/appStore";
@@ -9,11 +9,7 @@ interface GlobalPopupProps {
 }
 export default function GlobalPopup({ content }: GlobalPopupProps) {
   const { closeModal } = useAppStore();
-  const { isModal } = useAppStore();
   const { requiresConfirmation } = usePopupStore();
-
-  console.log("global popup", content);
-  console.log(isModal);
 
   return (
     <View className="w-full h-full bg-dark1/50  justify-center items-center absolute top-0 left-0 right-0 bottom-0 z-50">

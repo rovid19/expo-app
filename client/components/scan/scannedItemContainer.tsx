@@ -16,8 +16,6 @@ const ScannedItemContainer: React.FC<ScannedItemProps> = ({ item, index }) => {
   const { setSelectedItemId } = useItems2Store();
   const { openListingDetails } = useListingDetailsStore();
 
-  console.log("item", item);
-
   return (
     <>
       <BlurView

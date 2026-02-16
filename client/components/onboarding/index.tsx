@@ -27,10 +27,6 @@ const index = () => {
     setIsOnboarding(true);
   }, []);
 
-  useEffect(() => {
-    console.log("is Onboarding in index", isOnboarding);
-  }, [isOnboarding]);
-
   return (
     <View className="flex-1 bg-dark1 px-4 flex flex-col gap-8">
       {/*Header*/}

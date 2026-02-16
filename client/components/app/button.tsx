@@ -19,6 +19,7 @@ interface ButtonProps {
   animation?: boolean;
   animationText?: string;
   iconColor?: string;
+  bold?: boolean;
 }
 
 const AnimatedTouchableOpacity =
@@ -36,6 +37,7 @@ const Button = ({
   animation,
   animationText,
   iconColor,
+  bold = false,
 }: ButtonProps) => {
   const loadingAnim = React.useRef(new Animated.Value(0)).current;
   const loadingLoopRef = React.useRef<Animated.CompositeAnimation | null>(null);
@@ -98,7 +100,7 @@ const Button = ({
       onPress={isLoading ? undefined : onPress}
       disabled={disabled || isLoading}
       style={animatedStyle}
-      className={`${backgroundColor} rounded-full ${padding ? `p-${padding}` : "p-4"} w-full flex flex-row items-center justify-center gap-2`}
+      className={`${backgroundColor} rounded-full ${padding ? `p-${padding}` : "p-4"} w-full flex flex-row items-center justify-center gap-2 ${disabled && "opacity-50"}`}
     >
       {isLoading ? (
         <ActivityIndicator />
@@ -112,7 +114,9 @@ const Button = ({
           />
         )
       )}
-      <Text className={`text-${textColor} font-bold text-lg`}>
+      <Text
+        className={`text-${textColor} ${bold ? "font-bold" : "font-sans"} text-lg`}
+      >
         {animation && animationText ? animationText : title}
       </Text>
     </AnimatedTouchableOpacity>

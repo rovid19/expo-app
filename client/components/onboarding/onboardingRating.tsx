@@ -57,7 +57,6 @@ const AnimatedRow = ({ duration }: { duration: number }) => {
   return (
     <Animated.View style={{ transform: [{ translateX }] }} className="flex-row">
       {[...reviews, ...reviews].map((review, i) => {
-        console.log(reviews);
         return (
           <View key={i} style={{ marginRight: GAP }}>
             <ReviewCard text={review.text} name={review.name} />
@@ -77,7 +76,7 @@ const OnboardingRating = () => {
 
       <View className="items-center gap-2">
         <Image
-          source={require("../../assets/logoWithBg.png")}
+          source={require("../../assets/DarkAppIcon.png")}
           className="w-[64px] h-[64px]"
         />
         <Text className="text-light2 font-bold text-xl">Dexly</Text>

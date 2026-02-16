@@ -32,7 +32,7 @@ interface AppStore {
 export const useAppStore = create<AppStore>((set) => ({
   triggerRefresh: false,
   setTriggerRefresh: (triggerRefresh: boolean) => set({ triggerRefresh }),
-  launchOpeningAnimation: true,
+  launchOpeningAnimation: false,
   setLaunchOpeningAnimation: (launchOpeningAnimation: boolean) =>
     set({ launchOpeningAnimation }),
   selectedPackage: null,
@@ -72,6 +72,6 @@ export const useAppStore = create<AppStore>((set) => ({
   setCurrency: (currency: string) => set({ currency }),
   currencySymbol: "$",
   setCurrencySymbol: (currencySymbol: string) => set({ currencySymbol }),
-  name: "John Doe",
+  name: "",
   setName: (name: string) => set({ name }),
 }));
