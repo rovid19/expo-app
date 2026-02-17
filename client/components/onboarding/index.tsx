@@ -11,6 +11,8 @@ import * as StoreReview from "expo-store-review";
 import OnboardingCheckout from "./onboardingCheckout";
 import Auth from "../auth/auth";
 import { useOnboardingStore } from "../../stores/onboardingStore";
+import OnboardingReminder from "./onboardingReminder";
+import OnboardingStartPurchase from "./onboardingStartPurchase";
 
 const index = () => {
   const [answerSelected, setAnswerSelected] = useState<number[]>([]);
@@ -74,6 +76,10 @@ const index = () => {
 
       {onboardingStep === 8 && <Auth />}
 
+      {onboardingStep === 9 && <OnboardingStartPurchase />}
+
+      {onboardingStep === 10 && <OnboardingReminder />}
+
       {/*Action Buttons*/}
       {onboardingStep > 0 && onboardingStep < 8 && (
         <View className="pb-12 w-full">
@@ -106,13 +112,11 @@ const index = () => {
         </View>
       )}
 
-      {onboardingStep > 8 && onboardingStep < 10 && (
+      {onboardingStep === 11 && (
         <>
           <OnboardingCheckout onboardingAnswers={answers} />
         </>
       )}
-
-      {onboardingStep === 10 && <Auth />}
     </View>
   );
 };

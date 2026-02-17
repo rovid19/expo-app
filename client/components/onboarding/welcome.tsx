@@ -4,6 +4,9 @@ import { View, Text, TouchableOpacity, Pressable } from "react-native";
 import { useOnboardingStore } from "../../stores/onboardingStore";
 import { ResizeMode, Video } from "expo-av";
 
+//172.20.10.6
+//dexly-api-production.up.railway.app
+
 interface WelcomeProps {
   setOnboardingStep: (step: number) => void;
 }

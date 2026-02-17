@@ -6,8 +6,9 @@ module.exports = {
     version: "1.0.0",
 
     updates: {
-      url: "https://u.expo.dev/1451b288-3ed4-46f8-b4b9-082485d6da60",
+      url: "https://u.expo.dev/984d6692-ba6a-4607-a8e0-335cec4e0fdf",
     },
+
     runtimeVersion: {
       policy: "appVersion",
     },
@@ -57,6 +58,6 @@ module.exports = {
     web: {
       favicon: "./assets/DarkAppIcon.png",
     },
-    plugins: ["expo-router", "expo-av"],
+    plugins: ["expo-router", "expo-av", "expo-notifications"],
   },
 };

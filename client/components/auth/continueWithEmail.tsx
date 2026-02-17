@@ -6,7 +6,6 @@ import AuthFooter from "./authFooter";
 import { AuthService } from "../../services/authService";
 import { SvgXml } from "react-native-svg";
 import { showPassword, hidePassword } from "../../assets/icons/icons";
-import { useUserStore } from "../../stores/userStore";
 
 interface ContinueWithEmailProps {
   setContinueWithEmail: (continueWithEmail: boolean) => void;
@@ -20,7 +19,7 @@ const continueWithEmail = ({
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const { setAuthFinished } = useUserStore();
+
   const disableMainButton =
     authType === "login" || authType === "createAccount"
       ? isLoading || email === "" || password === ""
@@ -95,6 +94,7 @@ const continueWithEmail = ({
             placeholder="Enter your email"
             value={email}
             onChangeText={setEmail}
+            placeholderTextColor="#5D5D5D"
           />
         </View>
         {authType !== "resetPassword" && (
@@ -107,6 +107,7 @@ const continueWithEmail = ({
                 className="w-full p-4 rounded-3xl bg-dark2 border border-dark3 text-light2"
                 secureTextEntry={!passwordVisible}
                 placeholder="Enter your password"
+                placeholderTextColor="#5D5D5D"
                 value={password}
                 onChangeText={setPassword}
               />

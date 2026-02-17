@@ -10,6 +10,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useOnboardingStore } from "../../stores/onboardingStore";
 import { useUserStore } from "../../stores/userStore";
 import { AppService } from "../../services/appService";
+import * as Notifications from "expo-notifications";
+
 const ENTITLEMENT_ID = "Pro";
 
 interface OnboardingCheckoutProps {
@@ -56,29 +58,35 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
   useEffect(() => {
     let isActive = true;
 
-  const listener = async (customerInfo: CustomerInfo) => {
-    if (!isActive) return;
-    console.log("customerInfo listener", customerInfo);
-    const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
-    console.log("hasPro", hasPro);
-    if (hasPro) {
-      setButtonAnimation(false);
-      await handleSubscriptionCheck(user?.id);
-      await AsyncStorage.setItem("hasLaunched", "true");
-      
-      // Set these to trigger the useOncePerLaunch effect
-      setAuthFinished(true);
-      setIsSubscribed(true);
-      
-      // Save onboarding answers separately
-      await AppService.createOnboardingData(user?.id, onboardingAnswers);
-      
-      // Wait a bit to ensure performAccountSetup has time to check and show modal
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setIsOnboarding(false);
-    }
-  };
+    const listener = async (customerInfo: CustomerInfo) => {
+      if (!isActive) return;
+      console.log("customerInfo listener", customerInfo);
+      const entitlement = customerInfo.entitlements.active[ENTITLEMENT_ID];
+      const hasPro = !!customerInfo.entitlements.active[ENTITLEMENT_ID];
+      console.log("hasPro", hasPro);
+      if (hasPro) {
+        setButtonAnimation(false);
+        await handleSubscriptionCheck(user?.id);
+        await AsyncStorage.setItem("hasLaunched", "true");
+
+        // Set these to trigger the useOncePerLaunch effect
+        setAuthFinished(true);
+        setIsSubscribed(true);
+
+        console.log("entitlement", entitlement);
+        console.log("entitlement.expirationDate", entitlement?.expirationDate);
+
+        scheduleTrialEndingReminder(entitlement?.expirationDate ?? "");
+
+        // Save onboarding answers separately
+        await AppService.createOnboardingData(user?.id, onboardingAnswers);
+
+        // Wait a bit to ensure performAccountSetup has time to check and show modal
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        setIsOnboarding(false);
+      }
+    };
 
     Purchases.addCustomerInfoUpdateListener(listener);
 
@@ -120,20 +128,44 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
       console.error("❌ Purchase start failed:", error);
     }
   };
+
+  const scheduleTrialEndingReminder = async (expirationDate: string) => {
+    const expiration = new Date(expirationDate).getTime();
+    const now = Date.now();
+
+    // 12 hours before expiration = 2.5 days after a 3-day trial starts
+    const triggerSeconds = Math.floor(
+      (expiration - now - 12 * 60 * 60 * 1000) / 1000,
+    );
+
+    if (triggerSeconds <= 0) return;
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Trial ending soon",
+        body: "Your free trial expires in 12 hours.",
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: triggerSeconds,
+        repeats: false,
+      },
+    });
+  };
+
   return (
     <View className="flex-1 items-center flex flex-col gap-8 pt-28">
       <View className="flex flex-col gap-2 items-center justify-center">
         <Text className="text-light2 font-bold text-4xl">
-          {onboardingStep === 8 ? "We want you to" : "Start your 3-day FREE"}
+          Start your 3-day FREE
         </Text>
         <Text className="text-light2 font-bold text-4xl">
-          {onboardingStep === 8 ? "try Dexly for free" : "trial to continue."}
+          trial to continue.
         </Text>
       </View>
 
       <View className="flex-1 w-full">
-        {onboardingStep === 8 && <Text>Video</Text>}
-        {onboardingStep === 9 && <OnboardingCheckoutOptions />}
+        <OnboardingCheckoutOptions />
       </View>
 
       <View className="w-full flex flex-col gap-2 items-center justify-center pb-12">
@@ -145,18 +177,12 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
         </View>
 
         <Button
-          title={
-            onboardingStep === 8 ? "Try for $0.00" : "Start My 3-Day Free Trial"
-          }
+          title={"Start My 3-Day Free Trial"}
           onPress={() => {
-            if (onboardingStep === 8) {
-              setOnboardingStep(onboardingStep + 1);
-            } else {
-              initiatePurchase();
-            }
+            initiatePurchase();
           }}
           iconSize={24}
-          disabled={onboardingStep === 9 && !selectedPackage}
+          disabled={!selectedPackage}
           backgroundColor="bg-accent1"
           textColor="text-dark1"
           padding={6}
@@ -165,7 +191,7 @@ const OnboardingCheckout = ({ onboardingAnswers }: OnboardingCheckoutProps) => {
         />
 
         <Text className="text-light3 font-bold text-base">
-          {onboardingStep === 9 && selectedPackage?.packageType === "ANNUAL"
+          {selectedPackage?.packageType === "ANNUAL"
             ? "3 days free, then $34,99 per year (2,91 $/mo)"
             : "3 days free, then $9,99 per month"}
         </Text>
