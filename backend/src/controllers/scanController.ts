@@ -6,7 +6,9 @@ import path from "path";
 import { supabase } from "../services/supabase/supabaseClient";
 import { searchEbayItems } from "./ebayController";
 import axios from "axios";
+import dotenv from "dotenv";
 const upload = multer({ dest: "uploads/" });
+dotenv.config();
 
 export const scanImage = async (req: Request, res: Response) => {
   console.log("scanning image");
@@ -71,8 +73,9 @@ export const scanImage = async (req: Request, res: Response) => {
 };
 
 const findRealListingPrice = async (itemName: string) => {
+  const publicApiUrl = process.env.PUBLIC_API_URL;
   const response = await axios.post(
-    "http://localhost:3000/api/ebay/get-similar-listings",
+    `${publicApiUrl}/ebay/get-similar-listings`,
     { itemName },
   );
 

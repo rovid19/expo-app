@@ -15,7 +15,7 @@ const Welcome = ({ setOnboardingStep }: WelcomeProps) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       videoRef.current?.playAsync().catch(() => {});
-    }, 50);
+    }, 250);
     return () => clearTimeout(timer);
   }, []);
 
