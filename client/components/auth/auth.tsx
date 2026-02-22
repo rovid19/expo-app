@@ -17,6 +17,7 @@ import ContinueWithGoogle from "./continueWithGoogle";
 import ContinueWithApple from "./continueWithApple";
 import ContinueWithEmail from "./continueWithEmail";
 import AuthFooter from "./authFooter";
+import ContentContainer from "../app/contentContainer";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -62,7 +63,7 @@ const Auth = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
-      <View className="flex-1 py-8 px-4">
+      <ContentContainer className="py-8 px-4">
         <View
           className={`flex flex-row items-center ${continueWithEmail ? "justify-between" : "justify-center"} pt-8`}
         >
@@ -137,7 +138,7 @@ const Auth = () => {
         ) : (
           <ContinueWithEmail setContinueWithEmail={setContinueWithEmail} />
         )}
-      </View>
+      </ContentContainer>
     </KeyboardAvoidingView>
   );
 };

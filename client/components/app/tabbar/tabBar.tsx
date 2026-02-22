@@ -14,6 +14,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { useAppStore } from "../../../stores/appStore";
+import ContentContainer from "../contentContainer";
 
 const AnimatedView = Animated.createAnimatedComponent(View);
 
@@ -64,66 +65,68 @@ export default function TabBar({
 
   return (
     <View className="absolute bottom-0 left-0 right-0 h-32 w-full flex items-center justify-center px-8 pb-12">
-      <View
-        onLayout={onPillLayout}
-        className={`relative py-6 w-full flex flex-row items-center justify-between ${
-          isScanTab ? "bg-dark2/80" : "bg-dark2/50"
-        } border border-dark3/50 rounded-full overflow-hidden`}
-      >
-        <AnimatedView
-          className={isScanTab ? "bg-accent1" : "bg-dark2"}
-          style={[
-            animatedStyle,
-            {
-              position: "absolute",
-              left: 0,
-              marginHorizontal: 12,
-              height: dimensions.height - 15,
-              width: buttonWidth - 25,
-              borderRadius: 50,
-            },
-          ]}
-        />
+      <ContentContainer className="flex-1 flex justify-center items-center">
+        <View
+          onLayout={onPillLayout}
+          className={`relative py-6 w-full flex flex-row items-center justify-between ${
+            isScanTab ? "bg-dark2/80" : "bg-dark2/50"
+          } border border-dark3/50 rounded-full overflow-hidden`}
+        >
+          <AnimatedView
+            className={isScanTab ? "bg-accent1" : "bg-dark2"}
+            style={[
+              animatedStyle,
+              {
+                position: "absolute",
+                left: 0,
+                marginHorizontal: 12,
+                height: dimensions.height - 15,
+                width: buttonWidth - 25,
+                borderRadius: 50,
+              },
+            ]}
+          />
 
-        {state.routes.map((route: any, index: number) => {
-          const { options } = descriptors[route.key];
-          const label = options.tabBarLabel ?? options.title ?? route.name;
-          const isFocused = state.index === index;
+          {state.routes.map((route: any, index: number) => {
+            const { options } = descriptors[route.key];
+            const label = options.tabBarLabel ?? options.title ?? route.name;
+            const isFocused = state.index === index;
 
-          const onPress = () => {
-            tabPositionX.value = withTiming(buttonWidth * index, {
-              duration: 200,
-              easing: Easing.out(Easing.cubic),
-            });
+            const onPress = () => {
+              tabPositionX.value = withTiming(buttonWidth * index, {
+                duration: 200,
+                easing: Easing.out(Easing.cubic),
+              });
 
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true,
-            });
+              const event = navigation.emit({
+                type: "tabPress",
+                target: route.key,
+                canPreventDefault: true,
+              });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name, route.params);
-            }
-          };
-
-          return (
-            <TabBarButton
-              key={route.name}
-              route={route}
-              icon={icon[route.name as keyof typeof icon]}
-              onPress={onPress}
-              onLongPress={() =>
-                navigation.emit({ type: "tabLongPress", target: route.key })
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name, route.params);
               }
-              label={label}
-              color={isFocused ? "#E6E6E6" : "#999999"}
-              isFocused={isFocused}
-              hideText={isScanTab}
-            />
-          );
-        })}
-      </View>
+            };
+
+            return (
+              <TabBarButton
+                key={route.name}
+                route={route}
+                icon={icon[route.name as keyof typeof icon]}
+                onPress={onPress}
+                onLongPress={() =>
+                  navigation.emit({ type: "tabLongPress", target: route.key })
+                }
+                label={label}
+                color={isFocused ? "#E6E6E6" : "#999999"}
+                isFocused={isFocused}
+                hideText={isScanTab}
+              />
+            );
+          })}
+        </View>
+      </ContentContainer>
     </View>
   );
 }

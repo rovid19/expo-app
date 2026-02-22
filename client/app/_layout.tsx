@@ -20,6 +20,7 @@ import useAuth from "../hooks/useAuth";
 import Purchases from "react-native-purchases";
 import { LOG_LEVEL } from "react-native-purchases";
 import { ErrorBoundary } from "../components/app/ErrorBoundary";
+import ContentContainer from "../components/app/contentContainer";
 
 export default function RootLayout() {
   const [revenueCatConfigured, setRevenueCatConfigured] = useState(false);

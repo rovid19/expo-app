@@ -10,7 +10,7 @@ const ListingInfo = () => {
   const item = findSelectedItem();
   if (!item) return null;
   return (
-    <View className=" rounded-3xl gap-2 flex-1">
+    <View className=" rounded-3xl gap-2">
       <ListingHeader />
       <View className="flex  flex-col bg-dark3 rounded-3xl px-8 py-4 mt-2">
         <Text className="text-light2 font-sans text-lg">

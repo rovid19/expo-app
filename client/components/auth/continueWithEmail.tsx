@@ -6,6 +6,7 @@ import AuthFooter from "./authFooter";
 import { AuthService } from "../../services/authService";
 import { SvgXml } from "react-native-svg";
 import { showPassword, hidePassword } from "../../assets/icons/icons";
+import ContentContainer from "../app/contentContainer";
 
 interface ContinueWithEmailProps {
   setContinueWithEmail: (continueWithEmail: boolean) => void;
@@ -74,7 +75,7 @@ const continueWithEmail = ({
   };
 
   return (
-    <View className=" flex flex-col gap-8 px-2 flex-1 pt-20">
+    <ContentContainer className="flex flex-col gap-8 px-2 pt-20">
       <View className="flex flex-col gap-1 items-center justify-center">
         <Text className="text-5xl font-bold text-white">Welcome</Text>
         <Text className="text-lg text-light3 font-sans">
@@ -202,7 +203,7 @@ const continueWithEmail = ({
 
       <AuthFooter />
       <View className="h-10 w-full"></View>
-    </View>
+    </ContentContainer>
   );
 };
 

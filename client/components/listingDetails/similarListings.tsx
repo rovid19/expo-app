@@ -53,7 +53,7 @@ const SimilarListings = ({
   };
 
   return (
-    <View className="flex-1 gap-4 ">
+    <View className="flex-1 gap-4">
       <View className="flex flex-row justify-between items-center">
         <Text className="text-3xl text-sans text-light2">Similar Listings</Text>
         <TouchableOpacity

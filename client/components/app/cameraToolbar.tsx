@@ -15,6 +15,7 @@ import * as ExpoRouter from "expo-router";
 import useCameraDevicesHook from "../../hooks/scan/useCameraDevicesHook";
 import { useAppStore } from "../../stores/appStore";
 import EditListing from "../listingDetails/modals/editListing";
+import ContentContainer from "./contentContainer";
 interface CameraToolbarProps {
   onDeviceChange: (device: CameraDevice | undefined) => void;
   onFlashlightChange: (on: boolean) => void;
@@ -74,54 +75,56 @@ const CameraToolbar = ({
 
   return (
     <View
-      className={`w-full flex flex-row rounded-3xl overflow-hidden relative justify-between ${"bg-dark2/50"}`}
+      className={`w-full flex flex-row rounded-3xl overflow-hidden justify-center items-center`}
     >
-      <BlurView intensity={10} tint="dark" className="absolute inset-0" />
-      <View className="rounded-3xl overflow-hidden bg-dark2/80 py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative">
+      <ContentContainer className="flex-1 flex flex-row justify-between items-center relative bg-dark2/50 rounded-3xl overflow-hidden">
         <BlurView intensity={10} tint="dark" className="absolute inset-0" />
-        <Pressable
-          className="p-2"
-          onPress={() => {
-            if (isModal?.visible) {
-              setIsModal({
-                visible: true,
-                content: <EditListing />,
-                popupContent: null,
-              });
-            } else {
-              ExpoRouter.router.back();
-            }
-          }}
+        <View className="rounded-3xl overflow-hidden bg-dark2/80 py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative">
+          <BlurView intensity={10} tint="dark" className="absolute inset-0" />
+          <Pressable
+            className="p-2"
+            onPress={() => {
+              if (isModal?.visible) {
+                setIsModal({
+                  visible: true,
+                  content: <EditListing />,
+                  popupContent: null,
+                });
+              } else {
+                ExpoRouter.router.back();
+              }
+            }}
+          >
+            <SvgXml xml={leftArrow} width={24} height={24} color="white" />
+          </Pressable>
+          <Pressable
+            className="p-2"
+            onPress={() => onFlashlightChange(!flashlightOn)}
+          >
+            <SvgXml
+              xml={flashlightOn ? flashlightOnIcon : flashlightOff}
+              width={24}
+              height={24}
+              color="white"
+            />
+          </Pressable>
+        </View>
+        <View className="flex flex-row items-center gap-2">
+          <SvgXml xml={logo} width={32} height={32} color="white" />
+          <Text className="text-light2 font-bold text-md">Dexly</Text>
+        </View>
+        <View
+          className={`rounded-3xl overflow-hidden ${"bg-dark2/80"} py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative`}
         >
-          <SvgXml xml={leftArrow} width={24} height={24} color="white" />
-        </Pressable>
-        <Pressable
-          className="p-2"
-          onPress={() => onFlashlightChange(!flashlightOn)}
-        >
-          <SvgXml
-            xml={flashlightOn ? flashlightOnIcon : flashlightOff}
-            width={24}
-            height={24}
-            color="white"
-          />
-        </Pressable>
-      </View>
-      <View className="flex flex-row items-center gap-2">
-        <SvgXml xml={logo} width={32} height={32} color="white" />
-        <Text className="text-light2 font-bold text-md">Dexly</Text>
-      </View>
-      <View
-        className={`rounded-3xl overflow-hidden ${"bg-dark2/80"} py-2 px-4 flex flex-row items-center gap-2 border border-dark3/50 relative`}
-      >
-        <BlurView intensity={10} tint="dark" className="absolute inset-0" />
-        <Pressable className="p-2" onPress={() => handlePreviousLens()}>
-          <SvgXml xml={zoomOut} width={24} height={24} color="white" />
-        </Pressable>
-        <Pressable className="p-2" onPress={() => handleNextLens()}>
-          <SvgXml xml={zoomIn} width={24} height={24} color="white" />
-        </Pressable>
-      </View>
+          <BlurView intensity={10} tint="dark" className="absolute inset-0" />
+          <Pressable className="p-2" onPress={() => handlePreviousLens()}>
+            <SvgXml xml={zoomOut} width={24} height={24} color="white" />
+          </Pressable>
+          <Pressable className="p-2" onPress={() => handleNextLens()}>
+            <SvgXml xml={zoomIn} width={24} height={24} color="white" />
+          </Pressable>
+        </View>
+      </ContentContainer>
     </View>
   );
 };

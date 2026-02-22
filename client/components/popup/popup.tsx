@@ -25,7 +25,7 @@ export default function GlobalPopup({ content }: GlobalPopupProps) {
         }}
         className="w-full h-full justify-center items-center"
       >
-        <View className="w-[90%] p-8 bg-dark1 rounded-3xl  border border-dark2/50">
+        <View className="w-[90%] max-w-sm p-8 bg-dark1 rounded-3xl  border border-dark2/50">
           {content}
         </View>
       </Pressable>

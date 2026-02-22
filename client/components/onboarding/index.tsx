@@ -13,6 +13,7 @@ import Auth from "../auth/auth";
 import { useOnboardingStore } from "../../stores/onboardingStore";
 import OnboardingReminder from "./onboardingReminder";
 import OnboardingStartPurchase from "./onboardingStartPurchase";
+import ContentContainer from "../app/contentContainer";
 
 const index = () => {
   const [answerSelected, setAnswerSelected] = useState<number[]>([]);
@@ -30,7 +31,8 @@ const index = () => {
   }, []);
 
   return (
-    <View className="flex-1 bg-dark1 px-4 flex flex-col gap-8">
+    <View className="flex-1 bg-dark1">
+    <ContentContainer className="px-4 flex flex-col gap-8">
       {/*Header*/}
       {onboardingStep > 0 && onboardingStep < 6 && (
         <View className="flex flex-row items-center justify-center gap-4 pt-20 ">
@@ -117,6 +119,7 @@ const index = () => {
           <OnboardingCheckout onboardingAnswers={answers} />
         </>
       )}
+    </ContentContainer>
     </View>
   );
 };

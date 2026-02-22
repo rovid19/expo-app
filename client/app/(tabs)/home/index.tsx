@@ -16,6 +16,7 @@ import Header from "../../../components/app/header";
 import AppSettingsModal from "../../../components/appModals/appSettingsModal";
 import { useAppStore } from "../../../stores/appStore";
 import useOnceAfterAuth from "../../../hooks/useOncePerLaunch";
+import ContentContainer from "../../../components/app/contentContainer";
 
 export default function Dashboard() {
   const [currentTab, setCurrentTab] = useState("overview");
@@ -44,6 +45,7 @@ export default function Dashboard() {
 
   return (
     <View className="flex-1 pt-20 flex flex-col gap-4 bg-dark1 ">
+      <ContentContainer>
       <View
         className="flex-1 items-center justify-center px-6 flex flex-col gap-8 mb-8"
         style={{ paddingBottom: tabBarHeight + 2 }}
@@ -136,6 +138,7 @@ export default function Dashboard() {
           </View>
         </GestureDetector>
       </View>
+      </ContentContainer>
     </View>
   );
 }

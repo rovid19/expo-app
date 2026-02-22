@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, useWindowDimensions } from "react-native";
 import { useEffect, useState, useRef } from "react";
 import Svg, {
   Rect,
@@ -21,19 +21,10 @@ import Animated, {
   cancelAnimation,
 } from "react-native-reanimated";
 import colors from "tailwindcss/colors";
-import { Dimensions } from "react-native";
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-
-const CUTOUT_WIDTH = 350;
-const CUTOUT_HEIGHT = 550;
 
 const R = 20;
 const CORNER_LENGTH = 40;
 const STROKE = 4;
-
-const CUTOUT_X = (SCREEN_WIDTH - CUTOUT_WIDTH) / 2;
-const CUTOUT_Y = (SCREEN_HEIGHT - CUTOUT_HEIGHT) / 2;
 interface LineProps {
   y1: number;
   y2: number;
@@ -54,6 +45,14 @@ interface SvgScanOverlayProps {
 }
 
 const SvgScanOverlay = ({ startAni }: SvgScanOverlayProps) => {
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
+  const CUTOUT_WIDTH = Math.min(SCREEN_WIDTH * 0.85, 400);
+  const CUTOUT_HEIGHT = Math.min(SCREEN_HEIGHT * 0.65, 600);
+  const CUTOUT_X = (SCREEN_WIDTH - CUTOUT_WIDTH) / 2;
+  const CUTOUT_Y = (SCREEN_HEIGHT - CUTOUT_HEIGHT) / 2;
+  const TEXT_BOX_WIDTH = CUTOUT_WIDTH * 0.69;
+  const TEXT_BOX_X = CUTOUT_X + (CUTOUT_WIDTH - TEXT_BOX_WIDTH) / 2;
+
   const [textWidth, setTextWidth] = useState(0);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [dots, setDots] = useState("");
@@ -291,9 +290,9 @@ const SvgScanOverlay = ({ startAni }: SvgScanOverlayProps) => {
 
           <AnimatedG animatedProps={animatedTextGroupProps}>
             <AnimatedRect
-              x={CUTOUT_X + CUTOUT_WIDTH / 2 - 120}
+              x={TEXT_BOX_X}
               y={CUTOUT_Y + CUTOUT_HEIGHT / 2 - 20}
-              width={240}
+              width={TEXT_BOX_WIDTH}
               height={40}
               rx={8}
               ry={8}

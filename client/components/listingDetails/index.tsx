@@ -11,6 +11,7 @@ import ListingInfo from "./listingInfo";
 import ListingActions from "./listingActions";
 import { useListingDetailsStore } from "../../stores/listingDetailsStore";
 import { useSimilarListingAni } from "../../hooks/listingDetails/useSimilarListingAni";
+import ContentContainer from "../app/contentContainer";
 
 const ListingDetailsBottomSheet = forwardRef<BottomSheet>((_, ref) => {
   const { setHideNavbar } = useAppStore();
@@ -55,28 +56,30 @@ const ListingDetailsBottomSheet = forwardRef<BottomSheet>((_, ref) => {
         }
       }}
     >
-      <BottomSheetView className="w-full h-full relative px-8 py-4">
-        {/* MAIN CONTENT */}
-        {isListingDetailsOpen && (
-          <View className="flex-1 flex flex-col gap-6">
-            <View className="flex-1 flex flex-col  gap-12">
-              {!hideListingInfo && (
-                <Animated.View style={listingInfoAnimatedStyle}>
-                  <ListingInfo />
-                </Animated.View>
-              )}
-              <SimilarListings
-                openSimilarListings={openSimilarListings}
-                setOpenSimilarListings={setOpenSimilarListings}
-              />
-            </View>
+      <ContentContainer className="flex-1">
+        <BottomSheetView className="w-full h-full relative px-8 py-4">
+          {/* MAIN CONTENT */}
+          {isListingDetailsOpen && (
+            <View className="flex-1 flex flex-col gap-6">
+              <View className="flex-1 flex flex-col gap-12 ">
+                {!hideListingInfo && (
+                  <Animated.View style={listingInfoAnimatedStyle}>
+                    <ListingInfo />
+                  </Animated.View>
+                )}
+                <SimilarListings
+                  openSimilarListings={openSimilarListings}
+                  setOpenSimilarListings={setOpenSimilarListings}
+                />
+              </View>
 
-            <View className="w-full gap-2 mb-4">
-              <ListingActions />
+              <View className="w-full gap-2 mb-4">
+                <ListingActions />
+              </View>
             </View>
-          </View>
-        )}
-      </BottomSheetView>
+          )}
+        </BottomSheetView>
+      </ContentContainer>
     </BottomSheet>
   );
 });

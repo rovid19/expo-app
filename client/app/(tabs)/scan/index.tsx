@@ -50,7 +50,7 @@ export default function Scan() {
     }
   }, [scannedItems]);
 
-  if (!currentDevice) {
+  /*if (!currentDevice) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
         <Text>Loading camera...</Text>
@@ -64,19 +64,10 @@ export default function Scan() {
         <Text>Camera permission required</Text>
       </View>
     );
-  }
+  }*/
 
   return (
     <View className="flex-1 ">
-      <Camera
-        ref={cameraRef}
-        style={{ flex: 1 }}
-        device={currentDevice}
-        isActive={true}
-        photo
-        torch={flashlightOn ? "on" : "off"}
-      />
-
       {/* Overlay */}
       <View
         style={{ paddingBottom: tabBarHeight + 33 }}
