@@ -21,7 +21,8 @@ import AuthFooter from "./authFooter";
 WebBrowser.maybeCompleteAuthSession();
 
 const Auth = () => {
-  const { setIsOnboarding, isOnboarding } = useOnboardingStore();
+  const { setIsOnboarding, isOnboarding, setOnboardingStep } =
+    useOnboardingStore();
   const [continueWithEmail, setContinueWithEmail] = useState(false);
 
   useEffect(() => {
@@ -79,6 +80,7 @@ const Auth = () => {
             onPress={async () => {
               await AsyncStorage.removeItem("hasLaunched");
               setIsOnboarding(true);
+              setOnboardingStep(0);
             }}
           >
             <Text className="text-light3 text-sm">Restore</Text>

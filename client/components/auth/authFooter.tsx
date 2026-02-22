@@ -9,7 +9,7 @@ const authFooter = () => {
         <Text
           className="font-bold text-light3"
           onPress={() => {
-            Linking.openURL("https://rovid19.github.io/expo-app/terms.html");
+            Linking.openURL("https://www.dexlyapp.co/terms-of-service");
           }}
           style={{ textDecorationLine: "underline" }}
         >
@@ -19,7 +19,7 @@ const authFooter = () => {
         <Text
           className="font-bold text-light3"
           onPress={() => {
-            Linking.openURL("https://rovid19.github.io/expo-app/privacy.html");
+            Linking.openURL("https://www.dexlyapp.co/privacy-policy");
           }}
           style={{ textDecorationLine: "underline" }}
         >

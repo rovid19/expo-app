@@ -83,7 +83,7 @@ const OnboardingRating = () => {
         <Text className="text-light2 font-bold text-xl">Dexly</Text>
       </View>
 
-      <View className="overflow-hidden gap-6 mt-6">
+      <View className="overflow-hidden gap-6 mt-6 flex-1">
         <AnimatedRow duration={22000} />
         <AnimatedRow duration={26000} />
       </View>

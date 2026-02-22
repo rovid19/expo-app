@@ -1,6 +1,6 @@
 module.exports = {
   expo: {
-    name: "dexly",
+    name: "Dexly",
     slug: "dexly",
     scheme: "dexly",
     version: "1.0.0",
@@ -31,7 +31,7 @@ module.exports = {
     ios: {
       usesAppleSignIn: true,
       bundleIdentifier: "com.dexlyscanner.app",
-      supportsTablet: false,
+      supportsTablet: true,
       infoPlist: {
         NSCameraUsageDescription: "This app uses the camera to scan items.",
         NSPhotoLibraryUsageDescription: "Upload photos to Facebook Marketplace",
